@@ -1,0 +1,38 @@
+# Nightly database backup (free). Dumps the Supabase database and keeps it as a
+# downloadable workflow artifact for 30 days. Needed on the Supabase Free plan;
+# optional on Pro (which has its own daily backups).
+#
+# Setup: repo Settings → Secrets and variables → Actions → New secret
+#   DIRECT_URL = the Supabase "Session pooler" or direct connection string (port 5432)
+name: Database backup
+
+on:
+  schedule:
+    - cron: "30 20 * * *" # 02:00 IST every day
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: Dump database
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: |
+          stamp=$(date -u +%Y-%m-%d)
+          pg_dump "$DIRECT_URL" --no-owner --no-privileges --format=custom --file "inventory-$stamp.dump"
+          ls -lh inventory-*.dump
+
+      - name: Upload backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: inventory-*.dump
+          retention-days: 30

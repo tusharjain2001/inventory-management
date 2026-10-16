@@ -1,0 +1,768 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+
+enum TaxType {
+  GST
+  EXEMPT
+  NIL_RATED
+  ZERO_RATED
+}
+
+enum CustomerType {
+  INDIVIDUAL
+  BUSINESS
+  DEALER
+  DISTRIBUTOR
+  RETAILER
+  OTHER
+}
+
+/// Every stock change is one of these. stockEffect/displayEffect on the row hold the signed impact.
+enum StockTxnType {
+  OPENING
+  STOCK_IN
+  SALE
+  SALE_REVERSAL
+  DISPLAY_OUT
+  DISPLAY_RETURN
+  ADJUSTMENT_IN
+  ADJUSTMENT_OUT
+  DAMAGED
+  LOST
+}
+
+enum StockInSource {
+  PURCHASE
+  SUPPLIER_RECEIPT
+  OPENING
+  MANUAL
+}
+
+enum AdjustmentType {
+  INCREASE
+  DECREASE
+}
+
+enum LossType {
+  DAMAGED
+  LOST
+}
+
+enum DisplayStatus {
+  OUT
+  PARTIAL
+  CLOSED
+}
+
+enum OrderStatus {
+  DRAFT
+  CONFIRMED
+  INVOICED
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENT
+  AMOUNT
+}
+
+enum InvoiceStatus {
+  ACTIVE
+  CANCELLED
+}
+
+/// OVERDUE is derived at read time (due date passed with a balance), never stored.
+enum PaymentStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMode {
+  CASH
+  UPI
+  BANK_TRANSFER
+  NEFT
+  RTGS
+  IMPS
+  CREDIT_CARD
+  DEBIT_CARD
+  CHEQUE
+  OTHER
+}
+
+enum PaymentType {
+  RECEIPT
+  REFUND
+}
+
+enum CreditNoteStatus {
+  ACTIVE
+  CANCELLED
+}
+
+// ───────────────────────── Users & access ─────────────────────────
+
+model Role {
+  id                 Int      @id @default(autoincrement())
+  key                String   @unique
+  name               String
+  description        String?
+  permissions        String[]
+  maxDiscountPercent Decimal  @default(0) @db.Decimal(6, 2)
+  isSystem           Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  users              User[]
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  name              String
+  email             String    @unique
+  username          String?   @unique
+  phone             String?
+  passwordHash      String
+  roleId            Int
+  role              Role      @relation(fields: [roleId], references: [id])
+  isActive          Boolean   @default(true)
+  failedLoginCount  Int       @default(0)
+  lockedUntil       DateTime?
+  lastLoginAt       DateTime?
+  passwordChangedAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  sessions        Session[]
+  resetTokens     PasswordResetToken[]
+  loginActivities LoginActivity[]
+  auditLogs       AuditLog[]
+
+  createdCategories    Category[]           @relation("CategoryCreatedBy")
+  createdProducts      Product[]            @relation("ProductCreatedBy")
+  inventoryTxns        InventoryTransaction[] @relation("TxnCreatedBy")
+  stockIns             StockIn[]            @relation("StockInCreatedBy")
+  adjustmentsCreated   StockAdjustment[]    @relation("AdjCreatedBy")
+  adjustmentsApproved  StockAdjustment[]    @relation("AdjApprovedBy")
+  lossesCreated        StockLoss[]          @relation("LossCreatedBy")
+  lossesApproved       StockLoss[]          @relation("LossApprovedBy")
+  displaysCreated      DisplayIssue[]       @relation("DisplayCreatedBy")
+  customersCreated     Customer[]           @relation("CustomerCreatedBy")
+  ordersAsSalesperson  SalesOrder[]         @relation("OrderSalesperson")
+  ordersCreated        SalesOrder[]         @relation("OrderCreatedBy")
+  ordersConfirmed      SalesOrder[]         @relation("OrderConfirmedBy")
+  ordersCancelled      SalesOrder[]         @relation("OrderCancelledBy")
+  orderItemOverrides   SalesOrderItem[]     @relation("ItemOverrideBy")
+  invoicesCreated      Invoice[]            @relation("InvoiceCreatedBy")
+  invoicesCancelled    Invoice[]            @relation("InvoiceCancelledBy")
+  paymentsReceived     Payment[]            @relation("PaymentReceivedBy")
+  paymentsCreated      Payment[]            @relation("PaymentCreatedBy")
+  creditNotesCreated   CreditNote[]         @relation("CreditNoteCreatedBy")
+}
+
+model Session {
+  id         String    @id // sha256 of the cookie token
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rememberMe Boolean   @default(false)
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime  @default(now())
+  lastSeenAt DateTime  @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+
+  @@index([userId])
+}
+
+model LoginActivity {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  identifier String
+  success    Boolean
+  reason     String?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+// ───────────────────────── System ─────────────────────────
+
+model Setting {
+  key         String   @id
+  value       Json
+  updatedAt   DateTime @updatedAt
+  updatedById Int?
+}
+
+/// One counter per document type per financial year, e.g. ("INVOICE", "2026-27").
+model NumberSeries {
+  id            Int    @id @default(autoincrement())
+  key           String
+  financialYear String
+  nextNumber    Int
+
+  @@unique([key, financialYear])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  summary   String
+  before    Json?
+  after     Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+// ───────────────────────── Masters ─────────────────────────
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  description   String?
+  isActive      Boolean       @default(true)
+  createdById   Int?
+  createdBy     User?         @relation("CategoryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  subCategories SubCategory[]
+  products      Product[]
+}
+
+model SubCategory {
+  id          Int       @id @default(autoincrement())
+  categoryId  Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+  name        String
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  @@unique([categoryId, name])
+}
+
+model Supplier {
+  id            Int       @id @default(autoincrement())
+  name          String
+  contactPerson String?
+  phone         String?
+  email         String?
+  gstin         String?
+  pan           String?
+  address       String?
+  city          String?
+  state         String?
+  stateCode     String?
+  pincode       String?
+  notes         String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  stockIns      StockIn[]
+  products      Product[]
+}
+
+// ───────────────────────── Products ─────────────────────────
+
+model Product {
+  id            Int          @id @default(autoincrement())
+  name          String       @db.VarChar(200)
+  sku           String       @unique
+  categoryId    Int
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  material      String?
+  size          String?
+  weight        Decimal?     @db.Decimal(12, 3)
+  weightUnit    String?
+  colour        String?
+  description   String?
+
+  purchasePrice   Decimal  @default(0) @db.Decimal(14, 2)
+  sellingPrice    Decimal  @default(0) @db.Decimal(14, 2)
+  minSellingPrice Decimal? @db.Decimal(14, 2)
+  discountAllowed Boolean  @default(true)
+
+  hsnCode      String?
+  taxType      TaxType @default(GST)
+  gstRate      Decimal @default(0) @db.Decimal(6, 3)
+  cessRate     Decimal @default(0) @db.Decimal(6, 3)
+  taxInclusive Boolean @default(false)
+
+  reorderLevel        Decimal   @default(0) @db.Decimal(14, 3)
+  reorderQuantity     Decimal   @default(0) @db.Decimal(14, 3)
+  preferredSupplierId Int?
+  preferredSupplier   Supplier? @relation(fields: [preferredSupplierId], references: [id], onDelete: SetNull)
+
+  // Cached balances, maintained only by the inventory ledger service.
+  currentStock   Decimal   @default(0) @db.Decimal(14, 3)
+  onDisplayStock Decimal   @default(0) @db.Decimal(14, 3)
+  avgCost        Decimal   @default(0) @db.Decimal(14, 4)
+  lastSaleAt     DateTime?
+  lastPurchaseAt DateTime?
+
+  isActive    Boolean   @default(true)
+  deletedAt   DateTime?
+  createdById Int?
+  createdBy   User?     @relation("ProductCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  images         ProductImage[]
+  transactions   InventoryTransaction[]
+  stockInItems   StockInItem[]
+  adjustments    StockAdjustment[]
+  losses         StockLoss[]
+  displayItems   DisplayIssueItem[]
+  orderItems     SalesOrderItem[]
+
+  @@index([categoryId])
+  @@index([name])
+}
+
+model ProductImage {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String
+  storagePath String
+  imageType   String   @default("GALLERY")
+  sortOrder   Int      @default(0)
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([productId])
+}
+
+// ───────────────────────── Inventory ─────────────────────────
+
+/// Immutable stock ledger. Never updated or deleted; corrections are new rows.
+model InventoryTransaction {
+  id            Int          @id @default(autoincrement())
+  txnDate       DateTime
+  productId     Int
+  product       Product      @relation(fields: [productId], references: [id])
+  type          StockTxnType
+  quantity      Decimal      @db.Decimal(14, 3)
+  stockEffect   Decimal      @db.Decimal(14, 3)
+  displayEffect Decimal      @default(0) @db.Decimal(14, 3)
+  unitCost      Decimal      @default(0) @db.Decimal(14, 4)
+  totalCost     Decimal      @default(0) @db.Decimal(14, 2)
+  balanceAfter  Decimal      @db.Decimal(14, 3)
+  refType       String?
+  refId         Int?
+  refNo         String?
+  remarks       String?
+  createdById   Int?
+  createdBy     User?        @relation("TxnCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
+
+  @@index([productId, txnDate])
+  @@index([type, txnDate])
+  @@index([refType, refId])
+}
+
+model StockIn {
+  id                  Int           @id @default(autoincrement())
+  stockInNo           String        @unique
+  date                DateTime
+  source              StockInSource
+  supplierId          Int?
+  supplier            Supplier?     @relation(fields: [supplierId], references: [id])
+  purchaseInvoiceNo   String?
+  purchaseInvoiceDate DateTime?
+  remarks             String?
+  subtotal            Decimal       @default(0) @db.Decimal(14, 2)
+  discountTotal       Decimal       @default(0) @db.Decimal(14, 2)
+  taxableTotal        Decimal       @default(0) @db.Decimal(14, 2)
+  gstTotal            Decimal       @default(0) @db.Decimal(14, 2)
+  total               Decimal       @default(0) @db.Decimal(14, 2)
+  createdById         Int?
+  createdBy           User?         @relation("StockInCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt           DateTime      @default(now())
+  items               StockInItem[]
+
+  @@index([date])
+}
+
+model StockInItem {
+  id             Int     @id @default(autoincrement())
+  stockInId      Int
+  stockIn        StockIn @relation(fields: [stockInId], references: [id], onDelete: Cascade)
+  productId      Int
+  product        Product @relation(fields: [productId], references: [id])
+  quantity       Decimal @db.Decimal(14, 3)
+  unitCost       Decimal @db.Decimal(14, 2)
+  discountAmount Decimal @default(0) @db.Decimal(14, 2)
+  taxableValue   Decimal @db.Decimal(14, 2)
+  gstRate        Decimal @default(0) @db.Decimal(6, 3)
+  gstAmount      Decimal @default(0) @db.Decimal(14, 2)
+  totalCost      Decimal @db.Decimal(14, 2)
+  batchNo        String?
+}
+
+model StockAdjustment {
+  id            Int            @id @default(autoincrement())
+  adjustmentNo  String         @unique
+  date          DateTime
+  productId     Int
+  product       Product        @relation(fields: [productId], references: [id])
+  type          AdjustmentType
+  existingStock Decimal        @db.Decimal(14, 3)
+  quantity      Decimal        @db.Decimal(14, 3)
+  newStock      Decimal        @db.Decimal(14, 3)
+  reason        String
+  remarks       String?
+  approvedById  Int?
+  approvedBy    User?          @relation("AdjApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  createdById   Int?
+  createdBy     User?          @relation("AdjCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime       @default(now())
+
+  @@index([date])
+}
+
+model StockLoss {
+  id             Int      @id @default(autoincrement())
+  lossNo         String   @unique
+  type           LossType
+  date           DateTime
+  productId      Int
+  product        Product  @relation(fields: [productId], references: [id])
+  quantity       Decimal  @db.Decimal(14, 3)
+  unitCost       Decimal  @default(0) @db.Decimal(14, 4)
+  reason         String
+  location       String?
+  remarks        String?
+  attachmentUrl  String?
+  attachmentPath String?
+  approvedById   Int?
+  approvedBy     User?    @relation("LossApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  createdById    Int?
+  createdBy      User?    @relation("LossCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt      DateTime @default(now())
+
+  @@index([date])
+}
+
+/// "Potential Sales": stock taken out for display at a client's location.
+model DisplayIssue {
+  id                 Int                @id @default(autoincrement())
+  displayNo          String             @unique
+  date               DateTime
+  customerId         Int?
+  customer           Customer?          @relation(fields: [customerId], references: [id])
+  locationName       String
+  address            String?
+  contactPerson      String?
+  contactPhone       String?
+  expectedReturnDate DateTime?
+  status             DisplayStatus      @default(OUT)
+  remarks            String?
+  createdById        Int?
+  createdBy          User?              @relation("DisplayCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  items              DisplayIssueItem[]
+  orders             SalesOrder[]
+}
+
+model DisplayIssueItem {
+  id             Int              @id @default(autoincrement())
+  displayIssueId Int
+  displayIssue   DisplayIssue     @relation(fields: [displayIssueId], references: [id], onDelete: Cascade)
+  productId      Int
+  product        Product          @relation(fields: [productId], references: [id])
+  quantity       Decimal          @db.Decimal(14, 3)
+  returnedQty    Decimal          @default(0) @db.Decimal(14, 3)
+  soldQty        Decimal          @default(0) @db.Decimal(14, 3)
+  orderItems     SalesOrderItem[]
+}
+
+// ───────────────────────── Customers ─────────────────────────
+
+model Customer {
+  id               Int          @id @default(autoincrement())
+  code             String       @unique
+  name             String
+  customerType     CustomerType @default(INDIVIDUAL)
+  companyName      String?
+  mobile           String?
+  altMobile        String?
+  email            String?
+  gstin            String?
+  pan              String?
+  billingAddress   String?
+  shippingAddress  String?
+  city             String?
+  state            String?
+  stateCode        String?
+  pincode          String?
+  country          String?      @default("India")
+  creditLimit      Decimal?     @db.Decimal(14, 2)
+  paymentTermsDays Int?
+  openingBalance   Decimal      @default(0) @db.Decimal(14, 2)
+  notes            String?
+  isActive         Boolean      @default(true)
+  isWalkIn         Boolean      @default(false)
+  createdById      Int?
+  createdBy        User?        @relation("CustomerCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  orders        SalesOrder[]
+  invoices      Invoice[]
+  payments      Payment[]
+  creditNotes   CreditNote[]
+  displayIssues DisplayIssue[]
+
+  @@index([name])
+  @@index([mobile])
+}
+
+// ───────────────────────── Sales ─────────────────────────
+
+model SalesOrder {
+  id                   Int           @id @default(autoincrement())
+  orderNo              String        @unique
+  orderDate            DateTime
+  status               OrderStatus   @default(DRAFT)
+  customerId           Int
+  customer             Customer      @relation(fields: [customerId], references: [id])
+  customerName         String
+  customerPhone        String?
+  customerGstin        String?
+  billingAddress       String?
+  shippingAddress      String?
+  placeOfSupply        String
+  placeOfSupplyCode    String
+  isInterState         Boolean       @default(false)
+  salespersonId        Int?
+  salesperson          User?         @relation("OrderSalesperson", fields: [salespersonId], references: [id], onDelete: SetNull)
+  paymentTermsDays     Int           @default(0)
+  notes                String?
+
+  subtotal              Decimal       @default(0) @db.Decimal(14, 2)
+  itemDiscountTotal     Decimal       @default(0) @db.Decimal(14, 2)
+  invoiceDiscountType   DiscountType?
+  invoiceDiscountValue  Decimal       @default(0) @db.Decimal(14, 2)
+  invoiceDiscountAmount Decimal       @default(0) @db.Decimal(14, 2)
+  otherChargesLabel     String?
+  otherCharges          Decimal       @default(0) @db.Decimal(14, 2)
+  otherChargesGstRate   Decimal       @default(0) @db.Decimal(6, 3)
+  taxableTotal          Decimal       @default(0) @db.Decimal(14, 2)
+  cgstTotal             Decimal       @default(0) @db.Decimal(14, 2)
+  sgstTotal             Decimal       @default(0) @db.Decimal(14, 2)
+  igstTotal             Decimal       @default(0) @db.Decimal(14, 2)
+  cessTotal             Decimal       @default(0) @db.Decimal(14, 2)
+  taxTotal              Decimal       @default(0) @db.Decimal(14, 2)
+  roundOff              Decimal       @default(0) @db.Decimal(14, 2)
+  grandTotal            Decimal       @default(0) @db.Decimal(14, 2)
+
+  displayIssueId Int?
+  displayIssue   DisplayIssue? @relation(fields: [displayIssueId], references: [id])
+
+  confirmedAt   DateTime?
+  confirmedById Int?
+  confirmedBy   User?     @relation("OrderConfirmedBy", fields: [confirmedById], references: [id], onDelete: SetNull)
+  cancelledAt   DateTime?
+  cancelledById Int?
+  cancelledBy   User?     @relation("OrderCancelledBy", fields: [cancelledById], references: [id], onDelete: SetNull)
+  cancelReason  String?
+  createdById   Int?
+  createdBy     User?     @relation("OrderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  items   SalesOrderItem[]
+  invoice Invoice?
+
+  @@index([orderDate])
+  @@index([status])
+}
+
+model SalesOrderItem {
+  id                   Int               @id @default(autoincrement())
+  orderId              Int
+  order                SalesOrder        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId            Int
+  product              Product           @relation(fields: [productId], references: [id])
+  sortOrder            Int               @default(0)
+  sku                  String
+  name                 String
+  description          String?
+  hsnCode              String?
+  quantity             Decimal           @db.Decimal(14, 3)
+  listPrice            Decimal           @db.Decimal(14, 2)
+  unitPrice            Decimal           @db.Decimal(14, 2)
+  taxInclusive         Boolean           @default(false)
+  discountPercent      Decimal           @default(0) @db.Decimal(6, 3)
+  discountAmount       Decimal           @default(0) @db.Decimal(14, 2)
+  grossAmount          Decimal           @default(0) @db.Decimal(14, 2)
+  invoiceDiscountShare Decimal           @default(0) @db.Decimal(14, 2)
+  taxableValue         Decimal           @default(0) @db.Decimal(14, 2)
+  taxType              TaxType           @default(GST)
+  gstRate              Decimal           @default(0) @db.Decimal(6, 3)
+  cessRate             Decimal           @default(0) @db.Decimal(6, 3)
+  cgstAmount           Decimal           @default(0) @db.Decimal(14, 2)
+  sgstAmount           Decimal           @default(0) @db.Decimal(14, 2)
+  igstAmount           Decimal           @default(0) @db.Decimal(14, 2)
+  cessAmount           Decimal           @default(0) @db.Decimal(14, 2)
+  lineTotal            Decimal           @default(0) @db.Decimal(14, 2)
+  unitCost             Decimal           @default(0) @db.Decimal(14, 4)
+  priceOverride        Boolean           @default(false)
+  overrideById         Int?
+  overrideBy           User?             @relation("ItemOverrideBy", fields: [overrideById], references: [id], onDelete: SetNull)
+  displayIssueItemId   Int?
+  displayIssueItem     DisplayIssueItem? @relation(fields: [displayIssueItemId], references: [id])
+  creditNoteItems      CreditNoteItem[]
+
+  @@index([productId])
+}
+
+model Invoice {
+  id              Int           @id @default(autoincrement())
+  invoiceNo       String        @unique
+  invoiceDate     DateTime
+  orderId         Int           @unique
+  order           SalesOrder    @relation(fields: [orderId], references: [id])
+  customerId      Int
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  dueDate         DateTime
+  status          InvoiceStatus @default(ACTIVE)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  grandTotal      Decimal       @db.Decimal(14, 2)
+  amountPaid      Decimal       @default(0) @db.Decimal(14, 2)
+  creditNoteTotal Decimal       @default(0) @db.Decimal(14, 2)
+  balanceDue      Decimal       @db.Decimal(14, 2)
+  companySnapshot Json
+
+  eWayBillNo        String?
+  deliveryNote      String?
+  supplierRef       String?
+  buyersOrderNo     String?
+  buyersOrderDate   DateTime?
+  despatchDocNo     String?
+  despatchedThrough String?
+  destination       String?
+  termsOfDelivery   String?
+  otherReferences   String?
+
+  cancelledAt   DateTime?
+  cancelledById Int?
+  cancelledBy   User?     @relation("InvoiceCancelledBy", fields: [cancelledById], references: [id], onDelete: SetNull)
+  cancelReason  String?
+  createdById   Int?
+  createdBy     User?     @relation("InvoiceCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  payments    Payment[]
+  creditNotes CreditNote[]
+
+  @@index([invoiceDate])
+  @@index([customerId])
+  @@index([paymentStatus])
+}
+
+model Payment {
+  id           Int         @id @default(autoincrement())
+  paymentNo    String      @unique
+  type         PaymentType @default(RECEIPT)
+  invoiceId    Int
+  invoice      Invoice     @relation(fields: [invoiceId], references: [id])
+  customerId   Int
+  customer     Customer    @relation(fields: [customerId], references: [id])
+  paymentDate  DateTime
+  amount       Decimal     @db.Decimal(14, 2)
+  mode         PaymentMode
+  reference    String?
+  notes        String?
+  receivedById Int?
+  receivedBy   User?       @relation("PaymentReceivedBy", fields: [receivedById], references: [id], onDelete: SetNull)
+  createdById  Int?
+  createdBy    User?       @relation("PaymentCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([paymentDate])
+  @@index([invoiceId])
+}
+
+/// Financial-only credit note (no goods come back): reduces the invoice value and its GST.
+model CreditNote {
+  id           Int              @id @default(autoincrement())
+  creditNoteNo String           @unique
+  date         DateTime
+  invoiceId    Int
+  invoice      Invoice          @relation(fields: [invoiceId], references: [id])
+  customerId   Int
+  customer     Customer         @relation(fields: [customerId], references: [id])
+  reason       String
+  isInterState Boolean          @default(false)
+  status       CreditNoteStatus @default(ACTIVE)
+  taxableTotal Decimal          @default(0) @db.Decimal(14, 2)
+  cgstTotal    Decimal          @default(0) @db.Decimal(14, 2)
+  sgstTotal    Decimal          @default(0) @db.Decimal(14, 2)
+  igstTotal    Decimal          @default(0) @db.Decimal(14, 2)
+  cessTotal    Decimal          @default(0) @db.Decimal(14, 2)
+  total        Decimal          @default(0) @db.Decimal(14, 2)
+  createdById  Int?
+  createdBy    User?            @relation("CreditNoteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime         @default(now())
+  items        CreditNoteItem[]
+
+  @@index([date])
+}
+
+model CreditNoteItem {
+  id           Int             @id @default(autoincrement())
+  creditNoteId Int
+  creditNote   CreditNote      @relation(fields: [creditNoteId], references: [id], onDelete: Cascade)
+  orderItemId  Int?
+  orderItem    SalesOrderItem? @relation(fields: [orderItemId], references: [id])
+  description  String
+  hsnCode      String?
+  taxableValue Decimal         @db.Decimal(14, 2)
+  gstRate      Decimal         @default(0) @db.Decimal(6, 3)
+  cessRate     Decimal         @default(0) @db.Decimal(6, 3)
+  cgstAmount   Decimal         @default(0) @db.Decimal(14, 2)
+  sgstAmount   Decimal         @default(0) @db.Decimal(14, 2)
+  igstAmount   Decimal         @default(0) @db.Decimal(14, 2)
+  cessAmount   Decimal         @default(0) @db.Decimal(14, 2)
+  total        Decimal         @db.Decimal(14, 2)
+}
