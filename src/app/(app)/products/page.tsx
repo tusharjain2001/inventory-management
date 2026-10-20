@@ -55,7 +55,7 @@ function ProductList() {
       cell: (p) =>
         p.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.imageUrl} alt="" className="size-9 rounded object-cover" />
+          <img src={p.imageUrl} alt="" className="size-9 max-w-none rounded object-cover" />
         ) : (
           <div className="flex size-9 items-center justify-center rounded bg-muted">
             <ImageOff className="size-4 text-muted-foreground" />

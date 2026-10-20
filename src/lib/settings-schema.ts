@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { formatDocNumber } from "@/lib/doc-number";
+
+const GST_SERIES = ["invoice", "creditNote", "display"] as const;
 
 // Settings are stored as one JSON row per group in the Setting table.
 // This file is client-safe: shared by the settings pages and the server.
@@ -52,17 +55,31 @@ export const settingsSchemas = {
     showBankDetails: z.boolean(),
     template: z.enum(["TALLY_CLASSIC"]),
   }),
-  numbering: z.object({
-    invoice: numberingDoc,
-    order: numberingDoc,
-    creditNote: numberingDoc,
-    payment: numberingDoc,
-    stockIn: numberingDoc,
-    adjustment: numberingDoc,
-    loss: numberingDoc,
-    display: numberingDoc,
-    customer: numberingDoc,
-  }),
+  numbering: z
+    .object({
+      invoice: numberingDoc,
+      order: numberingDoc,
+      creditNote: numberingDoc,
+      payment: numberingDoc,
+      stockIn: numberingDoc,
+      adjustment: numberingDoc,
+      loss: numberingDoc,
+      display: numberingDoc,
+      customer: numberingDoc,
+    })
+    .superRefine((n, ctx) => {
+      // GST rules 46 and 55: invoice, credit note and delivery challan numbers may not exceed 16 characters.
+      for (const key of GST_SERIES) {
+        const sample = formatDocNumber(n[key], n[key].startNumber, new Date());
+        if (sample.length > 16) {
+          ctx.addIssue({
+            code: "custom",
+            path: [key, "format"],
+            message: `${sample} is ${sample.length} characters; GST allows at most 16. Use {FYS} instead of {FY} or a shorter prefix.`,
+          });
+        }
+      }
+    }),
   general: z.object({
     currency: z.string().trim().min(1),
     dateFormat: z.enum(["DD-MM-YYYY", "DD/MM/YYYY", "DD-MMM-YYYY", "YYYY-MM-DD"]),
@@ -87,7 +104,8 @@ export type SettingsGroup = keyof typeof settingsSchemas;
 export type Settings = { [K in SettingsGroup]: z.infer<(typeof settingsSchemas)[K]> };
 export const SETTINGS_GROUPS = Object.keys(settingsSchemas) as SettingsGroup[];
 
-const doc = (prefix: string, format = "{PREFIX}/{FY}/{SEQ}", padding = 5): NumberingDoc => ({
+// {FYS} keeps numbers within GST's 16-character limit: INV/26-27/00001.
+const doc = (prefix: string, format = "{PREFIX}/{FYS}/{SEQ}", padding = 5): NumberingDoc => ({
   prefix,
   format,
   padding,

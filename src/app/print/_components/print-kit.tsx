@@ -32,6 +32,7 @@ td.p0 { padding: 0 !important; height: 1px; }
 .u { text-decoration: underline; }
 .small { font-size: 7.5pt; }
 .name { font-weight: bold; font-size: 9pt; }
+.seller-logo { float: right; max-height: 17mm; max-width: 30mm; margin: 0 0 2px 6px; object-fit: contain; }
 .items > thead > tr > th { font-weight: normal; text-align: center; vertical-align: middle; font-size: 8pt; }
 .items > tbody > tr > td { border-top: none !important; border-bottom: none !important; padding-top: 2px; padding-bottom: 2px; }
 .items > tbody > tr.first > td { padding-top: 4px; }
@@ -48,6 +49,8 @@ td.p0 { padding: 0 !important; height: 1px; }
 .footer-note { text-align: center; font-size: 7.5pt; margin-top: 4px; }
 .watermark { position: absolute; top: 40%; left: 0; right: 0; text-align: center; font-size: 72pt; font-weight: bold; color: rgba(220, 38, 38, .14); transform: rotate(-24deg); pointer-events: none; letter-spacing: 8px; }
 .pre { white-space: pre-line; }
+.print-toolbar select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; }
+@media print { .sheet + .sheet { break-before: page; } }
 `;
 
 export function PrintStyles() {
@@ -55,15 +58,31 @@ export function PrintStyles() {
 }
 
 /** Visible on screen only. Prints automatically once the document has loaded (add ?noprint=1 to skip). */
-export function PrintToolbar({ title, ready }: { title: string; ready: boolean }) {
+export function PrintToolbar({ title, ready, children }: { title: string; ready: boolean; children?: React.ReactNode }) {
   const printed = useRef(false);
   useEffect(() => {
     if (!ready) return;
     document.title = title;
     if (printed.current || window.location.search.includes("noprint")) return;
     printed.current = true;
-    const t = setTimeout(() => window.print(), 400);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    // Wait for the logo (and any other images) so they are not missing from the printout.
+    const pending = Array.from(document.images).filter((img) => !img.complete);
+    const loaded = Promise.all(
+      pending.map(
+        (img) =>
+          new Promise<void>((done) => {
+            img.addEventListener("load", () => done(), { once: true });
+            img.addEventListener("error", () => done(), { once: true });
+          }),
+      ),
+    );
+    const maxWait = new Promise<void>((done) => setTimeout(done, 5000));
+    const t = setTimeout(() => Promise.race([loaded, maxWait]).then(() => !cancelled && window.print()), 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [ready, title]);
   return (
     <div className="print-toolbar no-print">
@@ -73,6 +92,7 @@ export function PrintToolbar({ title, ready }: { title: string; ready: boolean }
       <button type="button" onClick={() => window.close()}>
         Close
       </button>
+      {children}
       <span className="hint">Choose &quot;Save as PDF&quot; as the printer to download. A4, margins default.</span>
     </div>
   );
@@ -86,6 +106,10 @@ export function SellerBlock({ c }: { c: CompanySnapshot }) {
   const lines = [c.addressLine1, c.addressLine2, [c.city, c.state, c.pincode].filter(Boolean).join(", ")].filter((l) => l && l.trim());
   return (
     <>
+      {c.logoUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={c.logoUrl} alt="" className="seller-logo" />
+      )}
       <div className="name">{c.name}</div>
       {lines.map((l, i) => (
         <div key={i}>{l!.toUpperCase()}</div>

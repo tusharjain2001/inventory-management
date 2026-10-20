@@ -124,9 +124,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 function Brand() {
   return (
     <Link href="/" className="flex h-14 items-center gap-2 border-b px-5">
-      <div className="flex size-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
-        SR
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/logo-mark.png" alt="" className="h-9 w-auto shrink-0" />
       <div className="leading-tight">
         <div className="text-sm font-semibold">Studio Rubina</div>
         <div className="text-[11px] text-muted-foreground">Inventory &amp; Sales</div>

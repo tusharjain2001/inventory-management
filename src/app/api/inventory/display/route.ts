@@ -108,7 +108,13 @@ export const POST = handler({ permission: "inventory.display" }, async ({ req, u
         expectedReturnDate: input.expectedReturnDate ? dateFromInput(input.expectedReturnDate) : null,
         remarks: input.remarks,
         createdById: user.id,
-        items: { create: input.items.map((i) => ({ productId: i.productId, quantity: i.quantity })) },
+        items: {
+          create: input.items.map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            unitPrice: byId.get(i.productId)!.sellingPrice,
+          })),
+        },
       },
     });
 
