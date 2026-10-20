@@ -3,7 +3,7 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ShoppingCart, Undo2 } from "lucide-react";
+import { Printer, ShoppingCart, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,6 +82,9 @@ function DisplayView({ id }: { id: number }) {
         }
         back={{ href: "/inventory/display", label: "Potential Sales" }}
       >
+        <Button variant="outline" onClick={() => window.open(`/print/display/${d.id}`, "_blank", "noopener")}>
+          <Printer /> Print challan
+        </Button>
         {outstanding > 0 && (
           <>
             <Can permission="sales.create">
