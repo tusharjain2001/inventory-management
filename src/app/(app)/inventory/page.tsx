@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { MapPin, PackageMinus, PackagePlus, SlidersHorizontal } from "lucide-react";
+import { Clock, MapPin, PackageMinus, PackagePlus, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/page-header";
 import { DataTable, type Column } from "@/components/common/data-table";
@@ -151,6 +151,18 @@ function StockOverview() {
           </Button>
         </Can>
       </PageHeader>
+
+      {can("inventory.approve") && !!s?.pendingAdjustments && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <Clock className="size-4 shrink-0" />
+          <span className="flex-1">
+            {s.pendingAdjustments} stock adjustment{s.pendingAdjustments === 1 ? " is" : "s are"} waiting for your approval.
+          </span>
+          <Button size="sm" variant="outline" asChild>
+            <Link href="/inventory/adjustments">Review</Link>
+          </Button>
+        </div>
+      )}
 
       <div className="mb-3 grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Units in showroom" loading={summaryLoading} value={formatQty(s?.unitsInShowroom)} sub={`${s?.activeSkus ?? 0} active products`} />

@@ -13,6 +13,7 @@ export type InventorySummary = {
   outOfStock: number;
   negativeStock: number;
   openDisplays: number;
+  pendingAdjustments: number;
 };
 
 export type StockInRow = {
@@ -64,7 +65,11 @@ export type AdjustmentRow = {
   newStock: number;
   reason: string;
   remarks: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  /** Approver, or the person who rejected it. */
   approvedBy: Ref | null;
+  approvedAt: string | null;
+  rejectionReason: string | null;
   createdBy: Ref | null;
   createdAt: string;
 };

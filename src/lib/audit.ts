@@ -14,7 +14,9 @@ export type AuditAction =
   | "PASSWORD"
   | "IMPORT"
   | "SETTINGS"
-  | "RETURN";
+  | "RETURN"
+  | "APPROVE"
+  | "REJECT";
 
 /** Writes an audit trail entry. Pass the transaction client so the log commits with the change. */
 export async function audit(

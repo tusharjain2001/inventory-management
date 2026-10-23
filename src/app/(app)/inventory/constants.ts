@@ -34,6 +34,7 @@ export const STOCK_IN_SOURCES = ["PURCHASE", "SUPPLIER_RECEIPT", "OPENING", "MAN
 export type StockInSourceName = (typeof STOCK_IN_SOURCES)[number];
 
 export const ADJUSTMENT_TYPES = ["INCREASE", "DECREASE"] as const;
+export const ADJUSTMENT_STATUSES = ["PENDING", "APPROVED", "REJECTED"] as const;
 export const ADJUSTMENT_REASONS = [
   "Physical stock correction",
   "Data entry error",

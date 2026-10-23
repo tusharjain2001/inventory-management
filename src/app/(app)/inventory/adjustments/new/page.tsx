@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { Field, FormGrid, FormSection } from "@/components/common/form-field";
 import { SimpleSelect } from "@/components/common/simple-select";
 import { RequirePermission } from "@/components/common/misc";
+import { useSession } from "@/components/session-provider";
 import { useMeta } from "@/hooks/use-meta";
 import { ApiError, api, errorMessage } from "@/lib/api-client";
 import { todayIST } from "@/lib/dates";
@@ -34,7 +35,9 @@ function AdjustmentForm() {
   const qc = useQueryClient();
   const { data: meta } = useMeta();
   const [product, setProduct] = useState<ProductRow | null>(null);
-  const [form, setForm] = useState({ date: todayIST(), type: "DECREASE", quantity: "", reason: "", remarks: "", approvedById: "" });
+  const { can } = useSession();
+  const canApprove = can("inventory.approve");
+  const [form, setForm] = useState({ date: todayIST(), type: "DECREASE", quantity: "", reason: "", remarks: "" });
   const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
   const [busy, setBusy] = useState(false);
   const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => setForm((f) => ({ ...f, [key]: value }));
@@ -42,7 +45,6 @@ function AdjustmentForm() {
   const qty = Number(form.quantity) || 0;
   const current = product?.currentStock ?? 0;
   const resulting = form.type === "INCREASE" ? current + qty : current - qty;
-  const approvers = (meta?.users ?? []).filter((u) => u.canApprove);
   const willGoNegative = !!product && resulting < 0 && !meta?.inventory.allowNegativeStock;
 
   async function onSubmit(e: React.FormEvent) {
@@ -50,12 +52,15 @@ function AdjustmentForm() {
     setBusy(true);
     setErrors({});
     try {
-      const created = await api.post<{ adjustmentNo: string }>("/api/inventory/adjustments", {
+      const created = await api.post<{ adjustmentNo: string; status: string }>("/api/inventory/adjustments", {
         ...form,
         productId: product?.id ?? null,
-        approvedById: form.approvedById || null,
       });
-      toast.success(`Adjustment ${created.adjustmentNo} saved`);
+      toast.success(
+        created.status === "PENDING"
+          ? `Adjustment ${created.adjustmentNo} sent to a manager for approval`
+          : `Adjustment ${created.adjustmentNo} saved; stock updated`,
+      );
       for (const k of ["adjustments", "products", "product", "inventory-summary", "inventory-ledger"]) qc.invalidateQueries({ queryKey: [k] });
       router.push("/inventory/adjustments");
     } catch (err) {
@@ -96,7 +101,7 @@ function AdjustmentForm() {
           <Field label="Quantity" required error={errors.quantity}>
             <Input type="number" inputMode="decimal" step="1" min="0" value={form.quantity} onChange={(e) => set("quantity", e.target.value)} required />
           </Field>
-          <Field label="Stock" hint={product?.onDisplayStock ? `${formatQty(product.onDisplayStock)} more out on display (not affected)` : undefined}>
+          <Field label={canApprove ? "Stock" : "Stock after approval"} hint={product?.onDisplayStock ? `${formatQty(product.onDisplayStock)} more out on display (not affected)` : undefined}>
             <div className="flex h-9 items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm tabular-nums">
               {product ? (
                 <>
@@ -118,20 +123,16 @@ function AdjustmentForm() {
               invalid={!!errors.reason}
             />
           </Field>
-          <Field label="Approved by" error={errors.approvedById}>
-            <SimpleSelect
-              value={form.approvedById}
-              onChange={(v) => set("approvedById", v)}
-              options={approvers.map((u) => ({ value: String(u.id), label: `${u.name} (${u.roleName})` }))}
-              clearLabel="Not approved"
-              placeholder="Not approved"
-            />
-          </Field>
           <Field label="Remarks" required={form.reason === "Other"} error={errors.remarks} className="sm:col-span-2 lg:col-span-3">
             <Textarea rows={2} value={form.remarks} onChange={(e) => set("remarks", e.target.value)} maxLength={1000} />
           </Field>
         </FormGrid>
         {willGoNegative && <p className="mt-3 text-sm text-red-700">Stock cannot go below zero. Reduce the quantity.</p>}
+        <p className="mt-3 text-sm text-muted-foreground">
+          {canApprove
+            ? "Stock changes as soon as you save. You are recorded as the approver."
+            : "This goes to a manager for approval. Stock changes only after it is approved."}
+        </p>
       </FormSection>
 
       <div className="flex justify-end gap-2">
@@ -139,7 +140,7 @@ function AdjustmentForm() {
           Cancel
         </Button>
         <Button type="submit" disabled={busy || willGoNegative}>
-          {busy ? "Saving…" : "Save adjustment"}
+          {busy ? "Saving…" : canApprove ? "Save adjustment" : "Send for approval"}
         </Button>
       </div>
     </form>

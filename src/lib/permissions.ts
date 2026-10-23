@@ -28,10 +28,10 @@ export const PERMISSION_GROUPS = [
     items: [
       { key: "inventory.view", label: "View stock and stock movements" },
       { key: "inventory.stockIn", label: "Record stock-in / purchases" },
-      { key: "inventory.adjust", label: "Adjust stock" },
+      { key: "inventory.adjust", label: "Adjust stock (needs a manager's approval unless they can approve)" },
       { key: "inventory.damageLoss", label: "Record damaged / lost stock" },
       { key: "inventory.display", label: "Send / return stock for display (Potential Sales)" },
-      { key: "inventory.approve", label: "Can be selected as approver" },
+      { key: "inventory.approve", label: "Approve stock adjustments; can be named as approver" },
       { key: "purchases.view", label: "View purchases" },
     ],
   },
@@ -139,7 +139,7 @@ export const DEFAULT_ROLES: {
     permissions: [
       "dashboard.view",
       "products.view",
-      "inventory.view",
+      "inventory.view", "inventory.adjust",
       "sales.view", "sales.create", "sales.edit",
       "invoices.view",
       "customers.view", "customers.create", "customers.edit",

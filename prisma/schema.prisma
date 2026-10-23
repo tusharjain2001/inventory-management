@@ -46,6 +46,12 @@ enum StockInSource {
   MANUAL
 }
 
+enum AdjustmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum AdjustmentType {
   INCREASE
   DECREASE
@@ -148,26 +154,26 @@ model User {
   loginActivities LoginActivity[]
   auditLogs       AuditLog[]
 
-  createdCategories    Category[]           @relation("CategoryCreatedBy")
-  createdProducts      Product[]            @relation("ProductCreatedBy")
-  inventoryTxns        InventoryTransaction[] @relation("TxnCreatedBy")
-  stockIns             StockIn[]            @relation("StockInCreatedBy")
-  adjustmentsCreated   StockAdjustment[]    @relation("AdjCreatedBy")
-  adjustmentsApproved  StockAdjustment[]    @relation("AdjApprovedBy")
-  lossesCreated        StockLoss[]          @relation("LossCreatedBy")
-  lossesApproved       StockLoss[]          @relation("LossApprovedBy")
-  displaysCreated      DisplayIssue[]       @relation("DisplayCreatedBy")
-  customersCreated     Customer[]           @relation("CustomerCreatedBy")
-  ordersAsSalesperson  SalesOrder[]         @relation("OrderSalesperson")
-  ordersCreated        SalesOrder[]         @relation("OrderCreatedBy")
-  ordersConfirmed      SalesOrder[]         @relation("OrderConfirmedBy")
-  ordersCancelled      SalesOrder[]         @relation("OrderCancelledBy")
-  orderItemOverrides   SalesOrderItem[]     @relation("ItemOverrideBy")
-  invoicesCreated      Invoice[]            @relation("InvoiceCreatedBy")
-  invoicesCancelled    Invoice[]            @relation("InvoiceCancelledBy")
-  paymentsReceived     Payment[]            @relation("PaymentReceivedBy")
-  paymentsCreated      Payment[]            @relation("PaymentCreatedBy")
-  creditNotesCreated   CreditNote[]         @relation("CreditNoteCreatedBy")
+  createdCategories   Category[]             @relation("CategoryCreatedBy")
+  createdProducts     Product[]              @relation("ProductCreatedBy")
+  inventoryTxns       InventoryTransaction[] @relation("TxnCreatedBy")
+  stockIns            StockIn[]              @relation("StockInCreatedBy")
+  adjustmentsCreated  StockAdjustment[]      @relation("AdjCreatedBy")
+  adjustmentsApproved StockAdjustment[]      @relation("AdjApprovedBy")
+  lossesCreated       StockLoss[]            @relation("LossCreatedBy")
+  lossesApproved      StockLoss[]            @relation("LossApprovedBy")
+  displaysCreated     DisplayIssue[]         @relation("DisplayCreatedBy")
+  customersCreated    Customer[]             @relation("CustomerCreatedBy")
+  ordersAsSalesperson SalesOrder[]           @relation("OrderSalesperson")
+  ordersCreated       SalesOrder[]           @relation("OrderCreatedBy")
+  ordersConfirmed     SalesOrder[]           @relation("OrderConfirmedBy")
+  ordersCancelled     SalesOrder[]           @relation("OrderCancelledBy")
+  orderItemOverrides  SalesOrderItem[]       @relation("ItemOverrideBy")
+  invoicesCreated     Invoice[]              @relation("InvoiceCreatedBy")
+  invoicesCancelled   Invoice[]              @relation("InvoiceCancelledBy")
+  paymentsReceived    Payment[]              @relation("PaymentReceivedBy")
+  paymentsCreated     Payment[]              @relation("PaymentCreatedBy")
+  creditNotesCreated  CreditNote[]           @relation("CreditNoteCreatedBy")
 }
 
 model Session {
@@ -342,13 +348,13 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  images         ProductImage[]
-  transactions   InventoryTransaction[]
-  stockInItems   StockInItem[]
-  adjustments    StockAdjustment[]
-  losses         StockLoss[]
-  displayItems   DisplayIssueItem[]
-  orderItems     SalesOrderItem[]
+  images       ProductImage[]
+  transactions InventoryTransaction[]
+  stockInItems StockInItem[]
+  adjustments  StockAdjustment[]
+  losses       StockLoss[]
+  displayItems DisplayIssueItem[]
+  orderItems   SalesOrderItem[]
 
   @@index([categoryId])
   @@index([name])
@@ -436,24 +442,30 @@ model StockInItem {
 }
 
 model StockAdjustment {
-  id            Int            @id @default(autoincrement())
-  adjustmentNo  String         @unique
-  date          DateTime
-  productId     Int
-  product       Product        @relation(fields: [productId], references: [id])
-  type          AdjustmentType
-  existingStock Decimal        @db.Decimal(14, 3)
-  quantity      Decimal        @db.Decimal(14, 3)
-  newStock      Decimal        @db.Decimal(14, 3)
-  reason        String
-  remarks       String?
-  approvedById  Int?
-  approvedBy    User?          @relation("AdjApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
-  createdById   Int?
-  createdBy     User?          @relation("AdjCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt     DateTime       @default(now())
+  id              Int              @id @default(autoincrement())
+  adjustmentNo    String           @unique
+  date            DateTime
+  productId       Int
+  product         Product          @relation(fields: [productId], references: [id])
+  type            AdjustmentType
+  existingStock   Decimal          @db.Decimal(14, 3)
+  quantity        Decimal          @db.Decimal(14, 3)
+  newStock        Decimal          @db.Decimal(14, 3)
+  reason          String
+  remarks         String?
+  /// PENDING until a user with inventory.approve accepts it; stock only moves on APPROVED.
+  status          AdjustmentStatus @default(APPROVED)
+  /// Who approved or rejected it, and when.
+  approvedById    Int?
+  approvedBy      User?            @relation("AdjApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt      DateTime?
+  rejectionReason String?
+  createdById     Int?
+  createdBy       User?            @relation("AdjCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt       DateTime         @default(now())
 
   @@index([date])
+  @@index([status])
 }
 
 model StockLoss {
@@ -559,24 +571,24 @@ model Customer {
 // ───────────────────────── Sales ─────────────────────────
 
 model SalesOrder {
-  id                   Int           @id @default(autoincrement())
-  orderNo              String        @unique
-  orderDate            DateTime
-  status               OrderStatus   @default(DRAFT)
-  customerId           Int
-  customer             Customer      @relation(fields: [customerId], references: [id])
-  customerName         String
-  customerPhone        String?
-  customerGstin        String?
-  billingAddress       String?
-  shippingAddress      String?
-  placeOfSupply        String
-  placeOfSupplyCode    String
-  isInterState         Boolean       @default(false)
-  salespersonId        Int?
-  salesperson          User?         @relation("OrderSalesperson", fields: [salespersonId], references: [id], onDelete: SetNull)
-  paymentTermsDays     Int           @default(0)
-  notes                String?
+  id                Int         @id @default(autoincrement())
+  orderNo           String      @unique
+  orderDate         DateTime
+  status            OrderStatus @default(DRAFT)
+  customerId        Int
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  customerName      String
+  customerPhone     String?
+  customerGstin     String?
+  billingAddress    String?
+  shippingAddress   String?
+  placeOfSupply     String
+  placeOfSupplyCode String
+  isInterState      Boolean     @default(false)
+  salespersonId     Int?
+  salesperson       User?       @relation("OrderSalesperson", fields: [salespersonId], references: [id], onDelete: SetNull)
+  paymentTermsDays  Int         @default(0)
+  notes             String?
 
   subtotal              Decimal       @default(0) @db.Decimal(14, 2)
   itemDiscountTotal     Decimal       @default(0) @db.Decimal(14, 2)

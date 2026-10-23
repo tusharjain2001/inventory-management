@@ -37,6 +37,10 @@ const TONES: Record<string, string> = {
   LOST: "bg-red-50 text-red-700 border-red-200",
   PURCHASE: "bg-sky-50 text-sky-700 border-sky-200",
   SUPPLIER_RECEIPT: "bg-teal-50 text-teal-700 border-teal-200",
+  // approvals
+  PENDING: "bg-amber-50 text-amber-800 border-amber-200",
+  APPROVED: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  REJECTED: "bg-red-50 text-red-700 border-red-200",
 };
 
 /** Coloured pill for any status enum value (payment, order, stock, display…). */

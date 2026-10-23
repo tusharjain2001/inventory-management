@@ -16,7 +16,7 @@ type Row = {
 /** KPI figures for the stock overview. Active, non-deleted products only. */
 export const GET = handler({ permission: "inventory.view" }, async ({ user }) => {
   // Raw SQL because Prisma cannot compare two columns inside an aggregate (stock vs reorder level).
-  const [[row], openDisplays] = await Promise.all([
+  const [[row], openDisplays, pendingAdjustments] = await Promise.all([
     db.$queryRaw<Row[]>`
       SELECT
         COALESCE(SUM("currentStock"), 0)                                          AS showroom,
@@ -30,6 +30,7 @@ export const GET = handler({ permission: "inventory.view" }, async ({ user }) =>
       FROM "Product"
       WHERE "deletedAt" IS NULL AND "isActive" = true`,
     db.displayIssue.count({ where: { status: { in: ["OUT", "PARTIAL"] } } }),
+    db.stockAdjustment.count({ where: { status: "PENDING" } }),
   ]);
   const n = (v: unknown) => Number(v ?? 0);
   return {
@@ -42,5 +43,6 @@ export const GET = handler({ permission: "inventory.view" }, async ({ user }) =>
     outOfStock: n(row.out_of_stock),
     negativeStock: n(row.negative),
     openDisplays,
+    pendingAdjustments,
   };
 });
