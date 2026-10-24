@@ -81,7 +81,7 @@ export default function DashboardPage() {
 }
 
 /** Bordered block with a title and optional link, used for each dashboard table. */
-function Panel({ title, href, linkText = "View report", children, className }: { title: string; href?: string; linkText?: string; children: React.ReactNode; className?: string }) {
+function Panel({ title, href, linkText = "View Report", children, className }: { title: string; href?: string; linkText?: string; children: React.ReactNode; className?: string }) {
   return (
     <section className={cn("min-w-0 rounded-lg border bg-card", className)}>
       <div className="flex items-center justify-between gap-2 border-b px-4 py-2.5">
@@ -165,7 +165,7 @@ function DashboardView() {
   ];
 
   const trendColumns: Column<Bucket>[] = [
-    { key: "label", header: trendTab === "daily" ? "Day" : trendTab === "weekly" ? "Week" : trendTab === "monthly" ? "Month" : "Financial year", className: "whitespace-nowrap" },
+    { key: "label", header: trendTab === "daily" ? "Day" : trendTab === "weekly" ? "Week" : trendTab === "monthly" ? "Month" : "Financial Year", className: "whitespace-nowrap" },
     { key: "invoices", header: "Invoices", align: "right", className: "tabular-nums" },
     { key: "units", header: "Units", align: "right", className: "tabular-nums", cell: (r) => formatQty(r.units) },
     {
@@ -187,8 +187,8 @@ function DashboardView() {
   const stockRows: StockRow[] = st
     ? [
         { key: "normal", status: "IN_STOCK", text: "Normal", count: st.normal, href: link("reports.stock", "/reports/stock") },
-        { key: "low", status: "LOW_STOCK", text: "Low stock", count: st.low, href: link("reports.stock", "/reports/low-stock", { level: "low" }) },
-        { key: "out", status: "OUT_OF_STOCK", text: "Out of stock", count: st.out, href: link("reports.stock", "/reports/low-stock", { level: "out" }) },
+        { key: "low", status: "LOW_STOCK", text: "Low Stock", count: st.low, href: link("reports.stock", "/reports/low-stock", { level: "low" }) },
+        { key: "out", status: "OUT_OF_STOCK", text: "Out of Stock", count: st.out, href: link("reports.stock", "/reports/low-stock", { level: "out" }) },
         { key: "dead", status: "DEAD", text: `Dead stock (${data!.deadStockDays}+ days)`, count: st.dead, href: link("reports.valuation", "/reports/dead-stock") },
       ]
     : [];
@@ -239,21 +239,21 @@ function DashboardView() {
       {/* Sales KPIs */}
       <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
-          label="Today's sales"
+          label="Today's Sales"
           value={formatINR(data?.today.amount)}
           sub={`${data?.today.invoices ?? 0} invoices · ${formatQty(data?.today.units)} units`}
           loading={loading}
           onClick={go(link("reports.sales", "/reports/sales", { from: today, to: today }))}
         />
         <StatCard
-          label="This month"
+          label="This Month"
           value={formatINR(data?.month.amount)}
           sub={`${data?.month.invoices ?? 0} invoices · ${formatQty(data?.month.units)} units`}
           loading={loading}
           onClick={go(link("reports.sales", "/reports/sales", { from: thisMonth().from, to: today }))}
         />
         <StatCard
-          label="Selected period"
+          label="Selected Period"
           value={formatINR(s?.amount)}
           sub={
             <>
@@ -264,13 +264,13 @@ function DashboardView() {
           loading={loading}
           onClick={go(link("reports.sales", "/reports/sales"))}
         />
-        <StatCard label="Average invoice value" value={formatINR(s?.avgInvoice)} sub="Selected period" loading={loading} />
+        <StatCard label="Average Invoice Value" value={formatINR(s?.avgInvoice)} sub="Selected period" loading={loading} />
       </div>
 
       {/* Stock & money KPIs */}
       <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
-          label="Total stock"
+          label="Total Stock"
           value={`${formatQty(st?.units)} units`}
           sub={`${st?.skus ?? 0} active SKUs · ${formatQty(st?.displayUnits)} on display`}
           loading={loading}
@@ -278,7 +278,7 @@ function DashboardView() {
         />
         {data?.financials ? (
           <StatCard
-            label="Stock value (at cost)"
+            label="Stock Value (at Cost)"
             value={formatINR(st?.value)}
             sub="Showroom + display × avg cost"
             loading={loading}
@@ -286,7 +286,7 @@ function DashboardView() {
           />
         ) : (
           <StatCard
-            label="Out of stock"
+            label="Out of Stock"
             value={st?.out ?? 0}
             sub="Products with no showroom stock"
             loading={loading}
@@ -294,7 +294,7 @@ function DashboardView() {
           />
         )}
         <StatCard
-          label="Low stock items"
+          label="Low Stock Items"
           value={st?.low ?? 0}
           sub={`${st?.out ?? 0} out of stock`}
           loading={loading}
@@ -303,7 +303,7 @@ function DashboardView() {
         />
         {data?.financials ? (
           <StatCard
-            label="Gross profit (selected period)"
+            label="Gross Profit (Selected Period)"
             value={formatINR(s?.grossProfit)}
             sub={`Margin ${(s?.marginPct ?? 0).toFixed(1)}% on net revenue ${formatINR(s?.netRevenue)}`}
             loading={loading}
@@ -311,7 +311,7 @@ function DashboardView() {
           />
         ) : (
           <StatCard
-            label="Outstanding (all dates)"
+            label="Outstanding (All Dates)"
             value={formatINR(data?.outstanding.balance)}
             sub={`${data?.outstanding.overdueInvoices ?? 0} overdue · ${formatINR(data?.outstanding.overdueBalance)}`}
             loading={loading}
@@ -322,7 +322,7 @@ function DashboardView() {
       {data?.financials && (
         <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard
-            label="Outstanding (all dates)"
+            label="Outstanding (All Dates)"
             value={formatINR(data.outstanding.balance)}
             sub={`${data.outstanding.invoices} invoices`}
             onClick={go(link("reports.payment", "/reports/payments", { tab: "outstanding" }))}
@@ -345,7 +345,7 @@ function DashboardView() {
       </HelpText>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Panel title="Top-selling products" href={link("reports.sales", "/reports/sales", { groupBy: "product" }) ?? undefined}>
+        <Panel title="Top-Selling Products" href={link("reports.sales", "/reports/sales", { groupBy: "product" }) ?? undefined}>
           <div className="mb-2 flex items-center justify-between gap-2 px-1">
             <span className="text-xs text-muted-foreground">By units sold, selected period</span>
             <SimpleSelect
@@ -371,7 +371,7 @@ function DashboardView() {
           />
         </Panel>
 
-        <Panel title="Sales trend" href={link("reports.sales", "/reports/sales", { groupBy: "day" }) ?? undefined}>
+        <Panel title="Sales Trend" href={link("reports.sales", "/reports/sales", { groupBy: "day" }) ?? undefined}>
           <div className="mb-2 overflow-x-auto px-1">
             <Toggle
               value={trendTab}
@@ -399,7 +399,7 @@ function DashboardView() {
           />
         </Panel>
 
-        <Panel title="Sales by category" href={link("reports.sales", "/reports/sales", { groupBy: "product" }) ?? undefined}>
+        <Panel title="Sales by Category" href={link("reports.sales", "/reports/sales", { groupBy: "product" }) ?? undefined}>
           <DataTable
             columns={categoryColumns}
             rows={data?.categories}
@@ -417,7 +417,7 @@ function DashboardView() {
         </Panel>
 
         <div className="grid min-w-0 grid-cols-1 gap-4">
-          <Panel title="Stock status" href={link("reports.stock", "/reports/low-stock") ?? undefined} linkText="Low stock report">
+          <Panel title="Stock Status" href={link("reports.stock", "/reports/low-stock") ?? undefined} linkText="Low Stock Report">
             <DataTable
               columns={stockColumns}
               rows={data ? stockRows : undefined}
@@ -429,7 +429,7 @@ function DashboardView() {
             />
           </Panel>
 
-          <Panel title="Payment status" href={link("reports.payment", "/reports/payments", { tab: "outstanding" }) ?? undefined} linkText="Outstanding">
+          <Panel title="Payment Status" href={link("reports.payment", "/reports/payments", { tab: "outstanding" }) ?? undefined} linkText="Outstanding">
             <p className="px-1 pb-1 text-xs text-muted-foreground">Invoices dated in the selected period. Pending = unpaid, not yet due.</p>
             <DataTable
               columns={payColumns}

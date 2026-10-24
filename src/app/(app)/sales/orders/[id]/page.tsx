@@ -58,7 +58,7 @@ function OrderView({ id }: { id: number }) {
     const ok = await confirm({
       title: `Confirm ${o.orderNo}?`,
       description: "The items will be taken out of stock. The order can then be invoiced.",
-      confirmText: "Confirm order",
+      confirmText: "Confirm Order",
     });
     if (!ok) return;
     setBusy(true);
@@ -78,7 +78,7 @@ function OrderView({ id }: { id: number }) {
     const reason = await confirm({
       title: `Cancel ${o.orderNo}${o.invoice ? ` and invoice ${o.invoice.invoiceNo}` : ""}?`,
       description: o.status === "DRAFT" ? "The draft will be marked cancelled." : "Items go back into showroom stock. This cannot be undone.",
-      confirmText: "Cancel order",
+      confirmText: "Cancel Order",
       destructive: true,
       reason: { label: "Reason", placeholder: "Why is this being cancelled?" },
     });
@@ -125,7 +125,7 @@ function OrderView({ id }: { id: number }) {
             <span>{o.customerName}</span>
           </span>
         }
-        back={{ href: "/sales/orders", label: "Sales orders" }}
+        back={{ href: "/sales/orders", label: "Sales Orders" }}
       >
         {o.invoice && (
           <Button asChild variant="outline">
@@ -146,7 +146,7 @@ function OrderView({ id }: { id: number }) {
         )}
         {canInvoice && (
           <Button onClick={() => setInvoiceOpen(true)} disabled={busy}>
-            <FileText /> Generate invoice
+            <FileText /> Generate Invoice
           </Button>
         )}
         {o.status !== "CANCELLED" && can("sales.cancel") && (
@@ -172,13 +172,13 @@ function OrderView({ id }: { id: number }) {
                 { label: "Customer", value: <Link href={`/customers/${o.customerId}`} className="hover:underline">{o.customerName}</Link> },
                 { label: "Mobile", value: o.customerPhone },
                 { label: "GSTIN", value: o.customerGstin },
-                { label: "Billing address", value: o.billingAddress },
-                { label: "Shipping address", value: o.shippingAddress },
-                { label: "Place of supply", value: `${o.placeOfSupply} (${o.placeOfSupplyCode}) · ${o.isInterState ? "IGST" : "CGST + SGST"}` },
+                { label: "Billing Address", value: o.billingAddress },
+                { label: "Shipping Address", value: o.shippingAddress },
+                { label: "Place of Supply", value: `${o.placeOfSupply} (${o.placeOfSupplyCode}) · ${o.isInterState ? "IGST" : "CGST + SGST"}` },
                 { label: "Salesperson", value: o.salesperson?.name },
-                { label: "Payment terms", value: o.paymentTermsDays ? `${o.paymentTermsDays} days` : "Due on invoice" },
+                { label: "Payment Terms", value: o.paymentTermsDays ? `${o.paymentTermsDays} days` : "Due on invoice" },
                 {
-                  label: "From display",
+                  label: "From Display",
                   value: o.displayIssue ? <Link href={`/inventory/display/${o.displayIssue.id}`} className="hover:underline">{o.displayIssue.displayNo}</Link> : null,
                 },
                 { label: "Created", value: `${formatDateTime(o.createdAt)}${o.createdBy ? ` by ${o.createdBy.name}` : ""}` },
@@ -200,7 +200,7 @@ function OrderView({ id }: { id: number }) {
         title={`Generate invoice for ${o.orderNo}`}
         description={o.status === "DRAFT" ? "The order will be confirmed (stock out) and invoiced." : "All fields except the date are optional."}
         withDate
-        submitText="Generate invoice"
+        submitText="Generate Invoice"
         onSubmit={async (form) => {
           try {
             const inv = await api.post<{ id: number; invoiceNo: string }>(`/api/sales/orders/${id}/invoice`, {

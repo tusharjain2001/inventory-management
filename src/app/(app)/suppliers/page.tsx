@@ -62,7 +62,7 @@ function SupplierList() {
       cell: (r) => [r.city, r.state].filter(Boolean).join(", ") || "—",
       exportValue: (r) => [r.city, r.state].filter(Boolean).join(", "),
     },
-    { key: "stockIns", header: "Stock-ins", align: "right", cell: (r) => r._count?.stockIns ?? 0, exportValue: (r) => r._count?.stockIns ?? 0 },
+    { key: "stockIns", header: "Stock-Ins", align: "right", cell: (r) => r._count?.stockIns ?? 0, exportValue: (r) => r._count?.stockIns ?? 0 },
   ];
 
   const exportTable = async () => {
@@ -77,7 +77,7 @@ function SupplierList() {
         <Can permission="suppliers.manage">
           <Button asChild>
             <Link href="/suppliers/new">
-              <Plus /> Add supplier
+              <Plus /> Add Supplier
             </Link>
           </Button>
         </Can>

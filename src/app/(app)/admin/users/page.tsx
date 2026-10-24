@@ -109,7 +109,7 @@ function UserList() {
         </div>
       ),
     },
-    { key: "lastLoginAt", header: "Last sign-in", sortable: true, cell: (u) => (u.lastLoginAt ? formatDateTime(u.lastLoginAt) : "Never") },
+    { key: "lastLoginAt", header: "Last Sign-In", sortable: true, cell: (u) => (u.lastLoginAt ? formatDateTime(u.lastLoginAt) : "Never") },
     ...(canManage || canDelete
       ? ([
           {
@@ -137,7 +137,7 @@ function UserList() {
                       </DropdownMenuItem>
                       {u.id !== me.id && (
                         <DropdownMenuItem onSelect={() => setResetFor(u)}>
-                          <KeyRound /> Reset password
+                          <KeyRound /> Reset Password
                         </DropdownMenuItem>
                       )}
                       {(u.isLocked || u.failedLoginCount > 0) && (
@@ -173,7 +173,7 @@ function UserList() {
               setDialogOpen(true);
             }}
           >
-            <Plus /> Add user
+            <Plus /> Add User
           </Button>
         </Can>
       </PageHeader>
@@ -184,8 +184,8 @@ function UserList() {
           className="h-9 w-40"
           value={list.filters.roleId}
           onChange={(v) => list.setFilter("roleId", v)}
-          clearLabel="All roles"
-          placeholder="All roles"
+          clearLabel="All Roles"
+          placeholder="All Roles"
           options={roleOptions.map((r) => ({ value: String(r.id), label: r.name }))}
         />
         <SimpleSelect

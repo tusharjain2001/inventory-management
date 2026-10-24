@@ -232,7 +232,7 @@ function PaymentReport() {
           }}
           options={[
             { value: "payments", label: "Payments" },
-            { value: "modes", label: "By mode" },
+            { value: "modes", label: "By Mode" },
             { value: "outstanding", label: "Outstanding" },
           ]}
         />
@@ -247,19 +247,19 @@ function PaymentReport() {
               className="h-9 w-full sm:w-40"
               value={f.mode}
               onChange={(mode) => setF({ mode })}
-              clearLabel="All modes"
-              placeholder="All modes"
+              clearLabel="All Modes"
+              placeholder="All Modes"
               options={MODES.map((m) => ({ value: m, label: label(m) }))}
             />
             <SimpleSelect
-              className="h-9 w-full sm:w-40"
+              className="h-9 w-full sm:w-44"
               value={f.type}
               onChange={(type) => setF({ type })}
-              clearLabel="Receipts & refunds"
-              placeholder="Receipts & refunds"
+              clearLabel="Receipts & Refunds"
+              placeholder="Receipts & Refunds"
               options={[
-                { value: "RECEIPT", label: "Receipts only" },
-                { value: "REFUND", label: "Refunds only" },
+                { value: "RECEIPT", label: "Receipts Only" },
+                { value: "REFUND", label: "Refunds Only" },
               ]}
             />
           </>
@@ -268,8 +268,8 @@ function PaymentReport() {
             className="h-9 w-full sm:w-40"
             value={f.bucket}
             onChange={(bucket) => setF({ bucket })}
-            clearLabel="All ageing"
-            placeholder="All ageing"
+            clearLabel="All Ageing"
+            placeholder="All Ageing"
             options={(data?.outstanding.ageing ?? []).map((a) => ({ value: a.key, label: a.label }))}
           />
         )}
@@ -278,7 +278,7 @@ function PaymentReport() {
       {tab === "outstanding" ? (
         <>
           <StatGrid>
-            <StatCard label="Total outstanding" value={formatINR(o?.balanceDue)} sub={`${o?.invoices ?? 0} invoices`} loading={!data} />
+            <StatCard label="Total Outstanding" value={formatINR(o?.balanceDue)} sub={`${o?.invoices ?? 0} invoices`} loading={!data} />
             {(data?.outstanding.ageing ?? []).map((a) => (
               <StatCard
                 key={a.key}
@@ -308,7 +308,7 @@ function PaymentReport() {
           <StatGrid>
             <StatCard label="Received" value={formatINR(t?.received)} loading={!data} />
             <StatCard label="Refunded" value={formatINR(t?.refunded)} loading={!data} />
-            <StatCard label="Net collected" value={formatINR(t?.net)} sub={`${t?.payments ?? 0} payments`} loading={!data} />
+            <StatCard label="Net Collected" value={formatINR(t?.net)} sub={`${t?.payments ?? 0} payments`} loading={!data} />
             {(data?.byMode ?? []).slice(0, 2).map((m) => (
               <StatCard key={m.mode} label={label(m.mode)} value={formatINR(m.net)} sub={`${m.count} payments`} />
             ))}

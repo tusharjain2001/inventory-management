@@ -23,12 +23,12 @@ const EFFECTS: Record<StockTxnType, [stock: 1 | 0 | -1, display: 1 | 0 | -1]> = 
 const COSTED_INBOUND: StockTxnType[] = ["OPENING", "STOCK_IN", "SALE_REVERSAL"];
 
 export const STOCK_TXN_LABELS: Record<StockTxnType, string> = {
-  OPENING: "Opening stock",
-  STOCK_IN: "Stock in",
+  OPENING: "Opening Stock",
+  STOCK_IN: "Stock In",
   SALE: "Sale",
-  SALE_REVERSAL: "Sale cancelled",
-  DISPLAY_OUT: "Out for display",
-  DISPLAY_RETURN: "Returned from display",
+  SALE_REVERSAL: "Sale Cancelled",
+  DISPLAY_OUT: "Out for Display",
+  DISPLAY_RETURN: "Returned from Display",
   ADJUSTMENT_IN: "Adjustment (+)",
   ADJUSTMENT_OUT: "Adjustment (−)",
   DAMAGED: "Damaged",

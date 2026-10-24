@@ -63,20 +63,20 @@ function fyRange(offsetYears = 0): DateRange {
 
 export const DATE_PRESETS: { key: string; label: string; range: () => DateRange }[] = [
   { key: "today", label: "Today", range: () => ({ from: todayIST(), to: todayIST() }) },
-  { key: "7d", label: "Last 7 days", range: () => ({ from: istDateString(addDays(new Date(), -6)), to: todayIST() }) },
-  { key: "month", label: "This month", range: () => ({ from: monthStartIST(), to: todayIST() }) },
+  { key: "7d", label: "Last 7 Days", range: () => ({ from: istDateString(addDays(new Date(), -6)), to: todayIST() }) },
+  { key: "month", label: "This Month", range: () => ({ from: monthStartIST(), to: todayIST() }) },
   {
     key: "lastMonth",
-    label: "Last month",
+    label: "Last Month",
     range: () => {
       const firstThis = new Date(`${monthStartIST()}T12:00:00+05:30`);
       const lastPrev = addDays(firstThis, -1);
       return { from: monthStartIST(lastPrev), to: istDateString(lastPrev) };
     },
   },
-  { key: "30d", label: "Last 30 days", range: () => ({ from: istDateString(addDays(new Date(), -29)), to: todayIST() }) },
-  { key: "fy", label: "This financial year", range: () => fyRange(0) },
-  { key: "lastFy", label: "Last financial year", range: () => fyRange(-1) },
+  { key: "30d", label: "Last 30 Days", range: () => ({ from: istDateString(addDays(new Date(), -29)), to: todayIST() }) },
+  { key: "fy", label: "This Financial Year", range: () => fyRange(0) },
+  { key: "lastFy", label: "Last Financial Year", range: () => fyRange(-1) },
 ];
 
 /** From/to date inputs with quick presets. Empty strings mean "no limit". */
@@ -94,7 +94,7 @@ export function DateRangeFilter({
       <SimpleSelect
         className="h-9 w-40"
         value=""
-        placeholder="Date preset"
+        placeholder="Date Preset"
         onChange={(key) => {
           const p = DATE_PRESETS.find((d) => d.key === key);
           if (p) onChange(p.range());
@@ -107,7 +107,7 @@ export function DateRangeFilter({
         value={value.from}
         max={value.to || undefined}
         onChange={(e) => onChange({ ...value, from: e.target.value })}
-        aria-label="From date"
+        aria-label="From Date"
       />
       <span className="text-sm text-muted-foreground">to</span>
       <Input
@@ -116,7 +116,7 @@ export function DateRangeFilter({
         value={value.to}
         min={value.from || undefined}
         onChange={(e) => onChange({ ...value, to: e.target.value })}
-        aria-label="To date"
+        aria-label="To Date"
       />
       {(value.from || value.to) && (
         <Button variant="ghost" size="sm" onClick={() => onChange({ from: "", to: "" })}>
@@ -134,6 +134,6 @@ export function FilterBar({ children, className }: { children: React.ReactNode; 
 
 /** Human-readable date range for export subtitles. */
 export function describeRange(r: DateRange) {
-  if (!r.from && !r.to) return "All dates";
+  if (!r.from && !r.to) return "All Dates";
   return `Period: ${r.from || "start"} to ${r.to || "today"}`;
 }

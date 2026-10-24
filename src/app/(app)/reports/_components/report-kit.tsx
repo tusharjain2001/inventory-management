@@ -229,8 +229,8 @@ export function CategoryFilter({
         className="h-9 w-full sm:w-44"
         value={categoryId}
         onChange={(v) => onChange({ categoryId: v, subCategoryId: "" })}
-        clearLabel="All categories"
-        placeholder="All categories"
+        clearLabel="All Categories"
+        placeholder="All Categories"
         options={(meta?.categories ?? []).map((c) => ({ value: String(c.id), label: c.name }))}
       />
       {showSub && subs.length > 0 && (
@@ -238,8 +238,8 @@ export function CategoryFilter({
           className="h-9 w-full sm:w-44"
           value={subCategoryId ?? ""}
           onChange={(v) => onChange({ categoryId, subCategoryId: v })}
-          clearLabel="All sub-categories"
-          placeholder="All sub-categories"
+          clearLabel="All Sub-Categories"
+          placeholder="All Sub-Categories"
           options={subs.map((s) => ({ value: String(s.id), label: s.name }))}
         />
       )}
@@ -261,7 +261,7 @@ export function CustomerFilter({ id, label, onChange }: { id: string; label: str
       endpoint="/api/customers"
       value={id ? Number(id) : null}
       selectedLabel={label || undefined}
-      placeholder="All customers"
+      placeholder="All Customers"
       searchPlaceholder="Search customers…"
       toOption={(c) => ({ value: c.id, label: c.name, sub: [c.code, c.mobile].filter(Boolean).join(" · "), raw: c })}
       onChange={(o) => onChange(o ? String(o.value) : "", o?.label ?? "")}
@@ -277,7 +277,7 @@ export function ProductFilter({ id, label, onChange }: { id: string; label: stri
       params={{ active: "all" }}
       value={id ? Number(id) : null}
       selectedLabel={label || undefined}
-      placeholder="All products"
+      placeholder="All Products"
       searchPlaceholder="Search name or SKU…"
       toOption={(p) => ({ value: p.id, label: p.name, sub: p.sku, raw: p })}
       onChange={(o) => onChange(o ? String(o.value) : "", o?.label ?? "")}
@@ -295,8 +295,8 @@ export function SalespersonFilter({ value, onChange }: { value: string; onChange
       className="h-9 w-full sm:w-44"
       value={value}
       onChange={onChange}
-      clearLabel="All salespeople"
-      placeholder="All salespeople"
+      clearLabel="All Salespeople"
+      placeholder="All Salespeople"
       options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
     />
   );
@@ -309,8 +309,8 @@ export function SupplierFilter({ value, onChange }: { value: string; onChange: (
       className="h-9 w-full sm:w-44"
       value={value}
       onChange={onChange}
-      clearLabel="All suppliers"
-      placeholder="All suppliers"
+      clearLabel="All Suppliers"
+      placeholder="All Suppliers"
       options={(meta?.suppliers ?? []).map((s) => ({ value: String(s.id), label: s.name }))}
     />
   );

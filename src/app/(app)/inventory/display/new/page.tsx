@@ -37,7 +37,7 @@ const emptyLine = (): Line => ({ key: nextKey++, product: null, quantity: "1" })
 export default function NewDisplayPage() {
   return (
     <RequirePermission permission="inventory.display">
-      <PageHeader title="Send stock for display" back={{ href: "/inventory/display", label: "Potential Sales" }} />
+      <PageHeader title="Send Stock for Display" back={{ href: "/inventory/display", label: "Potential Sales" }} />
       <DisplayForm />
     </RequirePermission>
   );
@@ -124,12 +124,12 @@ function DisplayForm() {
                 selectedLabel={form.customerName}
                 onChange={(o) => pickCustomer(o?.raw ?? null)}
                 toOption={(c) => ({ value: c.id, label: c.name, sub: [c.code, c.mobile, c.city].filter(Boolean).join(" · "), raw: c })}
-                placeholder="Choose customer"
+                placeholder="Choose Customer"
                 searchPlaceholder="Search name, mobile, code…"
               />
             </Field>
           )}
-          <Field label="Location name" required error={errors.locationName} className="sm:col-span-2">
+          <Field label="Location Name" required error={errors.locationName} className="sm:col-span-2">
             <Input
               value={form.locationName}
               onChange={(e) => set("locationName", e.target.value)}
@@ -138,16 +138,16 @@ function DisplayForm() {
               required
             />
           </Field>
-          <Field label="Expected return date" error={errors.expectedReturnDate}>
+          <Field label="Expected Return Date" error={errors.expectedReturnDate}>
             <Input type="date" value={form.expectedReturnDate} min={form.date} onChange={(e) => set("expectedReturnDate", e.target.value)} />
           </Field>
           <Field label="Address" error={errors.address} className="sm:col-span-2 lg:col-span-3">
             <Textarea rows={2} value={form.address} onChange={(e) => set("address", e.target.value)} maxLength={500} />
           </Field>
-          <Field label="Contact person" error={errors.contactPerson}>
+          <Field label="Contact Person" error={errors.contactPerson}>
             <Input value={form.contactPerson} onChange={(e) => set("contactPerson", e.target.value)} maxLength={100} />
           </Field>
-          <Field label="Contact phone" error={errors.contactPhone}>
+          <Field label="Contact Phone" error={errors.contactPhone}>
             <Input type="tel" value={form.contactPhone} onChange={(e) => set("contactPhone", e.target.value)} maxLength={30} />
           </Field>
           <Field label="Remarks" error={errors.remarks}>
@@ -196,7 +196,7 @@ function DisplayForm() {
           })}
         </div>
         <Button type="button" variant="outline" className="mt-3" onClick={() => setLines((ls) => [...ls, emptyLine()])}>
-          <Plus /> Add item
+          <Plus /> Add Item
         </Button>
       </FormSection>
 
@@ -205,7 +205,7 @@ function DisplayForm() {
           Cancel
         </Button>
         <Button type="submit" disabled={busy}>
-          {busy ? "Saving…" : "Send for display"}
+          {busy ? "Saving…" : "Send for Display"}
         </Button>
       </div>
     </form>

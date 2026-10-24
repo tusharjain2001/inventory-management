@@ -116,7 +116,7 @@ export function PaymentDialog({
     }
   }
 
-  const title = payment ? `Edit ${isRefund ? "refund" : "payment"} ${payment.paymentNo}` : isRefund ? "Record refund" : "Record payment";
+  const title = payment ? `Edit ${isRefund ? "refund" : "payment"} ${payment.paymentNo}` : isRefund ? "Record Refund" : "Record Payment";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -140,8 +140,8 @@ export function PaymentDialog({
                     setPicked(null);
                   }}
                   options={[
-                    { value: "RECEIPT", label: "Receipt (money in)" },
-                    { value: "REFUND", label: "Refund (money out)" },
+                    { value: "RECEIPT", label: "Receipt (Money In)" },
+                    { value: "REFUND", label: "Refund (Money Out)" },
                   ]}
                 />
               </Field>
@@ -151,7 +151,7 @@ export function PaymentDialog({
                   params={isRefund ? { status: "ACTIVE" } : { unpaid: true }}
                   value={picked?.id}
                   selectedLabel={picked ? `${picked.invoiceNo} · ${picked.customerName}` : undefined}
-                  placeholder={isRefund ? "Choose invoice" : "Choose unpaid invoice"}
+                  placeholder={isRefund ? "Choose Invoice" : "Choose Unpaid Invoice"}
                   searchPlaceholder="Invoice no. or customer"
                   toOption={(r) => ({
                     value: r.id,
@@ -201,7 +201,7 @@ export function PaymentDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={busy || (!invoice && !payment)} variant={isRefund ? "destructive" : "default"}>
-              {busy ? "Saving…" : payment ? "Save" : isRefund ? "Record refund" : "Record payment"}
+              {busy ? "Saving…" : payment ? "Save" : isRefund ? "Record Refund" : "Record Payment"}
             </Button>
           </DialogFooter>
         </form>

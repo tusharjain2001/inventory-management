@@ -85,14 +85,14 @@ function ProductView({ id }: { id: number }) {
       </PageHeader>
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <StatCard label="In showroom" value={<Qty value={p.currentStock} />} sub={`Reorder at ${formatQty(p.reorderLevel)}`} />
-        <StatCard label="Out on display" value={<Qty value={p.onDisplayStock} />} sub="Potential sales" />
+        <StatCard label="In Showroom" value={<Qty value={p.currentStock} />} sub={`Reorder at ${formatQty(p.reorderLevel)}`} />
+        <StatCard label="Out on Display" value={<Qty value={p.onDisplayStock} />} sub="Potential sales" />
         {can("products.viewCost") && (
-          <StatCard label="Stock value" value={<Money value={p.stockValue} />} sub={<>Avg cost <Money value={p.avgCost} /></>} />
+          <StatCard label="Stock Value" value={<Money value={p.stockValue} />} sub={<>Avg Cost <Money value={p.avgCost} /></>} />
         )}
-        <StatCard label="Sold (last 90 days)" value={<Qty value={p.sales.last90DaysQty} />} sub={<Money value={p.sales.last90DaysValue} />} />
+        <StatCard label="Sold (Last 90 Days)" value={<Qty value={p.sales.last90DaysQty} />} sub={<Money value={p.sales.last90DaysValue} />} />
         <StatCard
-          label="Last sale / purchase"
+          label="Last Sale / Purchase"
           value={<span className="text-base">{p.lastSaleAt ? formatDate(p.lastSaleAt) : "No sales yet"}</span>}
           sub={p.lastPurchaseAt ? `Purchased ${formatDate(p.lastPurchaseAt)}` : "No purchases yet"}
         />
@@ -102,7 +102,7 @@ function ProductView({ id }: { id: number }) {
         <TabsList>
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="photos">Photos ({p.images.length})</TabsTrigger>
-          {can("inventory.view") && <TabsTrigger value="ledger">Stock movements</TabsTrigger>}
+          {can("inventory.view") && <TabsTrigger value="ledger">Stock Movements</TabsTrigger>}
         </TabsList>
         <TabsContent value="details" className="mt-4">
           <ProductForm product={p} />
@@ -175,7 +175,7 @@ function Photos({ product }: { product: ProductDetail }) {
         <div>
           <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" multiple hidden onChange={(e) => upload(e.target.files)} />
           <Button variant="outline" onClick={() => input.current?.click()} disabled={uploading}>
-            <ImagePlus /> {uploading ? "Uploading…" : "Add photos"}
+            <ImagePlus /> {uploading ? "Uploading…" : "Add Photos"}
           </Button>
           <p className="mt-1 text-xs text-muted-foreground">JPG, PNG or WEBP. Large photos are resized automatically.</p>
         </div>
@@ -227,12 +227,12 @@ type LedgerRow = {
 };
 
 const TXN_LABELS: Record<string, string> = {
-  OPENING: "Opening stock",
-  STOCK_IN: "Stock in",
+  OPENING: "Opening Stock",
+  STOCK_IN: "Stock In",
   SALE: "Sale",
-  SALE_REVERSAL: "Sale cancelled",
-  DISPLAY_OUT: "Out for display",
-  DISPLAY_RETURN: "Back from display",
+  SALE_REVERSAL: "Sale Cancelled",
+  DISPLAY_OUT: "Out for Display",
+  DISPLAY_RETURN: "Back from Display",
   ADJUSTMENT_IN: "Adjustment (+)",
   ADJUSTMENT_OUT: "Adjustment (−)",
   DAMAGED: "Damaged",

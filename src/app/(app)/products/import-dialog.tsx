@@ -12,7 +12,7 @@ const COLUMNS: { key: string; label: string; note: string; example: string | num
   { key: "name", label: "Product Name", note: "Required", example: "GTF 2, Round Table" },
   { key: "sku", label: "SKU", note: "Required, unique", example: "GTF-002" },
   { key: "category", label: "Category", note: "Required; created if new", example: "Furniture" },
-  { key: "subCategory", label: "Sub-category", note: "Optional; created if new", example: "Tables" },
+  { key: "subCategory", label: "Sub-Category", note: "Optional; created if new", example: "Tables" },
   { key: "material", label: "Material", note: "", example: "Sheesham wood" },
   { key: "size", label: "Size", note: "", example: "90 cm dia" },
   { key: "weight", label: "Weight", note: "Number", example: 18 },
@@ -141,14 +141,14 @@ export function ImportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
     >
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Import products from Excel</DialogTitle>
+          <DialogTitle>Import Products from Excel</DialogTitle>
           <DialogDescription>
             Download the template, fill one product per row, then upload it. Rows are checked before anything is saved.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 text-sm">
           <Button variant="outline" onClick={downloadTemplate}>
-            <Download /> Download template
+            <Download /> Download Template
           </Button>
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed p-4 hover:bg-muted/40">
             <FileUp className="size-5 text-muted-foreground" />

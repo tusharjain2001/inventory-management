@@ -161,8 +161,8 @@ function MovementReport() {
           className="h-9 w-full sm:w-36"
           value={f.class}
           onChange={(c) => setF({ class: c })}
-          clearLabel="All classes"
-          placeholder="All classes"
+          clearLabel="All Classes"
+          placeholder="All Classes"
           options={["FAST", "NORMAL", "SLOW"].map((c) => ({ value: c, label: CLASS_LABEL[c] }))}
         />
         <CategoryFilter categoryId={f.categoryId} subCategoryId={f.subCategoryId} onChange={(v) => setF(v)} />
@@ -171,10 +171,10 @@ function MovementReport() {
       {error && <p className="mb-3 text-sm text-destructive">{(error as Error).message}</p>}
 
       <StatGrid>
-        <StatCard label="Fast moving" value={t?.fast ?? 0} loading={!data} onClick={() => setF({ class: "FAST" })} />
+        <StatCard label="Fast Moving" value={t?.fast ?? 0} loading={!data} onClick={() => setF({ class: "FAST" })} />
         <StatCard label="Normal" value={t?.normal ?? 0} loading={!data} onClick={() => setF({ class: "NORMAL" })} />
-        <StatCard label="Slow moving" value={t?.slow ?? 0} sub="Includes items with no sales" loading={!data} onClick={() => setF({ class: "SLOW" })} />
-        <StatCard label="Units sold" value={qty(t?.unitsSold)} sub={m ? `Last ${m.days} days` : undefined} loading={!data} />
+        <StatCard label="Slow Moving" value={t?.slow ?? 0} sub="Includes items with no sales" loading={!data} onClick={() => setF({ class: "SLOW" })} />
+        <StatCard label="Units Sold" value={qty(t?.unitsSold)} sub={m ? `Last ${m.days} days` : undefined} loading={!data} />
       </StatGrid>
 
       <HelpText>

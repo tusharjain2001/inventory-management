@@ -50,7 +50,7 @@ function RoleList() {
       header: "Permissions",
       cell: (r) => (r.key === ADMIN_ROLE_KEY ? "All" : `${r.permissions.length} of ${ALL_PERMISSIONS.length}`),
     },
-    { key: "maxDiscountPercent", header: "Max discount", align: "right", cell: (r) => formatPercent(r.maxDiscountPercent) },
+    { key: "maxDiscountPercent", header: "Max Discount", align: "right", cell: (r) => formatPercent(r.maxDiscountPercent) },
     {
       key: "users",
       header: "Users",
@@ -66,10 +66,10 @@ function RoleList() {
 
   return (
     <>
-      <PageHeader title="Roles & permissions" description="What each role can see and do, and its discount limit">
+      <PageHeader title="Roles & Permissions" description="What each role can see and do, and its discount limit">
         <Button asChild>
           <Link href="/admin/roles/new">
-            <Plus /> Add role
+            <Plus /> Add Role
           </Link>
         </Button>
       </PageHeader>

@@ -120,7 +120,7 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
               setProductLabel(o?.label);
               list.setFilter("productId", o ? String(o.value) : "");
             }}
-            placeholder="Any product"
+            placeholder="Any Product"
             searchPlaceholder="Search product name or SKU"
           />
         </div>
@@ -130,8 +130,8 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
           className="h-9 w-40"
           value={list.filters.paymentStatus}
           onChange={(v) => list.setFilter("paymentStatus", v)}
-          clearLabel="Any status"
-          placeholder="Any status"
+          clearLabel="Any Status"
+          placeholder="Any Status"
           options={["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE", "REFUNDED", "CANCELLED"].map((v) => ({ value: v, label: label(v) }))}
         />
       )}
@@ -140,8 +140,8 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
           className="h-9 w-40"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="Any status"
-          placeholder="Any status"
+          clearLabel="Any Status"
+          placeholder="Any Status"
           options={["OUT", "PARTIAL", "CLOSED"].map((v) => ({ value: v, label: label(v) }))}
         />
       )}
@@ -189,7 +189,7 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
       { key: "amountPaid", header: "Paid", align: "right", cell: (r) => <Money value={r.amountPaid} /> },
       {
         key: "creditNoteTotal",
-        header: "Credit notes",
+        header: "Credit Notes",
         align: "right",
         cell: (r) => (r.creditNoteTotal ? <Money value={r.creditNoteTotal} /> : "—"),
       },
@@ -207,8 +207,8 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
         {summary([
           { label: "Invoiced", value: formatINR(t?.grandTotal) },
           { label: "Paid", value: formatINR(t?.amountPaid) },
-          { label: "Credit notes", value: formatINR(t?.creditNoteTotal) },
-          { label: "Balance due", value: formatINR(t?.balanceDue), className: (t?.balanceDue ?? 0) > 0.005 ? "text-red-700" : undefined },
+          { label: "Credit Notes", value: formatINR(t?.creditNoteTotal) },
+          { label: "Balance Due", value: formatINR(t?.balanceDue), className: (t?.balanceDue ?? 0) > 0.005 ? "text-red-700" : undefined },
         ])}
         <DataTable
           columns={columns}
@@ -286,16 +286,16 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
       },
       { key: "orders", header: "Orders", align: "right", cell: (r) => r.orders },
       { key: "totalQty", header: "Quantity", align: "right", cell: (r) => <Qty value={r.totalQty} /> },
-      { key: "totalTaxable", header: "Taxable value", align: "right", cell: (r) => <Money value={r.totalTaxable} /> },
+      { key: "totalTaxable", header: "Taxable Value", align: "right", cell: (r) => <Money value={r.totalTaxable} /> },
       { key: "totalValue", header: "With GST", align: "right", cell: (r) => <Money value={r.totalValue} /> },
-      { key: "lastPurchased", header: "Last purchased", cell: (r) => formatDate(r.lastPurchased) },
+      { key: "lastPurchased", header: "Last Purchased", cell: (r) => formatDate(r.lastPurchased) },
     ];
     return (
       <>
         {filters}
         {summary([
           { label: "Quantity", value: formatQty(t?.totalQty) },
-          { label: "Taxable value", value: formatINR(t?.totalTaxable) },
+          { label: "Taxable Value", value: formatINR(t?.totalTaxable) },
           { label: "With GST", value: formatINR(t?.totalValue) },
         ])}
         <DataTable
@@ -343,11 +343,11 @@ export function CustomerHistory({ customerId, tab }: { customerId: number; tab: 
     { key: "soldQty", header: "Sold", align: "right", cell: (r) => <Qty value={r.soldQty} /> },
     {
       key: "onDisplayQty",
-      header: "On display",
+      header: "On Display",
       align: "right",
       cell: (r) => <Qty value={r.onDisplayQty} className={cn(r.onDisplayQty > 0 && "font-medium text-violet-700")} />,
     },
-    { key: "expectedReturnDate", header: "Expected back", cell: (r) => (r.expectedReturnDate ? formatDate(r.expectedReturnDate) : "—") },
+    { key: "expectedReturnDate", header: "Expected Back", cell: (r) => (r.expectedReturnDate ? formatDate(r.expectedReturnDate) : "—") },
     { key: "status", header: "Status", cell: (r) => <StatusBadge status={r.status} /> },
   ];
   const rows = data?.data as DisplayRow[] | undefined;

@@ -68,12 +68,12 @@ function LossList() {
     },
     { key: "quantity", header: "Qty", align: "right", sortable: true, cell: (r) => <Qty value={r.quantity} /> },
     ...(showCost
-      ? ([{ key: "value", header: "Value (at cost)", align: "right", cell: (r) => <Money value={r.value} />, exportValue: (r) => r.value ?? 0 }] as Column<LossRow>[])
+      ? ([{ key: "value", header: "Value (at Cost)", align: "right", cell: (r) => <Money value={r.value} />, exportValue: (r) => r.value ?? 0 }] as Column<LossRow>[])
       : []),
     { key: "reason", header: "Reason", cell: (r) => <div className="max-w-60 truncate" title={r.reason}>{r.reason}</div> },
     { key: "location", header: "Location", cell: (r) => r.location ?? "—", exportValue: (r) => r.location ?? "" },
     { key: "approvedBy", header: "Approved by", cell: (r) => r.approvedBy?.name ?? "—", exportValue: (r) => r.approvedBy?.name ?? "" },
-    { key: "attachment", header: "Photo / doc", cell: (r) => <Attachment url={r.attachmentUrl} />, exportValue: (r) => (r.attachmentUrl ? "Yes" : "") },
+    { key: "attachment", header: "Photo / Doc", cell: (r) => <Attachment url={r.attachmentUrl} />, exportValue: (r) => (r.attachmentUrl ? "Yes" : "") },
     { key: "createdBy", header: "By", cell: (r) => r.createdBy?.name ?? "—", exportValue: (r) => r.createdBy?.name ?? "" },
   ];
 
@@ -99,7 +99,7 @@ function LossList() {
         <Can permission="inventory.damageLoss">
           <Button asChild>
             <Link href="/inventory/losses/new">
-              <Plus /> Record damaged / lost
+              <Plus /> Record Damaged / Lost
             </Link>
           </Button>
         </Can>
@@ -111,8 +111,8 @@ function LossList() {
           className="h-9 w-40"
           value={list.filters.type}
           onChange={(v) => list.setFilter("type", v)}
-          clearLabel="Damaged & lost"
-          placeholder="Damaged & lost"
+          clearLabel="Damaged & Lost"
+          placeholder="Damaged & Lost"
           options={[
             { value: "DAMAGED", label: "Damaged" },
             { value: "LOST", label: "Lost" },
@@ -162,13 +162,13 @@ function LossList() {
                     ),
                   },
                   { label: "Quantity", value: formatQty(open.quantity) },
-                  ...(showCost ? [{ label: "Value (at avg cost)", value: `${formatINR(open.value)} (${formatINR(open.unitCost)} each)` }] : []),
+                  ...(showCost ? [{ label: "Value (at Avg Cost)", value: `${formatINR(open.value)} (${formatINR(open.unitCost)} each)` }] : []),
                   { label: "Reason", value: open.reason },
                   { label: "Location", value: open.location },
                   { label: "Approved by", value: open.approvedBy?.name },
                   { label: "Recorded by", value: `${open.createdBy?.name ?? "—"}, ${formatDateTime(open.createdAt)}` },
                   { label: "Remarks", value: open.remarks },
-                  { label: "Photo / document", value: <Attachment url={open.attachmentUrl} /> },
+                  { label: "Photo / Document", value: <Attachment url={open.attachmentUrl} /> },
                 ]}
               />
               {open.attachmentUrl && !open.attachmentUrl.endsWith(".pdf") && (

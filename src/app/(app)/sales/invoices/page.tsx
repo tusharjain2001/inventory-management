@@ -102,7 +102,7 @@ function InvoiceList() {
       filename: "invoices",
       subtitle: [
         describeRange(list.filters),
-        list.filters.paymentStatus ? `Payment status: ${label(list.filters.paymentStatus)}` : "All payment statuses",
+        list.filters.paymentStatus ? `Payment status: ${label(list.filters.paymentStatus)}` : "All Payment Statuses",
         `${all.total} invoices (totals exclude cancelled)`,
       ],
       columns,
@@ -124,18 +124,18 @@ function InvoiceList() {
         <Can permission="sales.create">
           <Button asChild>
             <Link href="/sales/orders/new">
-              <Plus /> New sale
+              <Plus /> New Sale
             </Link>
           </Button>
         </Can>
       </PageHeader>
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Invoiced (filtered)" value={<Money value={data?.sums.grandTotal ?? 0} />} loading={isLoading} />
+        <StatCard label="Invoiced (Filtered)" value={<Money value={data?.sums.grandTotal ?? 0} />} loading={isLoading} />
         <StatCard label="Received" value={<Money value={data?.sums.amountPaid ?? 0} />} loading={isLoading} />
-        <StatCard label="Credit notes" value={<Money value={data?.sums.creditNoteTotal ?? 0} />} loading={isLoading} />
+        <StatCard label="Credit Notes" value={<Money value={data?.sums.creditNoteTotal ?? 0} />} loading={isLoading} />
         <StatCard
-          label="Balance due"
+          label="Balance Due"
           value={<Money value={data?.sums.balanceDue ?? 0} />}
           loading={isLoading}
           onClick={() => list.setFilter("paymentStatus", "OVERDUE")}
@@ -146,22 +146,22 @@ function InvoiceList() {
       <FilterBar>
         <SearchInput value={list.q} onChange={list.setQ} placeholder="Invoice no., customer, mobile" />
         <SimpleSelect
-          className="h-9 w-40"
+          className="h-9 w-44"
           value={list.filters.paymentStatus}
           onChange={(v) => list.setFilter("paymentStatus", v)}
-          clearLabel="Any payment status"
-          placeholder="Any payment status"
+          clearLabel="Any Payment Status"
+          placeholder="Any Payment Status"
           options={["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE", "REFUNDED", "CANCELLED"].map((s) => ({ value: s, label: label(s) }))}
         />
         <SimpleSelect
-          className="h-9 w-36"
+          className="h-9 w-44"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="Active + cancelled"
-          placeholder="Active + cancelled"
+          clearLabel="Active + Cancelled"
+          placeholder="Active + Cancelled"
           options={[
-            { value: "ACTIVE", label: "Active only" },
-            { value: "CANCELLED", label: "Cancelled only" },
+            { value: "ACTIVE", label: "Active Only" },
+            { value: "CANCELLED", label: "Cancelled Only" },
           ]}
         />
         {can("sales.viewAll") && (
@@ -169,8 +169,8 @@ function InvoiceList() {
             className="h-9 w-40"
             value={list.filters.salespersonId}
             onChange={(v) => list.setFilter("salespersonId", v)}
-            clearLabel="All salespeople"
-            placeholder="All salespeople"
+            clearLabel="All Salespeople"
+            placeholder="All Salespeople"
             options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
           />
         )}

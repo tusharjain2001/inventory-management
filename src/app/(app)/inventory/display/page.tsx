@@ -65,13 +65,13 @@ function DisplayList() {
     { key: "soldQty", header: "Sold", align: "right", cell: (r) => <Qty value={r.soldQty} /> },
     {
       key: "outstandingQty",
-      header: "Still out",
+      header: "Still Out",
       align: "right",
       cell: (r) => <Qty value={r.outstandingQty} className={r.outstandingQty > 0 ? "font-semibold text-violet-700" : "text-muted-foreground"} />,
     },
     {
       key: "expectedReturnDate",
-      header: "Expected back",
+      header: "Expected Back",
       sortable: true,
       cell: (r) =>
         r.expectedReturnDate ? (
@@ -105,7 +105,7 @@ function DisplayList() {
         <Can permission="inventory.display">
           <Button asChild>
             <Link href="/inventory/display/new">
-              <Plus /> Send for display
+              <Plus /> Send for Display
             </Link>
           </Button>
         </Can>
@@ -117,10 +117,10 @@ function DisplayList() {
           className="h-9 w-40"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="All statuses"
-          placeholder="All statuses"
+          clearLabel="All Statuses"
+          placeholder="All Statuses"
           options={[
-            { value: "OPEN", label: "Open (not closed)" },
+            { value: "OPEN", label: "Open (Not Closed)" },
             { value: "OUT", label: label("OUT") },
             { value: "PARTIAL", label: label("PARTIAL") },
             { value: "CLOSED", label: label("CLOSED") },

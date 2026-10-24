@@ -102,7 +102,7 @@ function UserForm({ user, roles, onDone }: { user?: UserRow | null; roles: RoleO
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
       <DialogHeader>
-        <DialogTitle>{isEdit ? `Edit ${user.name}` : "Add user"}</DialogTitle>
+        <DialogTitle>{isEdit ? `Edit ${user.name}` : "Add User"}</DialogTitle>
         <DialogDescription>{isEdit ? "Change details, role or access." : "The user signs in with their email or username."}</DialogDescription>
       </DialogHeader>
       <FormGrid cols={2}>
@@ -123,7 +123,7 @@ function UserForm({ user, roles, onDone }: { user?: UserRow | null; roles: RoleO
             value={form.roleId}
             onChange={(v) => set("roleId", v)}
             options={roles.map((r) => ({ value: String(r.id), label: r.name }))}
-            placeholder="Choose role"
+            placeholder="Choose Role"
             disabled={isSelf}
           />
         </Field>
@@ -134,7 +134,7 @@ function UserForm({ user, roles, onDone }: { user?: UserRow | null; roles: RoleO
             </div>
           </Field>
         ) : (
-          <Field label="Initial password" required htmlFor="u-password" error={errors.password} hint="At least 8 characters">
+          <Field label="Initial Password" required htmlFor="u-password" error={errors.password} hint="At least 8 characters">
             <Input
               id="u-password"
               type="text"
@@ -152,7 +152,7 @@ function UserForm({ user, roles, onDone }: { user?: UserRow | null; roles: RoleO
           Cancel
         </Button>
         <Button type="submit" disabled={busy}>
-          {busy ? "Saving…" : isEdit ? "Save changes" : "Create user"}
+          {busy ? "Saving…" : isEdit ? "Save Changes" : "Create User"}
         </Button>
       </DialogFooter>
     </form>
@@ -194,12 +194,12 @@ export function ResetPasswordDialog({ user, onOpenChange }: { user: UserRow | nu
       <DialogContent>
         <form onSubmit={onSubmit} className="grid gap-4">
           <DialogHeader>
-            <DialogTitle>Reset password</DialogTitle>
+            <DialogTitle>Reset Password</DialogTitle>
             <DialogDescription>
               Set a new password for {user?.name}. They will be signed out on all devices and must use the new password.
             </DialogDescription>
           </DialogHeader>
-          <Field label="New password" required htmlFor="new-password" error={error} hint="At least 8 characters">
+          <Field label="New Password" required htmlFor="new-password" error={error} hint="At least 8 characters">
             <Input
               id="new-password"
               type="text"
@@ -216,7 +216,7 @@ export function ResetPasswordDialog({ user, onOpenChange }: { user: UserRow | nu
               Cancel
             </Button>
             <Button type="submit" disabled={busy || password.length < 8}>
-              {busy ? "Saving…" : "Set password"}
+              {busy ? "Saving…" : "Set Password"}
             </Button>
           </DialogFooter>
         </form>

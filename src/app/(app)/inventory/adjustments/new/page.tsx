@@ -24,7 +24,7 @@ import { ProductPicker } from "../../product-picker";
 export default function NewAdjustmentPage() {
   return (
     <RequirePermission permission="inventory.adjust">
-      <PageHeader title="New stock adjustment" back={{ href: "/inventory/adjustments", label: "Stock Adjustments" }} />
+      <PageHeader title="New Stock Adjustment" back={{ href: "/inventory/adjustments", label: "Stock Adjustments" }} />
       <AdjustmentForm />
     </RequirePermission>
   );
@@ -101,7 +101,7 @@ function AdjustmentForm() {
           <Field label="Quantity" required error={errors.quantity}>
             <Input type="number" inputMode="decimal" step="1" min="0" value={form.quantity} onChange={(e) => set("quantity", e.target.value)} required />
           </Field>
-          <Field label={canApprove ? "Stock" : "Stock after approval"} hint={product?.onDisplayStock ? `${formatQty(product.onDisplayStock)} more out on display (not affected)` : undefined}>
+          <Field label={canApprove ? "Stock" : "Stock After Approval"} hint={product?.onDisplayStock ? `${formatQty(product.onDisplayStock)} more out on display (not affected)` : undefined}>
             <div className="flex h-9 items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm tabular-nums">
               {product ? (
                 <>
@@ -119,7 +119,7 @@ function AdjustmentForm() {
               value={form.reason}
               onChange={(v) => set("reason", v)}
               options={ADJUSTMENT_REASONS.map((r) => ({ value: r, label: r }))}
-              placeholder="Choose reason"
+              placeholder="Choose Reason"
               invalid={!!errors.reason}
             />
           </Field>
@@ -140,7 +140,7 @@ function AdjustmentForm() {
           Cancel
         </Button>
         <Button type="submit" disabled={busy || willGoNegative}>
-          {busy ? "Saving…" : canApprove ? "Save adjustment" : "Send for approval"}
+          {busy ? "Saving…" : canApprove ? "Save Adjustment" : "Send for Approval"}
         </Button>
       </div>
     </form>

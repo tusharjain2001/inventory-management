@@ -7,7 +7,7 @@ import { CustomerForm } from "../customer-form";
 export default function NewCustomerPage() {
   return (
     <RequirePermission permission="customers.create">
-      <PageHeader title="Add customer" back={{ href: "/customers", label: "Customers" }} />
+      <PageHeader title="Add Customer" back={{ href: "/customers", label: "Customers" }} />
       <CustomerForm />
     </RequirePermission>
   );

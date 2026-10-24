@@ -13,14 +13,14 @@ import type { NumberingDoc, Settings } from "@/lib/settings-schema";
 import { SettingsSection, useSection } from "./fields";
 
 const SERIES: { key: SeriesKey; label: string; note?: string }[] = [
-  { key: "invoice", label: "Sales invoice" },
-  { key: "order", label: "Sales order" },
-  { key: "creditNote", label: "Credit note" },
-  { key: "payment", label: "Payment receipt" },
-  { key: "stockIn", label: "Stock-in / purchase (GRN)" },
-  { key: "adjustment", label: "Stock adjustment" },
-  { key: "loss", label: "Damaged / lost" },
-  { key: "display", label: "Display (potential sales)" },
+  { key: "invoice", label: "Sales Invoice" },
+  { key: "order", label: "Sales Order" },
+  { key: "creditNote", label: "Credit Note" },
+  { key: "payment", label: "Payment Receipt" },
+  { key: "stockIn", label: "Stock-In / Purchase (GRN)" },
+  { key: "adjustment", label: "Stock Adjustment" },
+  { key: "loss", label: "Damaged / Lost" },
+  { key: "display", label: "Display (Potential Sales)" },
   { key: "customer", label: "Customer ID", note: "Does not restart each financial year" },
 ];
 
@@ -80,7 +80,7 @@ function SeriesRow({ series, next }: { series: (typeof SERIES)[number]; next?: N
             required
           />
         </Field>
-        <Field label="Digits (padding)" htmlFor={`${series.key}-pad`} hint="e.g. 3 → 007">
+        <Field label="Digits (Padding)" htmlFor={`${series.key}-pad`} hint="e.g. 3 → 007">
           <Input
             id={`${series.key}-pad`}
             type="number"
@@ -90,7 +90,7 @@ function SeriesRow({ series, next }: { series: (typeof SERIES)[number]; next?: N
             onChange={(e) => update({ padding: e.target.value === "" ? ("" as unknown as number) : Number(e.target.value) })}
           />
         </Field>
-        <Field label="Start number" htmlFor={`${series.key}-start`} hint="For a new year">
+        <Field label="Start Number" htmlFor={`${series.key}-start`} hint="For a new year">
           <Input
             id={`${series.key}-start`}
             type="number"
@@ -152,7 +152,7 @@ function NextNumberEditor({ seriesKey, current }: { seriesKey: SeriesKey; curren
     <div>
       <div className="flex items-center gap-2">
         <label htmlFor={`${seriesKey}-next`} className="text-xs whitespace-nowrap text-muted-foreground">
-          Set next number
+          Set Next Number
         </label>
         <Input
           id={`${seriesKey}-next`}

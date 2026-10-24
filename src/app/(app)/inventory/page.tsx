@@ -65,14 +65,14 @@ function StockOverview() {
     { key: "category", header: "Category", cell: (p) => p.category.name, exportValue: (p) => p.category.name },
     {
       key: "currentStock",
-      header: "In showroom",
+      header: "In Showroom",
       align: "right",
       sortable: true,
       cell: (p) => <Qty value={p.currentStock} className="font-medium" />,
     },
     {
       key: "onDisplayStock",
-      header: "On display",
+      header: "On Display",
       align: "right",
       cell: (p) => (p.onDisplayStock ? <Qty value={p.onDisplayStock} className="text-violet-700" /> : <span className="text-muted-foreground">—</span>),
     },
@@ -85,10 +85,10 @@ function StockOverview() {
     },
     ...(showCost
       ? ([
-          { key: "avgCost", header: "Avg cost", align: "right", cell: (p) => <Money value={p.avgCost} />, exportValue: (p) => p.avgCost ?? 0 },
+          { key: "avgCost", header: "Avg Cost", align: "right", cell: (p) => <Money value={p.avgCost} />, exportValue: (p) => p.avgCost ?? 0 },
           {
             key: "stockValue",
-            header: "Stock value",
+            header: "Stock Value",
             align: "right",
             cell: (p) => <Money value={p.stockValue} />,
             exportValue: (p) => p.stockValue ?? 0,
@@ -125,7 +125,7 @@ function StockOverview() {
         <Can permission="inventory.stockIn">
           <Button asChild>
             <Link href="/inventory/stock-in/new">
-              <PackagePlus /> Stock in
+              <PackagePlus /> Stock In
             </Link>
           </Button>
         </Can>
@@ -146,7 +146,7 @@ function StockOverview() {
         <Can permission="inventory.display">
           <Button variant="outline" asChild>
             <Link href="/inventory/display/new">
-              <MapPin /> Send for display
+              <MapPin /> Send for Display
             </Link>
           </Button>
         </Can>
@@ -165,21 +165,21 @@ function StockOverview() {
       )}
 
       <div className="mb-3 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="Units in showroom" loading={summaryLoading} value={formatQty(s?.unitsInShowroom)} sub={`${s?.activeSkus ?? 0} active products`} />
+        <StatCard label="Units in Showroom" loading={summaryLoading} value={formatQty(s?.unitsInShowroom)} sub={`${s?.activeSkus ?? 0} active products`} />
         <StatCard
-          label="Units on display"
+          label="Units on Display"
           loading={summaryLoading}
           value={formatQty(s?.unitsOnDisplay)}
           sub={`${s?.openDisplays ?? 0} open display records`}
           onClick={() => router.push("/inventory/display")}
         />
         {showCost ? (
-          <StatCard label="Stock value (at avg cost)" loading={summaryLoading} value={formatINR(s?.stockValue)} sub="Showroom + display" />
+          <StatCard label="Stock Value (at Avg Cost)" loading={summaryLoading} value={formatINR(s?.stockValue)} sub="Showroom + display" />
         ) : (
-          <StatCard label="In stock" loading={summaryLoading} value={s?.inStock ?? 0} sub="Above reorder level" onClick={() => filterStatus("IN_STOCK")} />
+          <StatCard label="In Stock" loading={summaryLoading} value={s?.inStock ?? 0} sub="Above reorder level" onClick={() => filterStatus("IN_STOCK")} />
         )}
         <StatCard
-          label="Low stock"
+          label="Low Stock"
           loading={summaryLoading}
           value={<span className={s?.lowStock ? "text-amber-700" : undefined}>{s?.lowStock ?? 0}</span>}
           sub="At or below reorder level"
@@ -188,24 +188,24 @@ function StockOverview() {
       </div>
       <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
         {showCost && (
-          <StatCard label="In stock" loading={summaryLoading} value={s?.inStock ?? 0} sub="Above reorder level" onClick={() => filterStatus("IN_STOCK")} />
+          <StatCard label="In Stock" loading={summaryLoading} value={s?.inStock ?? 0} sub="Above reorder level" onClick={() => filterStatus("IN_STOCK")} />
         )}
         <StatCard
-          label="Out of stock"
+          label="Out of Stock"
           loading={summaryLoading}
           value={<span className={s?.outOfStock ? "text-red-700" : undefined}>{s?.outOfStock ?? 0}</span>}
           sub="Zero in showroom"
           onClick={() => filterStatus("OUT_OF_STOCK")}
         />
         <StatCard
-          label="Negative stock"
+          label="Negative Stock"
           loading={summaryLoading}
           value={<span className={s?.negativeStock ? "text-red-700" : undefined}>{s?.negativeStock ?? 0}</span>}
           sub="Needs correction"
           onClick={() => filterStatus("NEGATIVE")}
         />
         <StatCard
-          label="Open displays"
+          label="Open Displays"
           loading={summaryLoading}
           value={s?.openDisplays ?? 0}
           sub="Stock still at clients"
@@ -219,21 +219,21 @@ function StockOverview() {
           className="h-9 w-44"
           value={list.filters.categoryId}
           onChange={(v) => list.setFilter("categoryId", v)}
-          clearLabel="All categories"
-          placeholder="All categories"
+          clearLabel="All Categories"
+          placeholder="All Categories"
           options={(meta?.categories ?? []).map((c) => ({ value: String(c.id), label: c.name }))}
         />
         <SimpleSelect
           className="h-9 w-40"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="Any stock status"
-          placeholder="Any stock status"
+          clearLabel="Any Stock Status"
+          placeholder="Any Stock Status"
           options={[
-            { value: "IN_STOCK", label: "In stock" },
-            { value: "LOW_STOCK", label: "Low stock" },
-            { value: "OUT_OF_STOCK", label: "Out of stock" },
-            { value: "NEGATIVE", label: "Negative stock" },
+            { value: "IN_STOCK", label: "In Stock" },
+            { value: "LOW_STOCK", label: "Low Stock" },
+            { value: "OUT_OF_STOCK", label: "Out of Stock" },
+            { value: "NEGATIVE", label: "Negative Stock" },
           ]}
         />
         <div className="ml-auto">

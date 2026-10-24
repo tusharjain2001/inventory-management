@@ -64,7 +64,7 @@ function DisplayView({ id }: { id: number }) {
     { key: "soldQty", header: "Sold", align: "right", cell: (i) => <Qty value={i.soldQty} /> },
     {
       key: "outstandingQty",
-      header: "Still out",
+      header: "Still Out",
       align: "right",
       cell: (i) => <Qty value={i.outstandingQty} className={i.outstandingQty > 0 ? "font-semibold text-violet-700" : "text-muted-foreground"} />,
     },
@@ -83,20 +83,20 @@ function DisplayView({ id }: { id: number }) {
         back={{ href: "/inventory/display", label: "Potential Sales" }}
       >
         <Button variant="outline" onClick={() => window.open(`/print/display/${d.id}`, "_blank", "noopener")}>
-          <Printer /> Print challan
+          <Printer /> Print Challan
         </Button>
         {outstanding > 0 && (
           <>
             <Can permission="sales.create">
               <Button variant="outline" asChild>
                 <Link href={`/sales/orders/new?displayId=${d.id}`}>
-                  <ShoppingCart /> Convert to sale
+                  <ShoppingCart /> Convert to Sale
                 </Link>
               </Button>
             </Can>
             <Can permission="inventory.display">
               <Button onClick={() => setReturnOpen(true)}>
-                <Undo2 /> Record return
+                <Undo2 /> Record Return
               </Button>
             </Can>
           </>
@@ -108,7 +108,7 @@ function DisplayView({ id }: { id: number }) {
         <StatCard label="Returned" value={formatQty(sum((i) => i.returnedQty))} />
         <StatCard label="Sold" value={formatQty(sum((i) => i.soldQty))} sub={d.orders.length ? `${d.orders.length} order(s)` : undefined} />
         <StatCard
-          label="Still out"
+          label="Still Out"
           value={<span className={outstanding > 0 ? "text-violet-700" : undefined}>{formatQty(outstanding)}</span>}
           sub={isOverdue ? <span className="text-red-700">Past expected return date</span> : undefined}
         />
@@ -118,10 +118,10 @@ function DisplayView({ id }: { id: number }) {
         <DetailList
           className="lg:grid-cols-3"
           items={[
-            { label: "Date sent", value: formatDate(d.date) },
+            { label: "Date Sent", value: formatDate(d.date) },
             { label: "Customer", value: d.customer ? `${d.customer.name}${d.customer.mobile ? ` · ${d.customer.mobile}` : ""}` : null },
             {
-              label: "Expected return",
+              label: "Expected Return",
               value: d.expectedReturnDate ? <span className={isOverdue ? "font-medium text-red-700" : undefined}>{formatDate(d.expectedReturnDate)}</span> : null,
             },
             { label: "Location", value: d.locationName },
@@ -138,7 +138,7 @@ function DisplayView({ id }: { id: number }) {
 
       {d.orders.length > 0 && (
         <>
-          <h2 className="mt-6 mb-2 text-sm font-semibold">Sales orders from this display</h2>
+          <h2 className="mt-6 mb-2 text-sm font-semibold">Sales Orders from This Display</h2>
           <div className="divide-y rounded-lg border bg-card text-sm">
             {d.orders.map((o) => (
               <Link key={o.id} href={`/sales/orders/${o.id}`} className="flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-muted/50">
@@ -209,7 +209,7 @@ function ReturnDialog({ display, onClose }: { display: DisplayDetail; onClose: (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Record return</DialogTitle>
+          <DialogTitle>Record Return</DialogTitle>
           <DialogDescription>Enter the quantity that came back to the showroom from {display.locationName}.</DialogDescription>
         </DialogHeader>
 
@@ -246,12 +246,12 @@ function ReturnDialog({ display, onClose }: { display: DisplayDetail; onClose: (
             className="h-auto px-0"
             onClick={() => setQty(Object.fromEntries(open.map((i) => [i.id, String(i.outstandingQty)])))}
           >
-            Everything came back
+            Everything Came Back
           </Button>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Return date">
+          <Field label="Return Date">
             <Input type="date" value={date} min={istDateString(display.date)} max={todayIST()} onChange={(e) => setDate(e.target.value)} />
           </Field>
           <Field label="Remarks" className="sm:col-span-2">
@@ -264,7 +264,7 @@ function ReturnDialog({ display, onClose }: { display: DisplayDetail; onClose: (
             Cancel
           </Button>
           <Button onClick={submit} disabled={busy || !entered.length || invalid}>
-            {busy ? "Saving…" : "Save return"}
+            {busy ? "Saving…" : "Save Return"}
           </Button>
         </DialogFooter>
       </DialogContent>

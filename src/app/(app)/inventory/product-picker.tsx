@@ -31,7 +31,7 @@ export function ProductPicker({
         sub: `${p.sku} · Stock ${formatQty(p.currentStock)}${p.onDisplayStock > 0 ? ` (+${formatQty(p.onDisplayStock)} on display)` : ""}`,
         raw: p,
       })}
-      placeholder="Choose product"
+      placeholder="Choose Product"
       searchPlaceholder="Search name or SKU…"
       invalid={invalid}
       disabled={disabled}

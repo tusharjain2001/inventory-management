@@ -44,9 +44,9 @@ type Row = {
 type Data = { rows: Row[]; totals: { products: number; out: number; low: number; suggestedOrder: number } };
 
 const LEVELS = [
-  { value: "all", label: "At or below reorder level" },
-  { value: "low", label: "Low stock only" },
-  { value: "out", label: "Out of stock only" },
+  { value: "all", label: "At or Below Reorder Level" },
+  { value: "low", label: "Low Stock Only" },
+  { value: "out", label: "Out of Stock Only" },
 ];
 
 export default function LowStockPage() {
@@ -119,10 +119,10 @@ function LowStockReport() {
       </FilterBar>
 
       <StatGrid>
-        <StatCard label="Items to reorder" value={t?.products ?? 0} loading={!data} />
-        <StatCard label="Out of stock" value={t?.out ?? 0} loading={!data} onClick={() => setF({ level: "out" })} />
-        <StatCard label="Low stock" value={t?.low ?? 0} loading={!data} onClick={() => setF({ level: "low" })} />
-        <StatCard label="Suggested order (units)" value={qty(t?.suggestedOrder)} loading={!data} />
+        <StatCard label="Items to Reorder" value={t?.products ?? 0} loading={!data} />
+        <StatCard label="Out of Stock" value={t?.out ?? 0} loading={!data} onClick={() => setF({ level: "out" })} />
+        <StatCard label="Low Stock" value={t?.low ?? 0} loading={!data} onClick={() => setF({ level: "low" })} />
+        <StatCard label="Suggested Order (Units)" value={qty(t?.suggestedOrder)} loading={!data} />
       </StatGrid>
 
       <HelpText>

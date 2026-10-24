@@ -62,7 +62,7 @@ export function periodSql(col: Prisma.Sql, p: Period) {
 }
 
 export function describePeriod(p: Period) {
-  if (!p.from && !p.to) return "All dates";
+  if (!p.from && !p.to) return "All Dates";
   return `${p.from || "start"} to ${p.to || "today"}`;
 }
 

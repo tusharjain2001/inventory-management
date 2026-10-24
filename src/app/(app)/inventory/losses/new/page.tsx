@@ -24,7 +24,7 @@ import { ProductPicker } from "../../product-picker";
 export default function NewLossPage() {
   return (
     <RequirePermission permission="inventory.damageLoss">
-      <PageHeader title="Record damaged / lost stock" back={{ href: "/inventory/losses", label: "Damaged / Lost" }} />
+      <PageHeader title="Record Damaged / Lost Stock" back={{ href: "/inventory/losses", label: "Damaged / Lost" }} />
       <LossForm />
     </RequirePermission>
   );
@@ -126,8 +126,8 @@ function LossForm() {
               value={form.approvedById}
               onChange={(v) => set("approvedById", v)}
               options={approvers.map((u) => ({ value: String(u.id), label: `${u.name} (${u.roleName})` }))}
-              clearLabel={isLost ? undefined : "Not approved"}
-              placeholder={isLost ? "Choose approver" : "Not approved"}
+              clearLabel={isLost ? undefined : "Not Approved"}
+              placeholder={isLost ? "Choose Approver" : "Not approved"}
               invalid={!!errors.approvedById}
             />
           </Field>
@@ -140,13 +140,13 @@ function LossForm() {
               required
             />
           </Field>
-          <Field label={isLost ? "Last known location" : "Location"} error={errors.location}>
+          <Field label={isLost ? "Last Known Location" : "Location"} error={errors.location}>
             <Input value={form.location} onChange={(e) => set("location", e.target.value)} maxLength={200} placeholder="e.g. Showroom floor, godown" />
           </Field>
           <Field label="Remarks" error={errors.remarks} className="sm:col-span-2">
             <Textarea rows={2} value={form.remarks} onChange={(e) => set("remarks", e.target.value)} maxLength={1000} />
           </Field>
-          <Field label="Photo / document" hint="JPG, PNG, WEBP or PDF, up to 8 MB" error={errors.attachmentUrl}>
+          <Field label="Photo / Document" hint="JPG, PNG, WEBP or PDF, up to 8 MB" error={errors.attachmentUrl}>
             <input
               ref={fileInput}
               type="file"
@@ -166,7 +166,7 @@ function LossForm() {
               </div>
             ) : (
               <Button type="button" variant="outline" className="h-9 w-full" onClick={() => fileInput.current?.click()} disabled={uploading}>
-                <Upload /> {uploading ? "Uploading…" : "Add photo or file"}
+                <Upload /> {uploading ? "Uploading…" : "Add Photo or File"}
               </Button>
             )}
           </Field>
@@ -178,7 +178,7 @@ function LossForm() {
           Cancel
         </Button>
         <Button type="submit" disabled={busy || uploading}>
-          {busy ? "Saving…" : isLost ? "Record lost stock" : "Record damaged stock"}
+          {busy ? "Saving…" : isLost ? "Record Lost Stock" : "Record Damaged Stock"}
         </Button>
       </div>
     </form>

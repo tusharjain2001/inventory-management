@@ -23,7 +23,7 @@ import { CustomerHistory, type HistoryTab } from "./history-tabs";
 const TABS: { key: HistoryTab; label: string; permission: Permission[] }[] = [
   { key: "invoices", label: "Invoices", permission: ["invoices.view", "sales.view"] },
   { key: "payments", label: "Payments", permission: ["payments.view"] },
-  { key: "products", label: "Products purchased", permission: ["sales.view", "invoices.view"] },
+  { key: "products", label: "Products Purchased", permission: ["sales.view", "invoices.view"] },
   { key: "display", label: "Display", permission: ["inventory.view", "inventory.display"] },
 ];
 
@@ -111,11 +111,11 @@ function CustomerView({ id }: { id: number }) {
       </PageHeader>
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <StatCard label="Total orders" value={c.stats.totalOrders} sub="Active invoices" />
-        <StatCard label="Total purchases" value={<Money value={c.stats.totalPurchases} />} sub="After credit notes" />
-        <StatCard label="Average order value" value={<Money value={c.stats.averageOrderValue} />} />
+        <StatCard label="Total Orders" value={c.stats.totalOrders} sub="Active invoices" />
+        <StatCard label="Total Purchases" value={<Money value={c.stats.totalPurchases} />} sub="After credit notes" />
+        <StatCard label="Average Order Value" value={<Money value={c.stats.averageOrderValue} />} />
         <StatCard
-          label="Last purchase"
+          label="Last Purchase"
           value={<span className="text-base">{c.stats.lastPurchaseDate ? formatDate(c.stats.lastPurchaseDate) : "No purchases yet"}</span>}
         />
         <StatCard
@@ -142,22 +142,22 @@ function CustomerView({ id }: { id: number }) {
           className="lg:grid-cols-4"
           items={[
             { label: "Mobile", value: c.mobile },
-            { label: "Alternate mobile", value: c.altMobile },
+            { label: "Alternate Mobile", value: c.altMobile },
             { label: "Email", value: c.email },
             { label: "GSTIN", value: c.gstin && <span className="font-mono">{c.gstin}</span> },
             { label: "PAN", value: c.pan && <span className="font-mono">{c.pan}</span> },
             { label: "City", value: c.city },
             { label: "State", value: c.state ? `${c.state}${c.stateCode ? ` (${c.stateCode})` : ""}` : null },
-            { label: "PIN code", value: c.pincode },
-            { label: "Billing address", value: address(c.billingAddress) },
+            { label: "PIN Code", value: c.pincode },
+            { label: "Billing Address", value: address(c.billingAddress) },
             {
-              label: "Shipping address",
+              label: "Shipping Address",
               value: c.shippingAddress && c.shippingAddress === c.billingAddress ? "Same as billing" : address(c.shippingAddress),
             },
             { label: "Country", value: c.country },
-            { label: "Credit limit", value: c.creditLimit != null ? <Money value={c.creditLimit} /> : null },
-            { label: "Payment terms", value: c.paymentTermsDays != null ? `${c.paymentTermsDays} days` : null },
-            { label: "Opening balance", value: <Money value={c.openingBalance} /> },
+            { label: "Credit Limit", value: c.creditLimit != null ? <Money value={c.creditLimit} /> : null },
+            { label: "Payment Terms", value: c.paymentTermsDays != null ? `${c.paymentTermsDays} days` : null },
+            { label: "Opening Balance", value: <Money value={c.openingBalance} /> },
             { label: "Added", value: `${formatDateTime(c.createdAt)}${c.createdBy ? ` by ${c.createdBy.name}` : ""}` },
             { label: "Notes", value: c.notes && <span className="whitespace-pre-line">{c.notes}</span> },
           ]}

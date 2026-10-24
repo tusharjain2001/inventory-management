@@ -127,7 +127,7 @@ function PaymentList() {
       filename: "payments",
       subtitle: [
         describeRange(list.filters),
-        list.filters.mode ? `Mode: ${label(list.filters.mode)}` : "All modes",
+        list.filters.mode ? `Mode: ${label(list.filters.mode)}` : "All Modes",
         `Receipts ${formatAmount(all.sums.receipts)} · Refunds ${formatAmount(all.sums.refunds)}`,
       ],
       columns,
@@ -142,7 +142,7 @@ function PaymentList() {
         <ExportMenu getTable={exportTable} />
         <Can permission="payments.record">
           <Button onClick={() => setDialog({})}>
-            <Plus /> Record payment
+            <Plus /> Record Payment
           </Button>
         </Can>
       </PageHeader>
@@ -150,7 +150,7 @@ function PaymentList() {
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-3">
         <StatCard label="Receipts" value={<Money value={data?.sums.receipts ?? 0} />} loading={isLoading} />
         <StatCard label="Refunds" value={<Money value={data?.sums.refunds ?? 0} />} loading={isLoading} />
-        <StatCard label="Net received" value={<Money value={(data?.sums.receipts ?? 0) - (data?.sums.refunds ?? 0)} />} loading={isLoading} />
+        <StatCard label="Net Received" value={<Money value={(data?.sums.receipts ?? 0) - (data?.sums.refunds ?? 0)} />} loading={isLoading} />
       </div>
 
       <FilterBar>
@@ -159,16 +159,16 @@ function PaymentList() {
           className="h-9 w-36"
           value={list.filters.mode}
           onChange={(v) => list.setFilter("mode", v)}
-          clearLabel="All modes"
-          placeholder="All modes"
+          clearLabel="All Modes"
+          placeholder="All Modes"
           options={PAYMENT_MODE_OPTIONS}
         />
         <SimpleSelect
-          className="h-9 w-36"
+          className="h-9 w-44"
           value={list.filters.type}
           onChange={(v) => list.setFilter("type", v)}
-          clearLabel="Receipts + refunds"
-          placeholder="Receipts + refunds"
+          clearLabel="Receipts + Refunds"
+          placeholder="Receipts + Refunds"
           options={[
             { value: "RECEIPT", label: "Receipts" },
             { value: "REFUND", label: "Refunds" },

@@ -7,7 +7,7 @@ import { RoleForm } from "../role-form";
 export default function NewRolePage() {
   return (
     <RequirePermission permission="roles.manage">
-      <PageHeader title="Add role" back={{ href: "/admin/roles", label: "Roles & permissions" }} />
+      <PageHeader title="Add Role" back={{ href: "/admin/roles", label: "Roles & Permissions" }} />
       <RoleForm />
     </RequirePermission>
   );

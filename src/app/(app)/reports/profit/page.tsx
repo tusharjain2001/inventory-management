@@ -176,11 +176,11 @@ function ProfitReport() {
       </FilterBar>
 
       <StatGrid>
-        <StatCard label="Net revenue" value={formatINR(t?.netRevenue)} sub={`Sales ${formatINR(t?.sales)}`} loading={!data} />
-        <StatCard label="Cost of goods sold" value={formatINR(t?.cogs)} sub={`${qty(t?.quantity)} units`} loading={!data} />
-        <StatCard label="Gross profit" value={formatINR(t?.profit)} loading={!data} />
-        <StatCard label="Gross margin" value={pctText(t?.marginPct)} loading={!data} />
-        <StatCard label="Discount given" value={formatINR(t?.discount)} sub={`Credit notes ${formatINR(t?.creditNotes)}`} loading={!data} />
+        <StatCard label="Net Revenue" value={formatINR(t?.netRevenue)} sub={`Sales ${formatINR(t?.sales)}`} loading={!data} />
+        <StatCard label="Cost of Goods Sold" value={formatINR(t?.cogs)} sub={`${qty(t?.quantity)} units`} loading={!data} />
+        <StatCard label="Gross Profit" value={formatINR(t?.profit)} loading={!data} />
+        <StatCard label="Gross Margin" value={pctText(t?.marginPct)} loading={!data} />
+        <StatCard label="Discount Given" value={formatINR(t?.discount)} sub={`Credit notes ${formatINR(t?.creditNotes)}`} loading={!data} />
       </StatGrid>
 
       <div className="mb-3">
@@ -191,8 +191,8 @@ function ProfitReport() {
             setF({ groupBy });
           }}
           options={[
-            { value: "product", label: "By product" },
-            { value: "invoice", label: "By invoice" },
+            { value: "product", label: "By Product" },
+            { value: "invoice", label: "By Invoice" },
           ]}
         />
       </div>

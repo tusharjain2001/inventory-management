@@ -112,7 +112,7 @@ function CustomerList() {
         <Can permission="customers.create">
           <Button asChild>
             <Link href="/customers/new">
-              <Plus /> Add customer
+              <Plus /> Add Customer
             </Link>
           </Button>
         </Can>
@@ -124,8 +124,8 @@ function CustomerList() {
           className="h-9 w-40"
           value={list.filters.type}
           onChange={(v) => list.setFilter("type", v)}
-          clearLabel="All types"
-          placeholder="All types"
+          clearLabel="All Types"
+          placeholder="All Types"
           options={CUSTOMER_TYPE_OPTIONS}
         />
         <SimpleSelect

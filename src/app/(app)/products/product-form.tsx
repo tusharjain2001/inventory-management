@@ -149,12 +149,12 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <fieldset disabled={readOnly} className="space-y-4">
-        <FormSection title="Basic information">
+        <FormSection title="Basic Information">
           <FormGrid>
-            <Field label="Product name" required htmlFor="name" error={errors.name} className="sm:col-span-2">
+            <Field label="Product Name" required htmlFor="name" error={errors.name} className="sm:col-span-2">
               <Input id="name" value={form.name} onChange={(e) => set("name", e.target.value)} maxLength={200} required />
             </Field>
-            <Field label="SKU / Product code" required htmlFor="sku" error={errors.sku} hint="Must be unique">
+            <Field label="SKU / Product Code" required htmlFor="sku" error={errors.sku} hint="Must be unique">
               <Input id="sku" value={form.sku} onChange={(e) => set("sku", e.target.value.toUpperCase())} required className="font-mono" />
             </Field>
             <Field label="Category" required error={errors.categoryId}>
@@ -162,16 +162,16 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
                 value={form.categoryId}
                 onChange={(v) => setForm((f) => ({ ...f, categoryId: v, subCategoryId: "" }))}
                 options={(meta?.categories ?? []).map((c) => ({ value: String(c.id), label: c.name }))}
-                placeholder="Choose category"
+                placeholder="Choose Category"
                 invalid={!!errors.categoryId}
               />
             </Field>
-            <Field label="Sub-category" error={errors.subCategoryId}>
+            <Field label="Sub-Category" error={errors.subCategoryId}>
               <SimpleSelect
                 value={form.subCategoryId}
                 onChange={(v) => set("subCategoryId", v)}
                 options={subCategories.map((c) => ({ value: String(c.id), label: c.name }))}
-                placeholder={subCategories.length ? "Choose sub-category" : "None available"}
+                placeholder={subCategories.length ? "Choose Sub-Category" : "None available"}
                 clearLabel="None"
                 disabled={!subCategories.length}
               />
@@ -208,7 +208,7 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
         <FormSection title="Pricing" description="Selling below the minimum price (or below cost) needs a user with price-override permission.">
           <FormGrid cols={4}>
             {canViewCost && (
-              <Field label="Purchase price (₹)" required error={errors.purchasePrice} hint={!canEditCost ? "You cannot change this" : undefined}>
+              <Field label="Purchase Price (₹)" required error={errors.purchasePrice} hint={!canEditCost ? "You cannot change this" : undefined}>
                 <Input
                   type="number"
                   step="0.01"
@@ -219,15 +219,15 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
                 />
               </Field>
             )}
-            <Field label="Selling price (₹)" required error={errors.sellingPrice} hint={margin !== null && canViewCost ? `Margin ${margin.toFixed(1)}%` : undefined}>
+            <Field label="Selling Price (₹)" required error={errors.sellingPrice} hint={margin !== null && canViewCost ? `Margin ${margin.toFixed(1)}%` : undefined}>
               <Input type="number" step="0.01" min="0" value={form.sellingPrice} onChange={(e) => set("sellingPrice", e.target.value)} required />
             </Field>
             {canViewCost && (
-              <Field label="Minimum selling price (₹)" error={errors.minSellingPrice}>
+              <Field label="Minimum Selling Price (₹)" error={errors.minSellingPrice}>
                 <Input type="number" step="0.01" min="0" value={form.minSellingPrice} onChange={(e) => set("minSellingPrice", e.target.value)} />
               </Field>
             )}
-            <Field label="Discount allowed">
+            <Field label="Discount Allowed">
               <div className="flex h-9 items-center">
                 <Switch checked={form.discountAllowed} onCheckedChange={(v) => set("discountAllowed", v)} />
               </div>
@@ -237,25 +237,25 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
 
         <FormSection title="GST / Tax">
           <FormGrid cols={4}>
-            <Field label="HSN / SAC code" htmlFor="hsn" error={errors.hsnCode}>
+            <Field label="HSN / SAC Code" htmlFor="hsn" error={errors.hsnCode}>
               <Input id="hsn" value={form.hsnCode} onChange={(e) => set("hsnCode", e.target.value)} placeholder="e.g. 9403" />
             </Field>
-            <Field label="Tax type">
+            <Field label="Tax Type">
               <SimpleSelect
                 value={form.taxType}
                 onChange={(v) => set("taxType", v)}
                 options={[
                   { value: "GST", label: "GST" },
                   { value: "EXEMPT", label: "Exempt" },
-                  { value: "NIL_RATED", label: "Nil rated" },
-                  { value: "ZERO_RATED", label: "Zero rated" },
+                  { value: "NIL_RATED", label: "Nil Rated" },
+                  { value: "ZERO_RATED", label: "Zero Rated" },
                 ]}
               />
             </Field>
             {form.taxType === "GST" && (
               <>
                 <Field
-                  label="GST rate"
+                  label="GST Rate"
                   error={errors.gstRate}
                   hint={`CGST ${gst / 2}% + SGST ${gst / 2}% within state, or IGST ${gst}% outside`}
                 >
@@ -270,7 +270,7 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
                 </Field>
               </>
             )}
-            <Field label="Prices include GST" hint="Selling price already includes tax">
+            <Field label="Prices Include GST" hint="Selling price already includes tax">
               <div className="flex h-9 items-center">
                 <Switch checked={form.taxInclusive} onCheckedChange={(v) => set("taxInclusive", v)} />
               </div>
@@ -282,23 +282,23 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
           <FormGrid cols={4}>
             {!isEdit && (
               <>
-                <Field label="Opening stock" error={errors.openingStock} hint="Quantity in hand today">
+                <Field label="Opening Stock" error={errors.openingStock} hint="Quantity in hand today">
                   <Input type="number" step="1" min="0" value={form.openingStock} onChange={(e) => set("openingStock", e.target.value)} />
                 </Field>
                 {canViewCost && (
-                  <Field label="Opening cost per unit (₹)" hint="Defaults to the purchase price">
+                  <Field label="Opening Cost per Unit (₹)" hint="Defaults to the purchase price">
                     <Input type="number" step="0.01" min="0" value={form.openingUnitCost} onChange={(e) => set("openingUnitCost", e.target.value)} />
                   </Field>
                 )}
               </>
             )}
-            <Field label="Reorder level" error={errors.reorderLevel} hint="Low-stock alert at or below this">
+            <Field label="Reorder Level" error={errors.reorderLevel} hint="Low-stock alert at or below this">
               <Input type="number" step="1" min="0" value={form.reorderLevel} onChange={(e) => set("reorderLevel", e.target.value)} />
             </Field>
-            <Field label="Reorder quantity" error={errors.reorderQuantity} hint="Suggested quantity to buy">
+            <Field label="Reorder Quantity" error={errors.reorderQuantity} hint="Suggested quantity to buy">
               <Input type="number" step="1" min="0" value={form.reorderQuantity} onChange={(e) => set("reorderQuantity", e.target.value)} />
             </Field>
-            <Field label="Preferred supplier">
+            <Field label="Preferred Supplier">
               <SimpleSelect
                 value={form.preferredSupplierId}
                 onChange={(v) => set("preferredSupplierId", v)}
@@ -334,7 +334,7 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
             Cancel
           </Button>
           <Button type="submit" disabled={busy}>
-            {busy ? "Saving…" : isEdit ? "Save changes" : "Create product"}
+            {busy ? "Saving…" : isEdit ? "Save Changes" : "Create Product"}
           </Button>
         </div>
       )}

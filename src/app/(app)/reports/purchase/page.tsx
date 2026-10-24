@@ -75,7 +75,7 @@ function PurchaseReport() {
   const showCost = data?.meta.showCost ?? false;
 
   const columns: Column<Row>[] = [
-    { key: "stockInNo", header: "Stock-in No", sortable: true, className: "font-medium whitespace-nowrap" },
+    { key: "stockInNo", header: "Stock-In No", sortable: true, className: "font-medium whitespace-nowrap" },
     dateCol("date", "Date"),
     { key: "source", header: "Source", sortable: true, cell: (r) => label(r.source), exportValue: (r) => label(r.source) },
     { key: "supplier", header: "Supplier", sortable: true, cell: (r) => r.supplier || "—" },
@@ -131,17 +131,17 @@ function PurchaseReport() {
           className="h-9 w-full sm:w-44"
           value={f.source}
           onChange={(source) => setF({ source })}
-          clearLabel="All sources"
-          placeholder="All sources"
+          clearLabel="All Sources"
+          placeholder="All Sources"
           options={SOURCES.map((s) => ({ value: s, label: label(s) }))}
         />
       </FilterBar>
 
       <StatGrid>
-        <StatCard label="Stock-in entries" value={t?.documents ?? 0} sub={`${t?.lines ?? 0} lines`} loading={!data} />
+        <StatCard label="Stock-In Entries" value={t?.documents ?? 0} sub={`${t?.lines ?? 0} lines`} loading={!data} />
         <StatCard label="Suppliers" value={t?.suppliers ?? 0} loading={!data} />
-        <StatCard label="Units received" value={qty(t?.quantity)} loading={!data} />
-        {showCost && <StatCard label="Total purchase value" value={formatINR(t?.total)} sub={`Taxable ${formatINR(t?.taxable)}`} loading={!data} />}
+        <StatCard label="Units Received" value={qty(t?.quantity)} loading={!data} />
+        {showCost && <StatCard label="Total Purchase Value" value={formatINR(t?.total)} sub={`Taxable ${formatINR(t?.taxable)}`} loading={!data} />}
         {showCost && <StatCard label="Input GST" value={formatINR(t?.gst)} loading={!data} />}
       </StatGrid>
 

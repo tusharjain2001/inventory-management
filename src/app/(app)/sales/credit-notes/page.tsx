@@ -78,7 +78,7 @@ function CreditNoteList() {
 
   return (
     <>
-      <PageHeader title="Credit notes" description="Financial credits against invoices (no stock movement). Issue them from an invoice.">
+      <PageHeader title="Credit Notes" description="Financial credits against invoices (no stock movement). Issue them from an invoice.">
         <ExportMenu getTable={exportTable} />
       </PageHeader>
       <FilterBar>
@@ -87,8 +87,8 @@ function CreditNoteList() {
           className="h-9 w-36"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="All statuses"
-          placeholder="All statuses"
+          clearLabel="All Statuses"
+          placeholder="All Statuses"
           options={[
             { value: "ACTIVE", label: "Active" },
             { value: "CANCELLED", label: "Cancelled" },

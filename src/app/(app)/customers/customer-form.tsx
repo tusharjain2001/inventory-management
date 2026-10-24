@@ -132,16 +132,16 @@ export function CustomerForm({ customer }: { customer?: CustomerDetail }) {
             <Field label="Name" required htmlFor="name" error={errors.name}>
               <Input id="name" value={form.name} onChange={(e) => set("name", e.target.value)} maxLength={200} required autoFocus={!isEdit} />
             </Field>
-            <Field label="Customer type" required error={errors.customerType}>
+            <Field label="Customer Type" required error={errors.customerType}>
               <SimpleSelect value={form.customerType} onChange={(v) => set("customerType", v as CustomerTypeName)} options={CUSTOMER_TYPE_OPTIONS} />
             </Field>
-            <Field label="Company / firm" htmlFor="companyName" error={errors.companyName}>
+            <Field label="Company / Firm" htmlFor="companyName" error={errors.companyName}>
               <Input id="companyName" value={form.companyName} onChange={(e) => set("companyName", e.target.value)} />
             </Field>
             <Field label="Mobile" htmlFor="mobile" error={errors.mobile} hint="Optional">
               <Input id="mobile" type="tel" inputMode="tel" value={form.mobile} onChange={(e) => set("mobile", e.target.value)} />
             </Field>
-            <Field label="Alternate mobile" htmlFor="altMobile" error={errors.altMobile}>
+            <Field label="Alternate Mobile" htmlFor="altMobile" error={errors.altMobile}>
               <Input id="altMobile" type="tel" inputMode="tel" value={form.altMobile} onChange={(e) => set("altMobile", e.target.value)} />
             </Field>
             <Field label="Email" htmlFor="email" error={errors.email}>
@@ -158,10 +158,10 @@ export function CustomerForm({ customer }: { customer?: CustomerDetail }) {
 
         <FormSection title="Address">
           <FormGrid cols={2}>
-            <Field label="Billing address" htmlFor="billingAddress" error={errors.billingAddress}>
+            <Field label="Billing Address" htmlFor="billingAddress" error={errors.billingAddress}>
               <Textarea id="billingAddress" rows={3} value={form.billingAddress} onChange={(e) => set("billingAddress", e.target.value)} />
             </Field>
-            <Field label="Shipping address" htmlFor="shippingAddress" error={errors.shippingAddress}>
+            <Field label="Shipping Address" htmlFor="shippingAddress" error={errors.shippingAddress}>
               <Textarea
                 id="shippingAddress"
                 rows={3}
@@ -177,7 +177,7 @@ export function CustomerForm({ customer }: { customer?: CustomerDetail }) {
                     setForm((f) => ({ ...f, sameAsBilling: v, shippingAddress: v ? f.shippingAddress : f.shippingAddress || f.billingAddress }))
                   }
                 />
-                Same as billing address
+                Same as Billing Address
               </label>
             </Field>
           </FormGrid>
@@ -189,12 +189,12 @@ export function CustomerForm({ customer }: { customer?: CustomerDetail }) {
               <SimpleSelect
                 value={form.stateCode}
                 onChange={(v) => set("stateCode", v)}
-                clearLabel="Not set"
-                placeholder="Choose state"
+                clearLabel="Not Set"
+                placeholder="Choose State"
                 options={INDIAN_STATES.map((st) => ({ value: st.code, label: st.name }))}
               />
             </Field>
-            <Field label="PIN code" htmlFor="pincode" error={errors.pincode}>
+            <Field label="PIN Code" htmlFor="pincode" error={errors.pincode}>
               <Input id="pincode" inputMode="numeric" value={form.pincode} onChange={(e) => set("pincode", e.target.value)} maxLength={10} />
             </Field>
             <Field label="Country" htmlFor="country" error={errors.country}>
@@ -203,15 +203,15 @@ export function CustomerForm({ customer }: { customer?: CustomerDetail }) {
           </FormGrid>
         </FormSection>
 
-        <FormSection title="Credit and balance">
+        <FormSection title="Credit and Balance">
           <FormGrid cols={4}>
-            <Field label="Credit limit (₹)" htmlFor="creditLimit" error={errors.creditLimit}>
+            <Field label="Credit Limit (₹)" htmlFor="creditLimit" error={errors.creditLimit}>
               <Input id="creditLimit" type="number" step="0.01" min="0" value={form.creditLimit} onChange={(e) => set("creditLimit", e.target.value)} />
             </Field>
-            <Field label="Payment terms (days)" htmlFor="paymentTermsDays" error={errors.paymentTermsDays} hint="Blank = default from settings">
+            <Field label="Payment Terms (Days)" htmlFor="paymentTermsDays" error={errors.paymentTermsDays} hint="Blank = default from settings">
               <Input id="paymentTermsDays" type="number" step="1" min="0" value={form.paymentTermsDays} onChange={(e) => set("paymentTermsDays", e.target.value)} />
             </Field>
-            <Field label="Opening balance (₹)" htmlFor="openingBalance" error={errors.openingBalance} hint="Amount due from before this system">
+            <Field label="Opening Balance (₹)" htmlFor="openingBalance" error={errors.openingBalance} hint="Amount due from before this system">
               <Input id="openingBalance" type="number" step="0.01" value={form.openingBalance} onChange={(e) => set("openingBalance", e.target.value)} />
             </Field>
             {isEdit && (
@@ -234,7 +234,7 @@ export function CustomerForm({ customer }: { customer?: CustomerDetail }) {
             Cancel
           </Button>
           <Button type="submit" disabled={busy}>
-            {busy ? "Saving…" : isEdit ? "Save changes" : "Create customer"}
+            {busy ? "Saving…" : isEdit ? "Save Changes" : "Create Customer"}
           </Button>
         </div>
       )}

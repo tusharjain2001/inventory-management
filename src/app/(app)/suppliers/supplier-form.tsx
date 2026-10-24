@@ -103,7 +103,7 @@ export function SupplierForm({ supplier }: { supplier?: SupplierRow }) {
             <Field label="Name" required htmlFor="name" error={errors.name}>
               <Input id="name" value={form.name} onChange={(e) => set("name", e.target.value)} maxLength={200} required autoFocus={!isEdit} />
             </Field>
-            <Field label="Contact person" htmlFor="contactPerson" error={errors.contactPerson}>
+            <Field label="Contact Person" htmlFor="contactPerson" error={errors.contactPerson}>
               <Input id="contactPerson" value={form.contactPerson} onChange={(e) => set("contactPerson", e.target.value)} />
             </Field>
             <Field label="Phone" htmlFor="phone" error={errors.phone}>
@@ -128,12 +128,12 @@ export function SupplierForm({ supplier }: { supplier?: SupplierRow }) {
               <SimpleSelect
                 value={form.stateCode}
                 onChange={(v) => set("stateCode", v)}
-                clearLabel="Not set"
-                placeholder="Choose state"
+                clearLabel="Not Set"
+                placeholder="Choose State"
                 options={INDIAN_STATES.map((st) => ({ value: st.code, label: st.name }))}
               />
             </Field>
-            <Field label="PIN code" htmlFor="pincode" error={errors.pincode}>
+            <Field label="PIN Code" htmlFor="pincode" error={errors.pincode}>
               <Input id="pincode" inputMode="numeric" value={form.pincode} onChange={(e) => set("pincode", e.target.value)} maxLength={10} />
             </Field>
             <Field label="Notes" htmlFor="notes" error={errors.notes} className="sm:col-span-2">
@@ -158,7 +158,7 @@ export function SupplierForm({ supplier }: { supplier?: SupplierRow }) {
             </Button>
           )}
           <Button type="submit" disabled={busy}>
-            {busy ? "Saving…" : isEdit ? "Save changes" : "Create supplier"}
+            {busy ? "Saving…" : isEdit ? "Save Changes" : "Create Supplier"}
           </Button>
         </div>
       )}

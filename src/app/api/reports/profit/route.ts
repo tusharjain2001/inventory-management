@@ -135,7 +135,7 @@ export const GET = handler({ permission: "reports.profit" }, async ({ req, user 
     const t = taxes(amount, num(c.otherChargesGstRate), 0, "GST", c.isInterState);
     const r = byInvoice
       ? row(`i${inv.id}`, { label: inv.invoiceNo, sub: c.customerName, date: inv.invoiceDate })
-      : row("charges", { label: "Other charges", sub: "Delivery, installation etc." });
+      : row("charges", { label: "Other Charges", sub: "Delivery, installation etc." });
     r.sales += amount;
     r.netSales += amount;
     r.gst += t.cgst + t.sgst + t.igst;
@@ -148,7 +148,7 @@ export const GET = handler({ permission: "reports.profit" }, async ({ req, user 
       ? row(`i${inv.id}`, { label: inv.invoiceNo, sub: inv.order.customerName, date: inv.invoiceDate })
       : oi
         ? row(`p${oi.productId}`, { label: oi.name, sub: `${oi.sku} · ${oi.product.category.name}` })
-        : row("cn", { label: "Credit notes (not linked to a product)" });
+        : row("cn", { label: "Credit Notes (Not Linked to a Product)" });
     r.creditNotes += num(c.taxableValue);
     r.gst -= tax(c);
   }

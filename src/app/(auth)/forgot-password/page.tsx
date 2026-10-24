@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Forgot password</CardTitle>
+        <CardTitle>Forgot Password</CardTitle>
         <CardDescription>We&apos;ll email you a link to set a new password.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
           <div className="space-y-4 text-sm">
             <p>If that email is registered, a reset link is on its way. The link is valid for 30 minutes.</p>
             <Link href="/login" className="text-primary hover:underline">
-              Back to sign in
+              Back to Sign In
             </Link>
           </div>
         ) : (
@@ -50,11 +50,11 @@ export default function ForgotPasswordPage() {
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" size="lg" disabled={busy}>
-              {busy ? "Sending…" : "Send reset link"}
+              {busy ? "Sending…" : "Send Reset Link"}
             </Button>
             <div className="text-center">
               <Link href="/login" className="text-sm text-muted-foreground hover:underline">
-                Back to sign in
+                Back to Sign In
               </Link>
             </div>
           </form>

@@ -49,7 +49,7 @@ function lineTotals(l: Line) {
 export default function NewStockInPage() {
   return (
     <RequirePermission permission="inventory.stockIn">
-      <PageHeader title="New stock in" back={{ href: "/inventory/stock-in", label: "Stock In / Purchases" }} />
+      <PageHeader title="New Stock In" back={{ href: "/inventory/stock-in", label: "Stock In / Purchases" }} />
       <StockInForm />
     </RequirePermission>
   );
@@ -143,18 +143,18 @@ function StockInForm() {
               selectedLabel={form.supplierName}
               onChange={(o) => setForm((f) => ({ ...f, supplierId: o?.value ?? null, supplierName: o?.label ?? "" }))}
               toOption={(s) => ({ value: s.id, label: s.name, sub: [s.gstin, s.city].filter(Boolean).join(" · "), raw: s })}
-              placeholder="Choose supplier"
+              placeholder="Choose Supplier"
               searchPlaceholder="Search supplier name, GSTIN…"
               invalid={!!errors.supplierId}
             />
           </Field>
-          <Field label="Purchase invoice no" error={errors.purchaseInvoiceNo}>
+          <Field label="Purchase Invoice No" error={errors.purchaseInvoiceNo}>
             <Input value={form.purchaseInvoiceNo} onChange={(e) => set("purchaseInvoiceNo", e.target.value)} maxLength={60} />
           </Field>
-          <Field label="Purchase invoice date" error={errors.purchaseInvoiceDate}>
+          <Field label="Purchase Invoice Date" error={errors.purchaseInvoiceDate}>
             <Input type="date" value={form.purchaseInvoiceDate} max={todayIST()} onChange={(e) => set("purchaseInvoiceDate", e.target.value)} />
           </Field>
-          <Field label="Update product purchase price" hint="Set each product's purchase price to this cost (after discount, excl. GST)" className="sm:col-span-2">
+          <Field label="Update Product Purchase Price" hint="Set each product's purchase price to this cost (after discount, excl. GST)" className="sm:col-span-2">
             <div className="flex h-9 items-center">
               <Switch checked={form.updatePurchasePrice} onCheckedChange={(v) => set("updatePurchasePrice", v)} />
             </div>
@@ -169,11 +169,11 @@ function StockInForm() {
         <div className="hidden grid-cols-12 gap-2 px-1 pb-1 text-xs font-medium text-muted-foreground lg:grid">
           <div className="col-span-4">Product</div>
           <div className="col-span-1 text-right">Qty</div>
-          <div className="col-span-2 text-right">Unit cost (₹)</div>
+          <div className="col-span-2 text-right">Unit Cost (₹)</div>
           <div className="col-span-1 text-right">Discount (₹)</div>
           <div className="col-span-1 text-right">GST %</div>
           <div className="col-span-1">Batch</div>
-          <div className="col-span-2 text-right">Line total</div>
+          <div className="col-span-2 text-right">Line Total</div>
         </div>
         <div className="space-y-3 lg:space-y-2">
           {lines.map((l, i) => {
@@ -190,7 +190,7 @@ function StockInForm() {
                   )}
                 </div>
                 <LineInput label="Qty" className="lg:col-span-1" value={l.quantity} onChange={(v) => setLine(l.key, { quantity: v })} step="1" min="0" />
-                <LineInput label="Unit cost (₹)" className="lg:col-span-2" value={l.unitCost} onChange={(v) => setLine(l.key, { unitCost: v })} step="0.01" min="0" />
+                <LineInput label="Unit Cost (₹)" className="lg:col-span-2" value={l.unitCost} onChange={(v) => setLine(l.key, { unitCost: v })} step="0.01" min="0" />
                 <LineInput label="Discount (₹)" className="lg:col-span-1" value={l.discountAmount} onChange={(v) => setLine(l.key, { discountAmount: v })} step="0.01" min="0" />
                 <LineInput label="GST %" className="lg:col-span-1" value={l.gstRate} onChange={(v) => setLine(l.key, { gstRate: v })} step="0.01" min="0" />
                 <div className="lg:col-span-1">
@@ -217,7 +217,7 @@ function StockInForm() {
           })}
         </div>
         <Button type="button" variant="outline" className="mt-3" onClick={() => setLines((ls) => [...ls, emptyLine()])}>
-          <Plus /> Add item
+          <Plus /> Add Item
         </Button>
 
         <dl className="mt-4 ml-auto grid max-w-xs grid-cols-2 gap-y-1 text-sm tabular-nums">
@@ -225,7 +225,7 @@ function StockInForm() {
           <dd className="text-right">{formatINR(sum((t) => t.gross))}</dd>
           <dt className="text-muted-foreground">Discount</dt>
           <dd className="text-right">−{formatINR(sum((t) => t.discount))}</dd>
-          <dt className="text-muted-foreground">Taxable value</dt>
+          <dt className="text-muted-foreground">Taxable Value</dt>
           <dd className="text-right">{formatINR(sum((t) => t.taxable))}</dd>
           <dt className="text-muted-foreground">GST</dt>
           <dd className="text-right">{formatINR(sum((t) => t.gst))}</dd>
@@ -242,7 +242,7 @@ function StockInForm() {
           Cancel
         </Button>
         <Button type="submit" disabled={busy}>
-          {busy ? "Saving…" : "Save stock in"}
+          {busy ? "Saving…" : "Save Stock In"}
         </Button>
       </div>
     </form>

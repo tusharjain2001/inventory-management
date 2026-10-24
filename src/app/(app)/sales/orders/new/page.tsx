@@ -13,7 +13,7 @@ import type { CustomerLite } from "../../types";
 export default function NewOrderPage() {
   return (
     <RequirePermission permission="sales.create">
-      <PageHeader title="New sale" back={{ href: "/sales/orders", label: "Sales orders" }} />
+      <PageHeader title="New Sale" back={{ href: "/sales/orders", label: "Sales Orders" }} />
       <Suspense fallback={<LoadingBlock rows={6} />}>
         <NewOrder />
       </Suspense>

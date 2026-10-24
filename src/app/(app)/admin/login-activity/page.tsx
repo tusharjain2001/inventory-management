@@ -111,7 +111,7 @@ function LoginList() {
 
   return (
     <>
-      <PageHeader title="Login activity" description="Every sign-in attempt, successful or not">
+      <PageHeader title="Login Activity" description="Every sign-in attempt, successful or not">
         <ExportMenu getTable={exportTable} />
       </PageHeader>
 
@@ -122,8 +122,8 @@ function LoginList() {
           className="h-9 w-36"
           value={list.filters.success}
           onChange={(v) => list.setFilter("success", v)}
-          clearLabel="All results"
-          placeholder="All results"
+          clearLabel="All Results"
+          placeholder="All Results"
           options={[
             { value: "true", label: "Successful" },
             { value: "false", label: "Failed" },
@@ -133,8 +133,8 @@ function LoginList() {
           className="h-9 w-40"
           value={list.filters.userId}
           onChange={(v) => list.setFilter("userId", v)}
-          clearLabel="All users"
-          placeholder="All users"
+          clearLabel="All Users"
+          placeholder="All Users"
           options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
         />
       </FilterBar>

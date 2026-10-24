@@ -7,7 +7,7 @@ import { ProductForm } from "../product-form";
 export default function NewProductPage() {
   return (
     <RequirePermission permission="products.create">
-      <PageHeader title="Add product" back={{ href: "/products", label: "Products" }} />
+      <PageHeader title="Add Product" back={{ href: "/products", label: "Products" }} />
       <ProductForm />
     </RequirePermission>
   );

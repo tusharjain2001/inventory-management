@@ -173,8 +173,8 @@ function ProductList() {
           className="h-9 w-44"
           value={list.filters.categoryId}
           onChange={(v) => list.setFilters({ categoryId: v, subCategoryId: "" })}
-          clearLabel="All categories"
-          placeholder="All categories"
+          clearLabel="All Categories"
+          placeholder="All Categories"
           options={(meta?.categories ?? []).map((c) => ({ value: String(c.id), label: c.name }))}
         />
         {subCategories.length > 0 && (
@@ -182,8 +182,8 @@ function ProductList() {
             className="h-9 w-44"
             value={list.filters.subCategoryId}
             onChange={(v) => list.setFilter("subCategoryId", v)}
-            clearLabel="All sub-categories"
-            placeholder="All sub-categories"
+            clearLabel="All Sub-Categories"
+            placeholder="All Sub-Categories"
             options={subCategories.map((s) => ({ value: String(s.id), label: s.name }))}
           />
         )}
@@ -191,13 +191,13 @@ function ProductList() {
           className="h-9 w-40"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="Any stock status"
-          placeholder="Any stock status"
+          clearLabel="Any Stock Status"
+          placeholder="Any Stock Status"
           options={[
-            { value: "IN_STOCK", label: "In stock" },
-            { value: "LOW_STOCK", label: "Low stock" },
-            { value: "OUT_OF_STOCK", label: "Out of stock" },
-            { value: "NEGATIVE", label: "Negative stock" },
+            { value: "IN_STOCK", label: "In Stock" },
+            { value: "LOW_STOCK", label: "Low Stock" },
+            { value: "OUT_OF_STOCK", label: "Out of Stock" },
+            { value: "NEGATIVE", label: "Negative Stock" },
           ]}
         />
         <SimpleSelect

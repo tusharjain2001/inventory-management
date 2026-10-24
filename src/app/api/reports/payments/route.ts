@@ -5,11 +5,11 @@ import { daysSince, describePeriod, num, periodWhere, REPORT_ROW_CAP, reportPeri
 
 const MODES = ["CASH", "UPI", "BANK_TRANSFER", "NEFT", "RTGS", "IMPS", "CREDIT_CARD", "DEBIT_CARD", "CHEQUE", "OTHER"] as const;
 const AGEING = [
-  { key: "NOT_DUE", label: "Not due" },
-  { key: "D0_30", label: "0–30 days" },
-  { key: "D31_60", label: "31–60 days" },
-  { key: "D61_90", label: "61–90 days" },
-  { key: "D90", label: "90+ days" },
+  { key: "NOT_DUE", label: "Not Due" },
+  { key: "D0_30", label: "0–30 Days" },
+  { key: "D31_60", label: "31–60 Days" },
+  { key: "D61_90", label: "61–90 Days" },
+  { key: "D90", label: "90+ Days" },
 ] as const;
 
 /**

@@ -62,7 +62,7 @@ function RoleView({ id }: { id: number }) {
             </span>
           </span>
         }
-        back={{ href: "/admin/roles", label: "Roles & permissions" }}
+        back={{ href: "/admin/roles", label: "Roles & Permissions" }}
       >
         {!role.isSystem && (
           <Button variant="destructive" onClick={remove} disabled={role.userCount > 0} title={role.userCount > 0 ? "Move its users to another role first" : undefined}>

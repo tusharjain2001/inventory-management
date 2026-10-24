@@ -72,10 +72,10 @@ type Data = {
 
 type Tab = "hsn" | "rate" | "invoices" | "credit" | "input";
 const TABS: { value: Tab; label: string }[] = [
-  { value: "hsn", label: "HSN summary" },
-  { value: "rate", label: "Rate-wise" },
-  { value: "invoices", label: "B2B / B2C invoices" },
-  { value: "credit", label: "Credit notes" },
+  { value: "hsn", label: "HSN Summary" },
+  { value: "rate", label: "Rate-Wise" },
+  { value: "invoices", label: "B2B / B2C Invoices" },
+  { value: "credit", label: "Credit Notes" },
   { value: "input", label: "Input GST" },
 ];
 
@@ -175,7 +175,7 @@ function GstReport() {
     switch (tab) {
       case "hsn":
         return {
-          title: "HSN-wise Summary (Sales less Credit Notes)",
+          title: "HSN-Wise Summary (Sales Less Credit Notes)",
           columns: hsnColumns,
           rows: data?.hsn,
           totals: sum(data?.hsn, ["taxableValue", "cgst", "sgst", "igst", "cess", "totalTax"]),
@@ -183,7 +183,7 @@ function GstReport() {
         };
       case "rate":
         return {
-          title: "Rate-wise Summary (Sales less Credit Notes)",
+          title: "Rate-Wise Summary (Sales Less Credit Notes)",
           columns: rateColumns,
           rows: data?.rates,
           totals: sum(data?.rates, ["taxable", "cgst", "sgst", "igst", "cess", "totalTax", "total"]),
@@ -240,14 +240,14 @@ function GstReport() {
 
       <StatGrid>
         <StatCard
-          label="Taxable sales (net)"
+          label="Taxable Sales (Net)"
           value={formatINR(t?.netTaxable)}
           sub={`${t?.invoices ?? 0} invoices · less CN ${formatINR(t?.creditNotes.taxable)}`}
           loading={!data}
         />
-        <StatCard label="Output tax (net of CN)" value={formatINR(t?.outputTax)} sub={`Credit note tax ${formatINR(t?.creditNotes.totalTax)}`} loading={!data} />
-        <StatCard label="Input GST (purchases)" value={formatINR(t?.inputTax)} sub={`On ${formatINR(data?.inputGst.taxable)} taxable`} loading={!data} />
-        <StatCard label="Net GST (output − input)" value={formatINR(t?.netTax)} sub="Indicative only" loading={!data} />
+        <StatCard label="Output Tax (Net of CN)" value={formatINR(t?.outputTax)} sub={`Credit note tax ${formatINR(t?.creditNotes.totalTax)}`} loading={!data} />
+        <StatCard label="Input GST (Purchases)" value={formatINR(t?.inputTax)} sub={`On ${formatINR(data?.inputGst.taxable)} taxable`} loading={!data} />
+        <StatCard label="Net GST (Output − Input)" value={formatINR(t?.netTax)} sub="Indicative only" loading={!data} />
         <StatCard
           label="B2B / B2C"
           value={
@@ -271,8 +271,8 @@ function GstReport() {
             clearLabel="B2B and B2C"
             placeholder="B2B and B2C"
             options={[
-              { value: "B2B", label: "B2B only" },
-              { value: "B2C", label: "B2C only" },
+              { value: "B2B", label: "B2B Only" },
+              { value: "B2C", label: "B2C Only" },
             ]}
           />
         )}

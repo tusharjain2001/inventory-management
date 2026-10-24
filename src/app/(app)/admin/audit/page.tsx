@@ -114,7 +114,7 @@ function AuditList() {
 
   return (
     <>
-      <PageHeader title="Audit log" description="Who changed what, and when">
+      <PageHeader title="Audit Log" description="Who changed what, and when">
         <ExportMenu getTable={exportTable} />
       </PageHeader>
 
@@ -125,24 +125,24 @@ function AuditList() {
           className="h-9 w-40"
           value={list.filters.userId}
           onChange={(v) => list.setFilter("userId", v)}
-          clearLabel="All users"
-          placeholder="All users"
+          clearLabel="All Users"
+          placeholder="All Users"
           options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
         />
         <SimpleSelect
           className="h-9 w-40"
           value={list.filters.entity}
           onChange={(v) => list.setFilter("entity", v)}
-          clearLabel="All records"
-          placeholder="All records"
+          clearLabel="All Records"
+          placeholder="All Records"
           options={(facets?.entities ?? []).map((e) => ({ value: e, label: e }))}
         />
         <SimpleSelect
           className="h-9 w-36"
           value={list.filters.action}
           onChange={(v) => list.setFilter("action", v)}
-          clearLabel="All actions"
-          placeholder="All actions"
+          clearLabel="All Actions"
+          placeholder="All Actions"
           options={(facets?.actions ?? []).map((a) => ({ value: a, label: titleCase(a) }))}
         />
       </FilterBar>

@@ -49,25 +49,25 @@ export function ChangePasswordDialog({ open, onOpenChange }: { open: boolean; on
     >
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Change password</DialogTitle>
+          <DialogTitle>Change Password</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="cp-current">Current password</Label>
+            <Label htmlFor="cp-current">Current Password</Label>
             <Input id="cp-current" type="password" value={current} onChange={(e) => setCurrent(e.target.value)} required />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="cp-new">New password</Label>
+            <Label htmlFor="cp-new">New Password</Label>
             <Input id="cp-new" type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="cp-confirm">Confirm new password</Label>
+            <Label htmlFor="cp-confirm">Confirm New Password</Label>
             <Input id="cp-confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={busy}>
-              {busy ? "Saving…" : "Change password"}
+              {busy ? "Saving…" : "Change Password"}
             </Button>
           </DialogFooter>
         </form>

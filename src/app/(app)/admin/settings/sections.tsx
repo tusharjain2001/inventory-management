@@ -20,7 +20,7 @@ export function CompanySettings({ initial }: { initial: Settings["company"] }) {
     <SettingsSection group="company" initial={initial}>
       <FormSection title="Business" description="Printed on invoices and documents">
         <FormGrid>
-          <TextF name="name" label="Company name" required />
+          <TextF name="name" label="Company Name" required />
           <CompanyGstin />
           <TextF name="pan" label="PAN" className="[&_input]:font-mono [&_input]:uppercase" maxLength={10} />
           <TextF name="phone" label="Phone" type="tel" />
@@ -33,23 +33,23 @@ export function CompanySettings({ initial }: { initial: Settings["company"] }) {
       </FormSection>
       <FormSection title="Address">
         <FormGrid>
-          <TextF name="addressLine1" label="Address line 1" className="sm:col-span-2 lg:col-span-3" />
-          <TextF name="addressLine2" label="Address line 2" className="sm:col-span-2 lg:col-span-3" />
+          <TextF name="addressLine1" label="Address Line 1" className="sm:col-span-2 lg:col-span-3" />
+          <TextF name="addressLine2" label="Address Line 2" className="sm:col-span-2 lg:col-span-3" />
           <TextF name="city" label="City" />
           <CompanyState />
-          <TextF name="pincode" label="PIN code" inputMode="numeric" maxLength={10} />
+          <TextF name="pincode" label="PIN Code" inputMode="numeric" maxLength={10} />
         </FormGrid>
       </FormSection>
-      <FormSection title="Bank details" description="Shown on invoices when enabled in Invoice settings">
+      <FormSection title="Bank Details" description="Shown on invoices when enabled in Invoice settings">
         <FormGrid cols={4}>
-          <TextF name="bankName" label="Bank name" />
-          <TextF name="bankAccountNo" label="Account number" />
+          <TextF name="bankName" label="Bank Name" />
+          <TextF name="bankAccountNo" label="Account Number" />
           <TextF name="bankIfsc" label="IFSC" className="[&_input]:uppercase" />
           <TextF name="bankBranch" label="Branch" />
         </FormGrid>
       </FormSection>
       <FormSection title="Declaration">
-        <AreaF name="declaration" label="Invoice declaration" rows={3} />
+        <AreaF name="declaration" label="Invoice Declaration" rows={3} />
       </FormSection>
     </SettingsSection>
   );
@@ -82,7 +82,7 @@ function CompanyState() {
         value={String(values.stateCode ?? "")}
         onChange={(code) => setMany({ stateCode: code, state: stateByCode(code)?.name ?? "" })}
         options={INDIAN_STATES.map((s) => ({ value: s.code, label: s.name }))}
-        placeholder="Choose state"
+        placeholder="Choose State"
         disabled={readOnly}
       />
     </Field>
@@ -117,7 +117,7 @@ function LogoField() {
       <div className="flex size-24 items-center justify-center overflow-hidden rounded-lg border bg-muted/30">
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={url} alt="Company logo" className="max-h-full max-w-full object-contain" />
+          <img src={url} alt="Company Logo" className="max-h-full max-w-full object-contain" />
         ) : (
           <span className="text-xs text-muted-foreground">No logo</span>
         )}
@@ -127,7 +127,7 @@ function LogoField() {
           <input ref={input} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={(e) => upload(e.target.files?.[0])} />
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => input.current?.click()} disabled={uploading}>
-              <ImagePlus /> {uploading ? "Uploading…" : url ? "Change logo" : "Upload logo"}
+              <ImagePlus /> {uploading ? "Uploading…" : url ? "Change Logo" : "Upload Logo"}
             </Button>
             {url && (
               <Button type="button" variant="ghost" onClick={() => set("logoUrl", "")}>
@@ -151,14 +151,14 @@ export function TaxSettings({ initial }: { initial: Settings["tax"] }) {
       initial={initial}
       prepare={(v) => ({ ...v, gstSlabs: [...new Set((v.gstSlabs as number[]).map(Number))].sort((a, b) => a - b) })}
     >
-      <FormSection title="GST rates" description="Rates offered when adding products">
+      <FormSection title="GST Rates" description="Rates offered when adding products">
         <SlabEditor />
       </FormSection>
       <FormSection title="Defaults">
         <FormGrid>
-          <SlabSelect name="defaultGstRate" label="Default GST rate for new products" />
-          <SlabSelect name="otherChargesGstRate" label="GST on other charges" hint="Freight, packing etc. on invoices" />
-          <SwitchF name="pricesTaxInclusive" label="Prices include GST by default" hint="For new products" />
+          <SlabSelect name="defaultGstRate" label="Default GST Rate for New Products" />
+          <SlabSelect name="otherChargesGstRate" label="GST on Other Charges" hint="Freight, packing etc. on invoices" />
+          <SwitchF name="pricesTaxInclusive" label="Prices Include GST by Default" hint="For new products" />
         </FormGrid>
       </FormSection>
     </SettingsSection>
@@ -244,13 +244,13 @@ export function InventorySettings({ initial }: { initial: Settings["inventory"] 
     <SettingsSection group="inventory" initial={initial}>
       <FormSection title="Stock">
         <FormGrid>
-          <SwitchF name="allowNegativeStock" label="Allow negative stock" hint="When off, a sale or issue cannot take stock below zero" />
-          <NumF name="defaultReorderLevel" label="Default reorder level" hint="For new products" step="any" />
-          <NumF name="defaultOpeningStock" label="Default opening stock" hint="Pre-filled when adding a product" step="any" />
+          <SwitchF name="allowNegativeStock" label="Allow Negative Stock" hint="When off, a sale or issue cannot take stock below zero" />
+          <NumF name="defaultReorderLevel" label="Default Reorder Level" hint="For new products" step="any" />
+          <NumF name="defaultOpeningStock" label="Default Opening Stock" hint="Pre-filled when adding a product" step="any" />
           <SelectF
             name="costingMethod"
-            label="Costing method"
-            options={[{ value: "WEIGHTED_AVERAGE", label: "Weighted average" }]}
+            label="Costing Method"
+            options={[{ value: "WEIGHTED_AVERAGE", label: "Weighted Average" }]}
             hint="Stock is valued at the weighted average purchase cost"
             disabled
           />
@@ -267,14 +267,14 @@ export function InvoiceSettings({ initial }: { initial: Settings["invoice"] }) {
     <SettingsSection group="invoice" initial={initial}>
       <FormSection title="Invoice">
         <FormGrid>
-          <NumF name="defaultPaymentTermsDays" label="Default payment terms" suffix="days" hint="0 = due on the invoice date" />
-          <SwitchF name="roundOff" label="Round off the total" hint="To the nearest rupee" />
-          <SwitchF name="showBankDetails" label="Show bank details on invoices" />
-          <SelectF name="template" label="Invoice layout" options={[{ value: "TALLY_CLASSIC", label: "Tally classic" }]} disabled />
+          <NumF name="defaultPaymentTermsDays" label="Default Payment Terms" suffix="days" hint="0 = due on the invoice date" />
+          <SwitchF name="roundOff" label="Round Off the Total" hint="To the nearest rupee" />
+          <SwitchF name="showBankDetails" label="Show Bank Details on Invoices" />
+          <SelectF name="template" label="Invoice Layout" options={[{ value: "TALLY_CLASSIC", label: "Tally Classic" }]} disabled />
         </FormGrid>
       </FormSection>
-      <FormSection title="Terms & conditions" description="Printed at the bottom of every invoice">
-        <AreaF name="termsAndConditions" label="Terms & conditions" rows={6} />
+      <FormSection title="Terms & Conditions" description="Printed at the bottom of every invoice">
+        <AreaF name="termsAndConditions" label="Terms & Conditions" rows={6} />
       </FormSection>
     </SettingsSection>
   );
@@ -290,7 +290,7 @@ export function GeneralSettings({ initial }: { initial: Settings["general"] }) {
           <TextF name="currency" label="Currency" required maxLength={10} />
           <SelectF
             name="dateFormat"
-            label="Date format"
+            label="Date Format"
             options={[
               { value: "DD-MM-YYYY", label: "16-10-2026" },
               { value: "DD/MM/YYYY", label: "16/10/2026" },
@@ -298,8 +298,8 @@ export function GeneralSettings({ initial }: { initial: Settings["general"] }) {
               { value: "YYYY-MM-DD", label: "2026-10-16" },
             ]}
           />
-          <SelectF name="timeZone" label="Time zone" options={[{ value: "Asia/Kolkata", label: "India (IST, UTC+05:30)" }]} />
-          <NumF name="decimalPrecision" label="Decimal places" min={0} max={4} />
+          <SelectF name="timeZone" label="Time Zone" options={[{ value: "Asia/Kolkata", label: "India (IST, UTC+05:30)" }]} />
+          <NumF name="decimalPrecision" label="Decimal Places" min={0} max={4} />
         </FormGrid>
       </FormSection>
     </SettingsSection>
@@ -311,12 +311,12 @@ export function GeneralSettings({ initial }: { initial: Settings["general"] }) {
 export function AnalysisSettings({ initial }: { initial: Settings["analysis"] }) {
   return (
     <SettingsSection group="analysis" initial={initial}>
-      <FormSection title="Stock movement analysis" description="Used by the fast / slow-moving and dead-stock reports">
+      <FormSection title="Stock Movement Analysis" description="Used by the fast / slow-moving and dead-stock reports">
         <FormGrid cols={4}>
-          <NumF name="analysisPeriodDays" label="Analysis period" suffix="days" min={1} required />
-          <NumF name="fastMovingThreshold" label="Fast-moving at or above" suffix="units/day" step="any" required />
-          <NumF name="slowMovingThreshold" label="Slow-moving below" suffix="units/day" step="any" required />
-          <NumF name="deadStockDays" label="Dead stock after" suffix="days unsold" min={1} required />
+          <NumF name="analysisPeriodDays" label="Analysis Period" suffix="days" min={1} required />
+          <NumF name="fastMovingThreshold" label="Fast-Moving at or Above" suffix="units/day" step="any" required />
+          <NumF name="slowMovingThreshold" label="Slow-Moving Below" suffix="units/day" step="any" required />
+          <NumF name="deadStockDays" label="Dead Stock After" suffix="days unsold" min={1} required />
         </FormGrid>
       </FormSection>
     </SettingsSection>
@@ -328,12 +328,12 @@ export function AnalysisSettings({ initial }: { initial: Settings["analysis"] })
 export function SecuritySettings({ initial }: { initial: Settings["security"] }) {
   return (
     <SettingsSection group="security" initial={initial}>
-      <FormSection title="Sign-in and sessions">
+      <FormSection title="Sign-In and Sessions">
         <FormGrid cols={4}>
-          <NumF name="sessionTimeoutMinutes" label="Sign out after inactivity" suffix="minutes" min={5} max={1440} required />
-          <NumF name="maxFailedAttempts" label="Failed attempts before lock" min={1} max={50} required />
-          <NumF name="lockoutMinutes" label="Lock duration" suffix="minutes" min={1} max={1440} required />
-          <NumF name="rememberMeDays" label="“Remember me” lasts" suffix="days" min={1} max={365} required />
+          <NumF name="sessionTimeoutMinutes" label="Sign Out After Inactivity" suffix="minutes" min={5} max={1440} required />
+          <NumF name="maxFailedAttempts" label="Failed Attempts Before Lock" min={1} max={50} required />
+          <NumF name="lockoutMinutes" label="Lock Duration" suffix="minutes" min={1} max={1440} required />
+          <NumF name="rememberMeDays" label="“Remember Me” Lasts" suffix="days" min={1} max={365} required />
         </FormGrid>
       </FormSection>
     </SettingsSection>

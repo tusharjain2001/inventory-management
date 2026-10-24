@@ -86,7 +86,7 @@ export function RoleForm({ role }: { role?: RoleDetail }) {
           <Field label="Description" htmlFor="role-desc" error={errors.description}>
             <Input id="role-desc" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={300} />
           </Field>
-          <Field label="Maximum discount (%)" htmlFor="role-disc" error={errors.maxDiscountPercent} hint="Highest discount this role can give on a sale">
+          <Field label="Maximum Discount (%)" htmlFor="role-disc" error={errors.maxDiscountPercent} hint="Highest discount this role can give on a sale">
             <Input id="role-disc" type="number" step="0.01" min="0" max="100" value={maxDiscount} onChange={(e) => setMaxDiscount(e.target.value)} />
           </Field>
         </FormGrid>
@@ -144,7 +144,7 @@ export function RoleForm({ role }: { role?: RoleDetail }) {
           {isEdit ? "Back" : "Cancel"}
         </Button>
         <Button type="submit" disabled={busy}>
-          {busy ? "Saving…" : isEdit ? "Save role" : "Create role"}
+          {busy ? "Saving…" : isEdit ? "Save Role" : "Create Role"}
         </Button>
       </div>
     </form>

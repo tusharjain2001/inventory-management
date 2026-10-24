@@ -42,7 +42,7 @@ function LoginForm() {
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="identifier">Email or username</Label>
+            <Label htmlFor="identifier">Email or Username</Label>
             <Input
               id="identifier"
               autoComplete="username"
@@ -56,7 +56,7 @@ function LoginForm() {
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
               <Link href="/forgot-password" className="text-xs text-muted-foreground hover:underline">
-                Forgot password?
+                Forgot Password?
               </Link>
             </div>
             <Input
@@ -70,7 +70,7 @@ function LoginForm() {
           </div>
           <label className="flex items-center gap-2 text-sm">
             <Checkbox checked={rememberMe} onCheckedChange={(v) => setRememberMe(v === true)} />
-            Remember me on this device
+            Remember Me on This Device
           </label>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button type="submit" className="w-full" size="lg" disabled={busy}>

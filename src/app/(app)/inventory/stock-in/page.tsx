@@ -47,7 +47,7 @@ function StockInList() {
 
   const columns: Column<StockInRow>[] = [
     { key: "date", header: "Date", sortable: true, cell: (r) => formatDate(r.date), exportValue: (r) => formatDate(r.date) },
-    { key: "stockInNo", header: "Stock-in No", cell: (r) => <span className="font-medium whitespace-nowrap">{r.stockInNo}</span> },
+    { key: "stockInNo", header: "Stock-In No", cell: (r) => <span className="font-medium whitespace-nowrap">{r.stockInNo}</span> },
     {
       key: "source",
       header: "Source",
@@ -57,7 +57,7 @@ function StockInList() {
     { key: "supplier", header: "Supplier", cell: (r) => r.supplier?.name ?? "—", exportValue: (r) => r.supplier?.name ?? "" },
     {
       key: "purchaseInvoiceNo",
-      header: "Purchase invoice",
+      header: "Purchase Invoice",
       cell: (r) =>
         r.purchaseInvoiceNo ? (
           <div className="whitespace-nowrap">
@@ -108,7 +108,7 @@ function StockInList() {
         <Can permission="inventory.stockIn">
           <Button asChild>
             <Link href="/inventory/stock-in/new">
-              <Plus /> New stock in
+              <Plus /> New Stock In
             </Link>
           </Button>
         </Can>
@@ -120,16 +120,16 @@ function StockInList() {
           className="h-9 w-40"
           value={list.filters.source}
           onChange={(v) => list.setFilter("source", v)}
-          clearLabel="All sources"
-          placeholder="All sources"
+          clearLabel="All Sources"
+          placeholder="All Sources"
           options={STOCK_IN_SOURCES.map((s) => ({ value: s, label: label(s) }))}
         />
         <SimpleSelect
           className="h-9 w-48"
           value={list.filters.supplierId}
           onChange={(v) => list.setFilter("supplierId", v)}
-          clearLabel="All suppliers"
-          placeholder="All suppliers"
+          clearLabel="All Suppliers"
+          placeholder="All Suppliers"
           options={(meta?.suppliers ?? []).map((s) => ({ value: String(s.id), label: s.name }))}
         />
         <DateRangeFilter

@@ -120,7 +120,7 @@ function CategoryManager() {
     <>
       <PageHeader title="Categories" description="Product categories and sub-categories">
         <Button onClick={() => setEditing({ kind: "category" })}>
-          <Plus /> Add category
+          <Plus /> Add Category
         </Button>
       </PageHeader>
 
@@ -200,7 +200,7 @@ function CategoryManager() {
                       <p className="py-2 text-xs text-muted-foreground">No sub-categories</p>
                     )}
                     <Button variant="ghost" size="sm" className="my-1" onClick={() => setEditing({ kind: "sub", categoryId: c.id })}>
-                      <Plus /> Add sub-category
+                      <Plus /> Add Sub-Category
                     </Button>
                   </div>
                 )}
@@ -327,7 +327,7 @@ function EditForm({
     <form onSubmit={onSubmit} className="grid gap-4">
       <DialogHeader>
         <DialogTitle>
-          {rec ? `Edit ${rec.name}` : isSub ? "Add sub-category" : "Add category"}
+          {rec ? `Edit ${rec.name}` : isSub ? "Add Sub-Category" : "Add Category"}
         </DialogTitle>
         {isSub && !rec && parent && <DialogDescription>Under {parent.name}</DialogDescription>}
       </DialogHeader>

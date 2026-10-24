@@ -60,7 +60,7 @@ function InvoiceView({ id }: { id: number }) {
     const reason = await confirm({
       title: `Cancel invoice ${inv.invoiceNo}?`,
       description: "The order is cancelled and its items go back into showroom stock. The invoice number is not reused.",
-      confirmText: "Cancel invoice",
+      confirmText: "Cancel Invoice",
       destructive: true,
       reason: { label: "Reason", placeholder: "Why is this invoice being cancelled?" },
     });
@@ -95,7 +95,7 @@ function InvoiceView({ id }: { id: number }) {
     const reason = await confirm({
       title: `Cancel credit note ${no}?`,
       description: "The invoice balance goes back up by the credit note amount.",
-      confirmText: "Cancel credit note",
+      confirmText: "Cancel Credit Note",
       destructive: true,
       reason: { label: "Reason" },
     });
@@ -137,7 +137,7 @@ function InvoiceView({ id }: { id: number }) {
         </Button>
         {active && can("payments.record") && inv.balanceDue > 0.005 && (
           <Button onClick={() => setPayDialog({ type: "RECEIPT" })}>
-            <IndianRupee /> Record payment
+            <IndianRupee /> Record Payment
           </Button>
         )}
         {can("payments.record") && inv.amountPaid > 0.005 && (
@@ -147,12 +147,12 @@ function InvoiceView({ id }: { id: number }) {
         )}
         {active && can("creditNotes.manage") && (
           <Button variant="outline" onClick={() => setCnOpen(true)}>
-            <FilePlus2 /> Credit note
+            <FilePlus2 /> Credit Note
           </Button>
         )}
         {can("invoices.manage") && (
           <Button variant="outline" onClick={() => setDespatchOpen(true)}>
-            <Truck /> Despatch details
+            <Truck /> Despatch Details
           </Button>
         )}
         {active && can("sales.cancel") && (
@@ -170,16 +170,16 @@ function InvoiceView({ id }: { id: number }) {
       )}
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <StatCard label="Invoice total" value={<Money value={inv.grandTotal} />} />
-        <StatCard label="Received (net)" value={<Money value={inv.amountPaid} />} sub={`${inv.payments.length} payment${inv.payments.length === 1 ? "" : "s"}`} />
-        <StatCard label="Credit notes" value={<Money value={inv.creditNoteTotal} />} />
+        <StatCard label="Invoice Total" value={<Money value={inv.grandTotal} />} />
+        <StatCard label="Received (Net)" value={<Money value={inv.amountPaid} />} sub={`${inv.payments.length} payment${inv.payments.length === 1 ? "" : "s"}`} />
+        <StatCard label="Credit Notes" value={<Money value={inv.creditNoteTotal} />} />
         <StatCard
-          label="Balance due"
+          label="Balance Due"
           value={<Money value={active ? inv.balanceDue : 0} className={cn(inv.displayStatus === "OVERDUE" && "text-red-700")} />}
           sub={inv.balanceDue < -0.005 && active ? "Refund due to customer" : undefined}
         />
         <StatCard
-          label="Due date"
+          label="Due Date"
           value={<span className={cn("text-base", inv.displayStatus === "OVERDUE" && "text-red-700")}>{formatDate(inv.dueDate)}</span>}
           sub={label(inv.displayStatus)}
         />
@@ -194,10 +194,10 @@ function InvoiceView({ id }: { id: number }) {
                 { label: "Buyer", value: <Link href={`/customers/${inv.customerId}`} className="hover:underline">{inv.order.customerName}</Link> },
                 { label: "Mobile", value: inv.order.customerPhone },
                 { label: "GSTIN", value: inv.order.customerGstin },
-                { label: "Billing address", value: inv.order.billingAddress },
-                { label: "Place of supply", value: `${inv.order.placeOfSupply} (${inv.order.placeOfSupplyCode}) · ${inv.order.isInterState ? "IGST" : "CGST + SGST"}` },
+                { label: "Billing Address", value: inv.order.billingAddress },
+                { label: "Place of Supply", value: `${inv.order.placeOfSupply} (${inv.order.placeOfSupplyCode}) · ${inv.order.isInterState ? "IGST" : "CGST + SGST"}` },
                 { label: "Salesperson", value: inv.order.salesperson?.name },
-                { label: "Payment terms", value: inv.order.paymentTermsDays ? `${inv.order.paymentTermsDays} days` : "Due on invoice" },
+                { label: "Payment Terms", value: inv.order.paymentTermsDays ? `${inv.order.paymentTermsDays} days` : "Due on invoice" },
                 { label: "Issued by", value: `${inv.createdBy?.name ?? "—"} · ${formatDateTime(inv.createdAt)}` },
                 { label: "Notes", value: inv.order.notes },
               ]}
@@ -243,10 +243,10 @@ function InvoiceView({ id }: { id: number }) {
                         </td>
                         {can("payments.edit") && (
                           <td className="px-3 py-2 text-right whitespace-nowrap">
-                            <Button variant="ghost" size="icon-sm" onClick={() => setPayDialog({ type: p.type, payment: p })} aria-label="Edit payment">
+                            <Button variant="ghost" size="icon-sm" onClick={() => setPayDialog({ type: p.type, payment: p })} aria-label="Edit Payment">
                               <Pencil />
                             </Button>
-                            <Button variant="ghost" size="icon-sm" onClick={() => deletePayment(p)} aria-label="Delete payment">
+                            <Button variant="ghost" size="icon-sm" onClick={() => deletePayment(p)} aria-label="Delete Payment">
                               <Trash2 />
                             </Button>
                           </td>
@@ -261,7 +261,7 @@ function InvoiceView({ id }: { id: number }) {
 
           <section className="rounded-lg border bg-card">
             <div className="border-b px-4 py-3">
-              <h2 className="text-sm font-semibold">Credit notes</h2>
+              <h2 className="text-sm font-semibold">Credit Notes</h2>
             </div>
             {inv.creditNotes.length === 0 ? (
               <p className="px-4 py-6 text-center text-sm text-muted-foreground">No credit notes</p>
@@ -299,11 +299,11 @@ function InvoiceView({ id }: { id: number }) {
                           <Money value={c.total} />
                         </td>
                         <td className="px-3 py-2 text-right whitespace-nowrap">
-                          <Button variant="ghost" size="icon-sm" onClick={() => window.open(`/print/credit-notes/${c.id}`, "_blank", "noopener")} aria-label="Print credit note">
+                          <Button variant="ghost" size="icon-sm" onClick={() => window.open(`/print/credit-notes/${c.id}`, "_blank", "noopener")} aria-label="Print Credit Note">
                             <Printer />
                           </Button>
                           {c.status === "ACTIVE" && can("creditNotes.manage") && (
-                            <Button variant="ghost" size="icon-sm" onClick={() => cancelCreditNote(c.id, c.creditNoteNo)} aria-label="Cancel credit note">
+                            <Button variant="ghost" size="icon-sm" onClick={() => cancelCreditNote(c.id, c.creditNoteNo)} aria-label="Cancel Credit Note">
                               <Ban />
                             </Button>
                           )}
@@ -323,7 +323,7 @@ function InvoiceView({ id }: { id: number }) {
             <p className="mt-3 text-xs text-muted-foreground">{inv.totalInWords}</p>
           </div>
           <div className="rounded-lg border bg-card p-4">
-            <h2 className="mb-3 text-sm font-semibold">Despatch details</h2>
+            <h2 className="mb-3 text-sm font-semibold">Despatch Details</h2>
             <DetailList className="sm:grid-cols-1" items={despatchItems.filter((d) => d.value)} />
             {!despatchItems.some((d) => d.value) && <p className="text-sm text-muted-foreground">None entered</p>}
           </div>
@@ -342,7 +342,7 @@ function InvoiceView({ id }: { id: number }) {
       <DespatchDialog
         open={despatchOpen}
         onOpenChange={setDespatchOpen}
-        title="Despatch details"
+        title="Despatch Details"
         description="Shown in the invoice header boxes. Amounts cannot be changed after issue."
         initial={inv}
         submitText="Save"

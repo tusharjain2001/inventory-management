@@ -69,7 +69,7 @@ const GROUPS: { value: GroupBy; label: string }[] = [
 
 const PAYMENT_OPTIONS = ["PAID", "PARTIALLY_PAID", "UNPAID", "OVERDUE", "REFUNDED"].map((s) => ({
   value: s,
-  label: s === "UNPAID" ? "Pending (not due)" : label(s),
+  label: s === "UNPAID" ? "Pending (Not Due)" : label(s),
 }));
 
 export default function SalesReportPage() {
@@ -242,18 +242,18 @@ function SalesReport() {
           className="h-9 w-full sm:w-44"
           value={f.paymentStatus}
           onChange={(paymentStatus) => setF({ paymentStatus })}
-          clearLabel="Any payment status"
-          placeholder="Any payment status"
+          clearLabel="Any Payment Status"
+          placeholder="Any Payment Status"
           options={PAYMENT_OPTIONS}
         />
       </FilterBar>
 
       <StatGrid>
-        <StatCard label="Total sales (incl. GST)" value={formatINR(t?.total)} sub={`Taxable ${formatINR(t?.taxable)}`} loading={!data} />
-        <StatCard label="Total discount" value={formatINR(t?.discount)} loading={!data} />
+        <StatCard label="Total Sales (incl. GST)" value={formatINR(t?.total)} sub={`Taxable ${formatINR(t?.taxable)}`} loading={!data} />
+        <StatCard label="Total Discount" value={formatINR(t?.discount)} loading={!data} />
         <StatCard label="Total GST" value={formatINR(t?.gst)} loading={!data} />
-        <StatCard label="Total orders" value={t?.orders ?? 0} sub={`${qty(t?.quantity)} units`} loading={!data} />
-        <StatCard label="Average order value" value={formatINR(t?.avgOrderValue)} loading={!data} />
+        <StatCard label="Total Orders" value={t?.orders ?? 0} sub={`${qty(t?.quantity)} units`} loading={!data} />
+        <StatCard label="Average Order Value" value={formatINR(t?.avgOrderValue)} loading={!data} />
       </StatGrid>
       {!!t?.creditNotes && (
         <HelpText>

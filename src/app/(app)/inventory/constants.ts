@@ -16,12 +16,12 @@ export const STOCK_TXN_TYPES = [
 export type StockTxnTypeName = (typeof STOCK_TXN_TYPES)[number];
 
 export const STOCK_TXN_LABELS: Record<StockTxnTypeName, string> = {
-  OPENING: "Opening stock",
-  STOCK_IN: "Stock in",
+  OPENING: "Opening Stock",
+  STOCK_IN: "Stock In",
   SALE: "Sale",
-  SALE_REVERSAL: "Sale cancelled",
-  DISPLAY_OUT: "Out for display",
-  DISPLAY_RETURN: "Returned from display",
+  SALE_REVERSAL: "Sale Cancelled",
+  DISPLAY_OUT: "Out for Display",
+  DISPLAY_RETURN: "Returned from Display",
   ADJUSTMENT_IN: "Adjustment (+)",
   ADJUSTMENT_OUT: "Adjustment (−)",
   DAMAGED: "Damaged",

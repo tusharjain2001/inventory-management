@@ -168,17 +168,17 @@ function ValuationReport() {
           value={f.zero || "false"}
           onChange={(v) => setF({ zero: v === "true" ? "true" : "" })}
           options={[
-            { value: "false", label: "Items with stock" },
-            { value: "true", label: "Include zero stock" },
+            { value: "false", label: "Items with Stock" },
+            { value: "true", label: "Include Zero Stock" },
           ]}
         />
       </FilterBar>
 
       <StatGrid>
-        <StatCard label="Total stock value" value={formatINR(t?.value)} loading={!data} />
-        <StatCard label="Total units" value={qty(t?.units)} sub={`${qty(t?.onDisplayStock)} on display`} loading={!data} />
+        <StatCard label="Total Stock Value" value={formatINR(t?.value)} loading={!data} />
+        <StatCard label="Total Units" value={qty(t?.units)} sub={`${qty(t?.onDisplayStock)} on display`} loading={!data} />
         <StatCard label="Products" value={t?.products ?? 0} loading={!data} />
-        <StatCard label="Costing method" value={<span className="text-base">Weighted average</span>} loading={!data} />
+        <StatCard label="Costing Method" value={<span className="text-base">Weighted Average</span>} loading={!data} />
       </StatGrid>
 
       <div className="mb-3">
@@ -189,8 +189,8 @@ function ValuationReport() {
             setF({ view });
           }}
           options={[
-            { value: "category", label: "By category" },
-            { value: "product", label: "By product" },
+            { value: "category", label: "By Category" },
+            { value: "product", label: "By Product" },
           ]}
         />
       </div>

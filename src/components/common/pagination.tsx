@@ -28,10 +28,10 @@ export function Pagination({
       <div className="flex items-center gap-2">
         {onPageSizeChange && (
           <SimpleSelect
-            className="h-8 w-24"
+            className="h-8 w-20"
             value={String(pageSize)}
             onChange={(v) => onPageSizeChange(Number(v))}
-            options={[25, 50, 100, 200].map((n) => ({ value: String(n), label: `${n} / page` }))}
+            options={[25, 50, 100, 200].map((n) => ({ value: String(n), label: String(n) }))}
           />
         )}
         <Button variant="outline" size="icon-sm" disabled={page <= 1} onClick={() => onPageChange(page - 1)} aria-label="Previous page">

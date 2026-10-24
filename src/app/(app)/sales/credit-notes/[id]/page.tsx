@@ -40,7 +40,7 @@ function CreditNoteView({ id }: { id: number }) {
     const reason = await confirm({
       title: `Cancel credit note ${cn.creditNoteNo}?`,
       description: "The invoice balance goes back up by this amount.",
-      confirmText: "Cancel credit note",
+      confirmText: "Cancel Credit Note",
       destructive: true,
       reason: { label: "Reason" },
     });
@@ -69,7 +69,7 @@ function CreditNoteView({ id }: { id: number }) {
             <span>{cn.invoice.order.customerName}</span>
           </span>
         }
-        back={{ href: "/sales/credit-notes", label: "Credit notes" }}
+        back={{ href: "/sales/credit-notes", label: "Credit Notes" }}
       >
         <Button variant="outline" onClick={() => window.open(`/print/credit-notes/${id}`, "_blank", "noopener")}>
           <Printer /> Print / Download PDF
@@ -86,10 +86,10 @@ function CreditNoteView({ id }: { id: number }) {
           <DetailList
             className="lg:grid-cols-3"
             items={[
-              { label: "Against invoice", value: <Link href={`/sales/invoices/${cn.invoiceId}`} className="hover:underline">{cn.invoice.invoiceNo} ({formatDate(cn.invoice.invoiceDate)})</Link> },
+              { label: "Against Invoice", value: <Link href={`/sales/invoices/${cn.invoiceId}`} className="hover:underline">{cn.invoice.invoiceNo} ({formatDate(cn.invoice.invoiceDate)})</Link> },
               { label: "Customer", value: cn.invoice.order.customerName },
               { label: "GSTIN", value: cn.invoice.order.customerGstin },
-              { label: "Place of supply", value: `${cn.invoice.order.placeOfSupply} (${cn.invoice.order.placeOfSupplyCode})` },
+              { label: "Place of Supply", value: `${cn.invoice.order.placeOfSupply} (${cn.invoice.order.placeOfSupplyCode})` },
               { label: "Reason", value: cn.reason },
               { label: "Issued", value: `${formatDateTime(cn.createdAt)}${cn.createdBy ? ` by ${cn.createdBy.name}` : ""}` },
             ]}

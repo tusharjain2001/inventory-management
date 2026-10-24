@@ -43,23 +43,23 @@ function ResetForm() {
     <div className="space-y-4 text-sm">
       <p>Your password has been changed. You can now sign in with the new password.</p>
       <Button asChild className="w-full">
-        <Link href="/login">Go to sign in</Link>
+        <Link href="/login">Go to Sign In</Link>
       </Button>
     </div>
   ) : (
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="password">New password</Label>
+        <Label htmlFor="password">New Password</Label>
         <Input id="password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
         <p className="text-xs text-muted-foreground">At least 8 characters.</p>
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="confirm">Confirm new password</Label>
+        <Label htmlFor="confirm">Confirm New Password</Label>
         <Input id="confirm" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" className="w-full" size="lg" disabled={busy}>
-        {busy ? "Saving…" : "Set new password"}
+        {busy ? "Saving…" : "Set New Password"}
       </Button>
     </form>
   );
@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Set a new password</CardTitle>
+        <CardTitle>Set a New Password</CardTitle>
       </CardHeader>
       <CardContent>
         <Suspense>

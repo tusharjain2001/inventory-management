@@ -100,7 +100,7 @@ function Ledger() {
     { key: "balanceAfter", header: "Balance", align: "right", cell: (r) => <Qty value={r.balanceAfter} /> },
     ...(showCost
       ? ([
-          { key: "unitCost", header: "Unit cost", align: "right", cell: (r) => <Money value={r.unitCost} />, exportValue: (r) => r.unitCost ?? 0 },
+          { key: "unitCost", header: "Unit Cost", align: "right", cell: (r) => <Money value={r.unitCost} />, exportValue: (r) => r.unitCost ?? 0 },
           { key: "totalCost", header: "Value", align: "right", cell: (r) => <Money value={r.totalCost} />, exportValue: (r) => r.totalCost ?? 0 },
         ] as Column<LedgerRow>[])
       : []),
@@ -136,16 +136,16 @@ function Ledger() {
           className="h-9 w-48"
           value={list.filters.type}
           onChange={(v) => list.setFilter("type", v)}
-          clearLabel="All movements"
-          placeholder="All movements"
+          clearLabel="All Movements"
+          placeholder="All Movements"
           options={STOCK_TXN_TYPES.map((t) => ({ value: t, label: STOCK_TXN_LABELS[t] }))}
         />
         <SimpleSelect
           className="h-9 w-40"
           value={list.filters.createdById}
           onChange={(v) => list.setFilter("createdById", v)}
-          clearLabel="Any user"
-          placeholder="Any user"
+          clearLabel="Any User"
+          placeholder="Any User"
           options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
         />
         <DateRangeFilter

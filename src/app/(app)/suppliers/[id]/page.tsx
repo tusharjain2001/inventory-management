@@ -68,7 +68,7 @@ function SupplierView({ id }: { id: number }) {
   const columns: Column<StockInRow>[] = [
     {
       key: "stockInNo",
-      header: "Stock-in",
+      header: "Stock-In",
       cell: (r) => (
         <Link href={`/inventory/stock-in/${r.id}`} className="font-medium text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
           {r.stockInNo}
@@ -76,7 +76,7 @@ function SupplierView({ id }: { id: number }) {
       ),
     },
     { key: "date", header: "Date", cell: (r) => formatDate(r.date) },
-    { key: "purchaseInvoiceNo", header: "Supplier invoice", cell: (r) => r.purchaseInvoiceNo ?? "—" },
+    { key: "purchaseInvoiceNo", header: "Supplier Invoice", cell: (r) => r.purchaseInvoiceNo ?? "—" },
     { key: "items", header: "Items", align: "right", cell: (r) => r._count.items },
     ...(showValues ? ([{ key: "total", header: "Total", align: "right", cell: (r) => <Money value={r.total} /> }] as Column<StockInRow>[]) : []),
   ];
@@ -102,13 +102,13 @@ function SupplierView({ id }: { id: number }) {
       </PageHeader>
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Stock-ins" value={s.stats.purchases} />
-        {showValues && <StatCard label="Purchase value" value={<Money value={s.stats.purchaseValue} />} sub="All stock-ins incl. GST" />}
+        <StatCard label="Stock-Ins" value={s.stats.purchases} />
+        {showValues && <StatCard label="Purchase Value" value={<Money value={s.stats.purchaseValue} />} sub="All stock-ins incl. GST" />}
         <StatCard
-          label="Last purchase"
+          label="Last Purchase"
           value={<span className="text-base">{s.stats.lastPurchaseDate ? formatDate(s.stats.lastPurchaseDate) : "None yet"}</span>}
         />
-        <StatCard label="Preferred supplier for" value={s.stats.preferredForProducts} sub="products" />
+        <StatCard label="Preferred Supplier For" value={s.stats.preferredForProducts} sub="products" />
       </div>
 
       <Tabs defaultValue="details">

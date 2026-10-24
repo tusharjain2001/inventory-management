@@ -33,7 +33,7 @@ export default function AdjustmentsPage() {
 }
 
 const signed = (r: AdjustmentRow) => `${r.type === "INCREASE" ? "+" : "−"}${formatQty(r.quantity)}`;
-const STATUS_TEXT = { PENDING: "Pending approval", APPROVED: "Approved", REJECTED: "Rejected" } as const;
+const STATUS_TEXT = { PENDING: "Pending Approval", APPROVED: "Approved", REJECTED: "Rejected" } as const;
 
 function AdjustmentList() {
   const [range, setRange] = useState<DateRange>({ from: "", to: "" });
@@ -130,7 +130,7 @@ function AdjustmentList() {
       ),
       exportValue: (r) => (r.remarks ? `${r.reason}: ${r.remarks}` : r.reason),
     },
-    { key: "approvedBy", header: "Approved / rejected by", cell: (r) => r.approvedBy?.name ?? "—", exportValue: (r) => r.approvedBy?.name ?? "" },
+    { key: "approvedBy", header: "Approved / Rejected By", cell: (r) => r.approvedBy?.name ?? "—", exportValue: (r) => r.approvedBy?.name ?? "" },
     { key: "createdBy", header: "By", cell: (r) => r.createdBy?.name ?? "—", exportValue: (r) => r.createdBy?.name ?? "" },
   ];
 
@@ -146,7 +146,7 @@ function AdjustmentList() {
         <Can permission="inventory.adjust">
           <Button asChild>
             <Link href="/inventory/adjustments/new">
-              <Plus /> New adjustment
+              <Plus /> New Adjustment
             </Link>
           </Button>
         </Can>
@@ -159,7 +159,7 @@ function AdjustmentList() {
             {data.pendingCount} adjustment{data.pendingCount === 1 ? " is" : "s are"} waiting for your approval.
           </span>
           <Button size="sm" variant="outline" onClick={() => list.setFilter("status", "PENDING")}>
-            Show pending
+            Show Pending
           </Button>
         </div>
       )}
@@ -170,16 +170,16 @@ function AdjustmentList() {
           className="h-9 w-40"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="All statuses"
-          placeholder="All statuses"
+          clearLabel="All Statuses"
+          placeholder="All Statuses"
           options={(["PENDING", "APPROVED", "REJECTED"] as const).map((v) => ({ value: v, label: STATUS_TEXT[v] }))}
         />
         <SimpleSelect
-          className="h-9 w-36"
+          className="h-9 w-48"
           value={list.filters.type}
           onChange={(v) => list.setFilter("type", v)}
-          clearLabel="Increase & decrease"
-          placeholder="Increase & decrease"
+          clearLabel="Increase & Decrease"
+          placeholder="Increase & Decrease"
           options={[
             { value: "INCREASE", label: "Increase" },
             { value: "DECREASE", label: "Decrease" },
@@ -189,8 +189,8 @@ function AdjustmentList() {
           className="h-9 w-52"
           value={list.filters.reason}
           onChange={(v) => list.setFilter("reason", v)}
-          clearLabel="All reasons"
-          placeholder="All reasons"
+          clearLabel="All Reasons"
+          placeholder="All Reasons"
           options={ADJUSTMENT_REASONS.map((r) => ({ value: r, label: r }))}
         />
         <DateRangeFilter
@@ -251,7 +251,7 @@ function AdjustmentList() {
                   label: open.status === "REJECTED" ? "Rejected by" : "Approved by",
                   value: open.approvedBy ? `${open.approvedBy.name}${open.approvedAt ? `, ${formatDateTime(open.approvedAt)}` : ""}` : undefined,
                 },
-                { label: "Rejection reason", value: open.rejectionReason },
+                { label: "Rejection Reason", value: open.rejectionReason },
               ]}
             />
           )}

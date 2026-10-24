@@ -18,7 +18,7 @@ export const DESPATCH_FIELDS: { key: keyof DespatchFields; label: string; type?:
   { key: "buyersOrderNo", label: "Buyer's Order No." },
   { key: "buyersOrderDate", label: "Buyer's Order Date", type: "date" },
   { key: "despatchDocNo", label: "Despatch Document No." },
-  { key: "despatchedThrough", label: "Despatched through" },
+  { key: "despatchedThrough", label: "Despatched Through" },
   { key: "destination", label: "Destination" },
   { key: "termsOfDelivery", label: "Terms of Delivery" },
 ];
@@ -32,12 +32,12 @@ export function emptyDespatch(from?: Partial<DespatchFields> | null): DespatchFo
   return out;
 }
 
-/** Despatch / reference fields shown in the invoice header boxes. Used for "Generate invoice" and later edits. */
+/** Despatch / reference fields shown in the invoice header boxes. Used for "Generate Invoice" and later edits. */
 export function DespatchFieldsGrid({ form, onChange, withDate }: { form: DespatchForm; onChange: (f: DespatchForm) => void; withDate?: boolean }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {withDate && (
-        <Field label="Invoice date" required className="sm:col-span-2">
+        <Field label="Invoice Date" required className="sm:col-span-2">
           <Input type="date" value={form.invoiceDate} max={todayIST()} onChange={(e) => onChange({ ...form, invoiceDate: e.target.value })} />
         </Field>
       )}

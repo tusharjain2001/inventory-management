@@ -348,7 +348,7 @@ export function OrderForm({
                   value={customer?.id}
                   selectedLabel={customer?.name}
                   allowClear={false}
-                  placeholder="Choose customer"
+                  placeholder="Choose Customer"
                   searchPlaceholder="Name, mobile, GSTIN…"
                   toOption={(c) => ({
                     value: c.id,
@@ -370,7 +370,7 @@ export function OrderForm({
               <Input value={head.customerPhone} onChange={(e) => setH("customerPhone", e.target.value)} inputMode="tel" />
             </Field>
             <Field
-              label="Place of supply"
+              label="Place of Supply"
               hint={isInterState ? "Inter-state: IGST" : "Intra-state: CGST + SGST"}
               className="sm:col-span-2 lg:col-span-1"
             >
@@ -380,7 +380,7 @@ export function OrderForm({
                 options={INDIAN_STATES.map((st) => ({ value: st.code, label: `${st.name} (${st.code})` }))}
               />
             </Field>
-            <Field label="Order date">
+            <Field label="Order Date">
               <Input type="date" value={head.orderDate} max={todayIST()} onChange={(e) => setH("orderDate", e.target.value)} />
             </Field>
             <Field label="Salesperson">
@@ -397,13 +397,13 @@ export function OrderForm({
           </button>
           {showMore && (
             <FormGrid cols={3} className="mt-3">
-              <Field label="Billing address" className="sm:col-span-2 lg:col-span-1">
+              <Field label="Billing Address" className="sm:col-span-2 lg:col-span-1">
                 <Textarea rows={2} value={head.billingAddress} onChange={(e) => setH("billingAddress", e.target.value)} />
               </Field>
-              <Field label="Shipping address" className="sm:col-span-2 lg:col-span-1">
+              <Field label="Shipping Address" className="sm:col-span-2 lg:col-span-1">
                 <Textarea rows={2} value={head.shippingAddress} onChange={(e) => setH("shippingAddress", e.target.value)} placeholder="Same as billing" />
               </Field>
-              <Field label="Payment terms (days)" hint="0 = due on invoice date">
+              <Field label="Payment Terms (Days)" hint="0 = due on invoice date">
                 <Input type="number" min="0" step="1" value={head.paymentTermsDays} onChange={(e) => setH("paymentTermsDays", e.target.value)} />
               </Field>
               <Field label="Notes" className="sm:col-span-2 lg:col-span-3">
@@ -452,7 +452,7 @@ export function OrderForm({
                       selectedLabel={p ? `${p.name} (${p.sku})` : undefined}
                       disabled={!!l.displayIssueItemId}
                       allowClear={false}
-                      placeholder={idx === lines.length - 1 ? "Add product…" : "Choose product"}
+                      placeholder={idx === lines.length - 1 ? "Add product…" : "Choose Product"}
                       searchPlaceholder="Name, SKU or HSN"
                       toOption={(row) => ({
                         value: row.id,
@@ -564,7 +564,7 @@ export function OrderForm({
               {filled.length} item{filled.length === 1 ? "" : "s"} · Enter moves to the next line
             </span>
             <Button type="button" variant="ghost" size="sm" onClick={() => setLines((ls) => [...ls, blankLine()])}>
-              <Plus /> Add line
+              <Plus /> Add Line
             </Button>
           </div>
         </FormSection>
@@ -589,7 +589,7 @@ export function OrderForm({
       <aside className="space-y-3 self-start lg:sticky lg:top-20">
         <div className="rounded-lg border bg-card p-4">
           <div className="mb-3 grid grid-cols-[1fr_auto] items-end gap-2">
-            <Field label="Invoice discount">
+            <Field label="Invoice Discount">
               <Input
                 type="number"
                 min="0"
@@ -613,13 +613,13 @@ export function OrderForm({
               ]}
             />
           </div>
-          <div className="mb-1.5 text-[13px] font-medium">Other charges</div>
+          <div className="mb-1.5 text-[13px] font-medium">Other Charges</div>
           <div className="mb-3 grid grid-cols-[1fr_88px_72px] items-end gap-2">
             <Input
               value={head.otherChargesLabel}
               onChange={(e) => setH("otherChargesLabel", e.target.value)}
               placeholder="e.g. Delivery"
-              aria-label="Other charges label"
+              aria-label="Other Charges Label"
             />
             <Input
               type="number"
@@ -629,7 +629,7 @@ export function OrderForm({
               onChange={(e) => setH("otherCharges", e.target.value)}
               placeholder="₹ 0"
               className="text-right"
-              aria-label="Other charges amount"
+              aria-label="Other Charges Amount"
             />
             <SimpleSelect
               value={head.otherChargesGstRate}
@@ -657,7 +657,7 @@ export function OrderForm({
             <FileText /> {busy === "invoice" ? "Creating invoice…" : "Save & Invoice"}
           </Button>
           <Button type="button" variant="outline" onClick={() => save("draft")} disabled={!!busy}>
-            <Save /> {busy === "draft" ? "Saving…" : isEdit ? "Save changes" : "Save draft"}
+            <Save /> {busy === "draft" ? "Saving…" : isEdit ? "Save Changes" : "Save Draft"}
           </Button>
           {onCancel && (
             <Button type="button" variant="ghost" onClick={onCancel} disabled={!!busy}>

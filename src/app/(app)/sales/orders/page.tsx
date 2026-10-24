@@ -97,7 +97,7 @@ function OrderList() {
     return {
       title: "Sales Orders",
       filename: "sales-orders",
-      subtitle: [describeRange(list.filters), list.filters.status ? `Status: ${label(list.filters.status)}` : "All statuses", `${all.total} orders`],
+      subtitle: [describeRange(list.filters), list.filters.status ? `Status: ${label(list.filters.status)}` : "All Statuses", `${all.total} orders`],
       columns,
       rows: all.data,
       totals: { grandTotal: formatAmount(all.sumGrandTotal) },
@@ -106,12 +106,12 @@ function OrderList() {
 
   return (
     <>
-      <PageHeader title="Sales orders" description="Drafts, confirmed and invoiced sales">
+      <PageHeader title="Sales Orders" description="Drafts, confirmed and invoiced sales">
         <ExportMenu getTable={exportTable} />
         <Can permission="sales.create">
           <Button asChild>
             <Link href="/sales/orders/new">
-              <Plus /> New sale
+              <Plus /> New Sale
             </Link>
           </Button>
         </Can>
@@ -123,8 +123,8 @@ function OrderList() {
           className="h-9 w-36"
           value={list.filters.status}
           onChange={(v) => list.setFilter("status", v)}
-          clearLabel="All statuses"
-          placeholder="All statuses"
+          clearLabel="All Statuses"
+          placeholder="All Statuses"
           options={["DRAFT", "CONFIRMED", "INVOICED", "CANCELLED"].map((s) => ({ value: s, label: label(s) }))}
         />
         {can("sales.viewAll") && (
@@ -132,8 +132,8 @@ function OrderList() {
             className="h-9 w-40"
             value={list.filters.salespersonId}
             onChange={(v) => list.setFilter("salespersonId", v)}
-            clearLabel="All salespeople"
-            placeholder="All salespeople"
+            clearLabel="All Salespeople"
+            placeholder="All Salespeople"
             options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
           />
         )}

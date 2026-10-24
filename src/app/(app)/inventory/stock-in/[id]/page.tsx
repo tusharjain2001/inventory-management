@@ -54,7 +54,7 @@ function StockInView({ id }: { id: number }) {
     { key: "quantity", header: "Qty", align: "right", cell: (i) => <Qty value={i.quantity} /> },
     ...(showCost
       ? ([
-          { key: "unitCost", header: "Unit cost", align: "right", cell: (i) => <Money value={i.unitCost} /> },
+          { key: "unitCost", header: "Unit Cost", align: "right", cell: (i) => <Money value={i.unitCost} /> },
           { key: "discountAmount", header: "Discount", align: "right", cell: (i) => (i.discountAmount ? <Money value={i.discountAmount} /> : "—") },
           { key: "taxableValue", header: "Taxable", align: "right", cell: (i) => <Money value={i.taxableValue} /> },
           {
@@ -91,7 +91,7 @@ function StockInView({ id }: { id: number }) {
           className="lg:grid-cols-3"
           items={[
             { label: "Supplier", value: s.supplier ? `${s.supplier.name}${s.supplier.gstin ? ` (GSTIN ${s.supplier.gstin})` : ""}` : null },
-            { label: "Purchase invoice", value: s.purchaseInvoiceNo ? `${s.purchaseInvoiceNo}${s.purchaseInvoiceDate ? ` dated ${formatDate(s.purchaseInvoiceDate)}` : ""}` : null },
+            { label: "Purchase Invoice", value: s.purchaseInvoiceNo ? `${s.purchaseInvoiceNo}${s.purchaseInvoiceDate ? ` dated ${formatDate(s.purchaseInvoiceDate)}` : ""}` : null },
             { label: "Recorded by", value: s.createdBy ? `${s.createdBy.name}, ${formatDateTime(s.createdAt)}` : formatDateTime(s.createdAt) },
             { label: "Remarks", value: s.remarks },
           ]}
@@ -111,7 +111,7 @@ function StockInView({ id }: { id: number }) {
                   <span className="text-right">{formatINR(s.subtotal)}</span>
                   <span className="text-muted-foreground">Discount</span>
                   <span className="text-right">−{formatINR(s.discountTotal)}</span>
-                  <span className="text-muted-foreground">Taxable value</span>
+                  <span className="text-muted-foreground">Taxable Value</span>
                   <span className="text-right">{formatINR(s.taxableTotal)}</span>
                   <span className="text-muted-foreground">GST</span>
                   <span className="text-right">{formatINR(s.gstTotal)}</span>

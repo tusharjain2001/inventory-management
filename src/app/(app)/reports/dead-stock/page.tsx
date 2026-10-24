@@ -154,10 +154,10 @@ function DeadStockReport() {
       </FilterBar>
 
       <StatGrid>
-        <StatCard label="Dead stock items" value={t?.products ?? 0} sub={days ? `No sale for ${days}+ days` : undefined} loading={!data} />
+        <StatCard label="Dead Stock Items" value={t?.products ?? 0} sub={days ? `No sale for ${days}+ days` : undefined} loading={!data} />
         <StatCard label="Units" value={qty(t?.ownedStock)} sub={`${qty(t?.onDisplayStock)} on display`} loading={!data} />
-        <StatCard label="Never sold" value={t?.neverSold ?? 0} loading={!data} />
-        {showCost && <StatCard label="Value locked in dead stock" value={formatINR(t?.stockValue)} loading={!data} />}
+        <StatCard label="Never Sold" value={t?.neverSold ?? 0} loading={!data} />
+        {showCost && <StatCard label="Value Locked in Dead Stock" value={formatINR(t?.stockValue)} loading={!data} />}
       </StatGrid>
 
       <HelpText>

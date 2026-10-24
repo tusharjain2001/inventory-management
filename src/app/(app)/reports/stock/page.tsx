@@ -139,18 +139,18 @@ function StockReport() {
           value={f.inactive || "false"}
           onChange={(v) => setF({ inactive: v === "true" ? "true" : "" })}
           options={[
-            { value: "false", label: "Active products" },
-            { value: "true", label: "Include inactive" },
+            { value: "false", label: "Active Products" },
+            { value: "true", label: "Include Inactive" },
           ]}
         />
       </FilterBar>
 
       <StatGrid>
         <StatCard label="Products" value={t?.products ?? 0} loading={!data} />
-        <StatCard label="Stock in" value={qty(t?.stockIn)} loading={!data} />
-        <StatCard label="Sold (net of cancellations)" value={qty(t?.sold)} loading={!data} />
-        <StatCard label="Closing stock (showroom)" value={qty(t?.closing)} sub={`+ ${qty(t?.displayClosing)} on display`} loading={!data} />
-        {showCost && <StatCard label="Closing stock value" value={formatINR(t?.stockValue)} loading={!data} />}
+        <StatCard label="Stock In" value={qty(t?.stockIn)} loading={!data} />
+        <StatCard label="Sold (Net of Cancellations)" value={qty(t?.sold)} loading={!data} />
+        <StatCard label="Closing Stock (Showroom)" value={qty(t?.closing)} sub={`+ ${qty(t?.displayClosing)} on display`} loading={!data} />
+        {showCost && <StatCard label="Closing Stock Value" value={formatINR(t?.stockValue)} loading={!data} />}
       </StatGrid>
 
       <HelpText>

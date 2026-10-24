@@ -82,7 +82,7 @@ export function SettingsSection<G extends SettingsGroup>({
           <p className="text-xs text-muted-foreground">You can view these settings but not change them.</p>
         ) : (
           <div className="sticky bottom-0 -mx-1 flex items-center justify-end gap-2 bg-background/90 px-1 py-2 backdrop-blur">
-            {dirty && <span className="mr-auto text-xs text-muted-foreground">Unsaved changes</span>}
+            {dirty && <span className="mr-auto text-xs text-muted-foreground">Unsaved Changes</span>}
             <Button type="button" variant="outline" disabled={!dirty || busy} onClick={() => setValues(structuredClone(initial) as Values)}>
               Discard
             </Button>

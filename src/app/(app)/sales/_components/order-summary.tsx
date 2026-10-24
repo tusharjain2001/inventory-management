@@ -22,7 +22,7 @@ export function ItemsTable({ items, showCost }: { items: OrderItem[]; showCost?:
             <th className="px-3 text-right font-medium">GST</th>
             <th className="px-3 text-right font-medium">Taxable</th>
             <th className="px-3 text-right font-medium">Total</th>
-            {showCost && <th className="px-3 text-right font-medium">Cost / unit</th>}
+            {showCost && <th className="px-3 text-right font-medium">Cost / Unit</th>}
           </tr>
         </thead>
         <tbody>
@@ -106,11 +106,11 @@ export function TotalsList({ t, className }: { t: TotalsView; className?: string
   return (
     <div className={cn("text-sm", className)}>
       <Row label="Subtotal" value={t.subtotal} />
-      {t.itemDiscountTotal > 0 && <Row label="Item discount" value={-t.itemDiscountTotal} muted />}
-      {t.invoiceDiscountAmount > 0 && <Row label={t.invoiceDiscountLabel ?? "Invoice discount"} value={-t.invoiceDiscountAmount} muted />}
-      {t.otherCharges > 0 && <Row label={t.otherChargesLabel || "Other charges"} value={t.otherCharges} />}
+      {t.itemDiscountTotal > 0 && <Row label="Item Discount" value={-t.itemDiscountTotal} muted />}
+      {t.invoiceDiscountAmount > 0 && <Row label={t.invoiceDiscountLabel ?? "Invoice Discount"} value={-t.invoiceDiscountAmount} muted />}
+      {t.otherCharges > 0 && <Row label={t.otherChargesLabel || "Other Charges"} value={t.otherCharges} />}
       <div className="my-1 border-t" />
-      <Row label="Taxable value" value={t.taxableTotal} strong />
+      <Row label="Taxable Value" value={t.taxableTotal} strong />
       {t.isInterState ? (
         <Row label="IGST" value={t.igstTotal} />
       ) : (
@@ -120,9 +120,9 @@ export function TotalsList({ t, className }: { t: TotalsView; className?: string
         </>
       )}
       {t.cessTotal > 0 && <Row label="Cess" value={t.cessTotal} />}
-      {Math.abs(t.roundOff) > 0.001 && <Row label="Round off" value={t.roundOff} muted />}
+      {Math.abs(t.roundOff) > 0.001 && <Row label="Round Off" value={t.roundOff} muted />}
       <div className="mt-1 flex items-center justify-between border-t pt-2 text-base font-semibold">
-        <span>Grand total</span>
+        <span>Grand Total</span>
         <Money value={t.grandTotal} />
       </div>
     </div>

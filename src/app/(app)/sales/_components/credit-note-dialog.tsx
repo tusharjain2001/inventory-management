@@ -75,7 +75,7 @@ export function CreditNoteDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Issue credit note</DialogTitle>
+          <DialogTitle>Issue Credit Note</DialogTitle>
           <DialogDescription>
             Against {invoice.invoiceNo}. Enter the taxable amount to credit per line; GST is added at the line&apos;s rate. Stock does not change.
           </DialogDescription>
@@ -87,8 +87,8 @@ export function CreditNoteDialog({
                 <tr className="border-b">
                   <th className="h-9 px-3 text-left font-medium">Item</th>
                   <th className="px-3 text-right font-medium">Taxable</th>
-                  <th className="px-3 text-right font-medium">Can credit</th>
-                  <th className="w-36 px-3 text-right font-medium">Credit (taxable)</th>
+                  <th className="px-3 text-right font-medium">Can Credit</th>
+                  <th className="w-36 px-3 text-right font-medium">Credit (Taxable)</th>
                   <th className="px-3 text-right font-medium">GST</th>
                   <th className="px-3 text-right font-medium">Total</th>
                 </tr>
@@ -162,7 +162,7 @@ export function CreditNoteDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={busy || invalid}>
-              {busy ? "Saving…" : "Issue credit note"}
+              {busy ? "Saving…" : "Issue Credit Note"}
             </Button>
           </DialogFooter>
         </form>

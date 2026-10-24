@@ -12,7 +12,7 @@ import { ApiError, api, errorMessage } from "@/lib/api-client";
 import { INDIAN_STATES, stateCodeFromGstin } from "@/lib/india";
 import type { CustomerLite } from "../types";
 
-/** Quick "New customer" from the order screen: name, mobile, GSTIN, state, address. */
+/** Quick "New Customer" from the order screen: name, mobile, GSTIN, state, address. */
 export function NewCustomerDialog({
   open,
   onOpenChange,
@@ -62,7 +62,7 @@ export function NewCustomerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>New customer</DialogTitle>
+          <DialogTitle>New Customer</DialogTitle>
         </DialogHeader>
         <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2">
           <Field label="Name" required error={errors.name} className="sm:col-span-2">
@@ -104,7 +104,7 @@ export function NewCustomerDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={busy || !form.name.trim()}>
-              {busy ? "Saving…" : "Add customer"}
+              {busy ? "Saving…" : "Add Customer"}
             </Button>
           </DialogFooter>
         </form>
