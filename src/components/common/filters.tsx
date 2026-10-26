@@ -89,11 +89,16 @@ export function DateRangeFilter({
   onChange: (v: DateRange) => void;
   className?: string;
 }) {
+  // Show the preset's name while the dates still match it, so the choice stays visible.
+  const active = DATE_PRESETS.find((p) => {
+    const r = p.range();
+    return r.from === value.from && r.to === value.to;
+  });
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", className)}>
+    <div className={cn("flex w-full flex-wrap items-center gap-2 sm:w-auto", className)}>
       <SimpleSelect
-        className="h-9 w-40"
-        value=""
+        className="h-9 w-44"
+        value={active?.key ?? ""}
         placeholder="Date Preset"
         onChange={(key) => {
           const p = DATE_PRESETS.find((d) => d.key === key);
@@ -101,28 +106,31 @@ export function DateRangeFilter({
         }}
         options={DATE_PRESETS.map((p) => ({ value: p.key, label: p.label }))}
       />
-      <Input
-        type="date"
-        className="h-9 w-38"
-        value={value.from}
-        max={value.to || undefined}
-        onChange={(e) => onChange({ ...value, from: e.target.value })}
-        aria-label="From Date"
-      />
-      <span className="text-sm text-muted-foreground">to</span>
-      <Input
-        type="date"
-        className="h-9 w-38"
-        value={value.to}
-        min={value.from || undefined}
-        onChange={(e) => onChange({ ...value, to: e.target.value })}
-        aria-label="To Date"
-      />
       {(value.from || value.to) && (
-        <Button variant="ghost" size="sm" onClick={() => onChange({ from: "", to: "" })}>
+        <Button variant="ghost" size="sm" className="sm:order-last" onClick={() => onChange({ from: "", to: "" })}>
           Clear
         </Button>
       )}
+      {/* From and To stay on one row, sharing the width on phones. */}
+      <div className="flex w-full items-center gap-2 sm:w-auto">
+        <Input
+          type="date"
+          className="h-9 min-w-0 flex-1 sm:w-38 sm:flex-none"
+          value={value.from}
+          max={value.to || undefined}
+          onChange={(e) => onChange({ ...value, from: e.target.value })}
+          aria-label="From Date"
+        />
+        <span className="shrink-0 text-sm text-muted-foreground">to</span>
+        <Input
+          type="date"
+          className="h-9 min-w-0 flex-1 sm:w-38 sm:flex-none"
+          value={value.to}
+          min={value.from || undefined}
+          onChange={(e) => onChange({ ...value, to: e.target.value })}
+          aria-label="To Date"
+        />
+      </div>
     </div>
   );
 }

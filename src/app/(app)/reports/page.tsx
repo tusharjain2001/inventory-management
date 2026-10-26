@@ -24,6 +24,12 @@ type Card = { href: string; title: string; description: string; permission: Perm
 
 const GROUPS: { title: string; cards: Card[] }[] = [
   {
+    title: "Sales",
+    cards: [
+      { href: "/reports/sales", title: "Sales Report", description: "Invoice lines with discount and GST; group by invoice, product, customer, salesperson or day", permission: "reports.sales", icon: ShoppingCart },
+    ],
+  },
+  {
     title: "Stock",
     cards: [
       { href: "/reports/stock", title: "Stock Report", description: "Opening, in, out, display, damaged, lost and closing stock per product", permission: "reports.stock", icon: Boxes },
@@ -31,12 +37,6 @@ const GROUPS: { title: string; cards: Card[] }[] = [
       { href: "/reports/movement", title: "Fast / Slow Moving", description: "Sales velocity per product and days of stock left", permission: "reports.stock", icon: Gauge },
       { href: "/reports/dead-stock", title: "Dead Stock", description: "Items in stock with no sale for a long time", permission: "reports.valuation", icon: PackageX },
       { href: "/reports/valuation", title: "Inventory Valuation", description: "Stock value by category and product (weighted average)", permission: "reports.valuation", icon: Landmark },
-    ],
-  },
-  {
-    title: "Sales",
-    cards: [
-      { href: "/reports/sales", title: "Sales Report", description: "Invoice lines with discount and GST; group by invoice, product, customer, salesperson or day", permission: "reports.sales", icon: ShoppingCart },
     ],
   },
   {
