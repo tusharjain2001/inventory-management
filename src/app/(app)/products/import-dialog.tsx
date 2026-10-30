@@ -29,6 +29,8 @@ const COLUMNS: { key: string; label: string; note: string; example: string | num
   { key: "reorderLevel", label: "Reorder Level", note: "", example: 2 },
   { key: "reorderQuantity", label: "Reorder Quantity", note: "", example: 5 },
   { key: "openingStock", label: "Opening Stock", note: "Blank = default", example: 5 },
+  { key: "sourceType", label: "Stock Type", note: "Purchased or Consignment; blank = Purchased", example: "Purchased" },
+  { key: "supplier", label: "Supplier", note: "Existing supplier name; required for Consignment", example: "" },
 ];
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");

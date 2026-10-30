@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { formatDocNumber } from "@/lib/doc-number";
 
-const GST_SERIES = ["invoice", "creditNote", "display"] as const;
+const GST_SERIES = ["invoice", "creditNote", "display", "displayReturn"] as const;
 
 // Settings are stored as one JSON row per group in the Setting table.
 // This file is client-safe: shared by the settings pages and the server.
@@ -65,6 +65,7 @@ export const settingsSchemas = {
       adjustment: numberingDoc,
       loss: numberingDoc,
       display: numberingDoc,
+      displayReturn: numberingDoc,
       customer: numberingDoc,
     })
     .superRefine((n, ctx) => {
@@ -162,6 +163,7 @@ export const DEFAULT_SETTINGS: Settings = {
     adjustment: doc("ADJ"),
     loss: doc("DL"),
     display: doc("DSP"),
+    displayReturn: doc("RTN"),
     customer: doc("CUST", "{PREFIX}-{SEQ}", 4),
   },
   general: {

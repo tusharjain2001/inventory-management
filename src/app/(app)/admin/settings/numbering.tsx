@@ -21,6 +21,7 @@ const SERIES: { key: SeriesKey; label: string; note?: string }[] = [
   { key: "adjustment", label: "Stock Adjustment" },
   { key: "loss", label: "Damaged / Lost" },
   { key: "display", label: "Display (Potential Sales)" },
+  { key: "displayReturn", label: "Display Return (Inward Challan)" },
   { key: "customer", label: "Customer ID", note: "Does not restart each financial year" },
 ];
 

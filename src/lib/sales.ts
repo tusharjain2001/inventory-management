@@ -532,7 +532,15 @@ export async function confirmOrder(tx: Tx, id: number, user: SessionUser, ip: st
       quantity: item.quantity,
       remarks: `Sale to ${order.customerName}`,
     });
-    await tx.salesOrderItem.update({ where: { id: item.id }, data: { unitCost: res.unitCost.toDecimalPlaces(4) } });
+    // Consignment goods: remember which supplier is owed for this line.
+    const product = await tx.product.findUniqueOrThrow({ where: { id: item.productId }, select: { sourceType: true, preferredSupplierId: true } });
+    await tx.salesOrderItem.update({
+      where: { id: item.id },
+      data: {
+        unitCost: res.unitCost.toDecimalPlaces(4),
+        consignmentSupplierId: product.sourceType === "CONSIGNMENT" ? product.preferredSupplierId : null,
+      },
+    });
   }
   for (const did of displayIds) await refreshDisplayStatus(tx, did);
 
@@ -625,6 +633,9 @@ export async function cancelOrder(tx: Tx, id: number, reason: string, user: Sess
   });
   if (!order) throw notFound("Order");
   if (order.status === "CANCELLED") throw badRequest(`Order ${order.orderNo} is already cancelled`);
+  if (order.items.some((i) => i.consignmentSettlementId)) {
+    throw badRequest(`The consignment supplier has already been paid for items on ${order.orderNo}, so it cannot be cancelled. Issue a credit note instead.`);
+  }
 
   const inv = order.invoice;
   if (inv && inv.status === "ACTIVE") {

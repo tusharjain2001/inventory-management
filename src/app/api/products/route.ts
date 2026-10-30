@@ -33,6 +33,7 @@ export const GET = handler({ permission: ["products.view", "sales.create", "inve
     ...(spInt(sp, "categoryId") ? { categoryId: spInt(sp, "categoryId") } : {}),
     ...(spInt(sp, "subCategoryId") ? { subCategoryId: spInt(sp, "subCategoryId") } : {}),
     ...(spInt(sp, "supplierId") ? { preferredSupplierId: spInt(sp, "supplierId") } : {}),
+    ...(sp.get("sourceType") === "PURCHASED" || sp.get("sourceType") === "CONSIGNMENT" ? { sourceType: sp.get("sourceType") as "PURCHASED" | "CONSIGNMENT" } : {}),
     ...statusWhere,
     ...(lq.q
       ? {

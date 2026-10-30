@@ -130,6 +130,7 @@ export const customerSchema = z.object({
 // ───────────── Product ─────────────
 
 export const TAX_TYPES = ["GST", "EXEMPT", "NIL_RATED", "ZERO_RATED"] as const;
+export const PRODUCT_SOURCES = ["PURCHASED", "CONSIGNMENT"] as const;
 
 export const productSchema = z
   .object({
@@ -155,7 +156,12 @@ export const productSchema = z
     reorderLevel: qty.optional().default(0),
     reorderQuantity: qty.optional().default(0),
     preferredSupplierId: optNumber,
+    sourceType: z.enum(PRODUCT_SOURCES).optional().default("PURCHASED"),
     isActive: z.boolean().optional().default(true),
+  })
+  .refine((p) => p.sourceType !== "CONSIGNMENT" || p.preferredSupplierId !== null, {
+    message: "Choose the supplier who sent this product on consignment",
+    path: ["preferredSupplierId"],
   })
   .refine((p) => p.minSellingPrice === null || p.minSellingPrice <= p.sellingPrice, {
     message: "Minimum selling price cannot be above the selling price",

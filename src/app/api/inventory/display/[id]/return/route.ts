@@ -4,6 +4,7 @@ import { AppError, body, handler, intParam, notFound } from "@/lib/http";
 import { audit } from "@/lib/audit";
 import { postStock, refreshDisplayStatus } from "@/lib/inventory";
 import { dateFromInput, istDateString } from "@/lib/dates";
+import { nextDocNumber } from "@/lib/numbering";
 import { idField, optText, pastDate, qtyField } from "../../../shared";
 
 const returnSchema = z.object({
@@ -14,7 +15,7 @@ const returnSchema = z.object({
   remarks: optText(1000),
 });
 
-/** Records stock coming back from a display location to the showroom. */
+/** Records stock coming back from a display location to the showroom, as a numbered inward challan. */
 export const POST = handler<{ id: string }>({ permission: "inventory.display" }, async ({ req, params, user, ip }) => {
   const id = intParam(params.id);
   const input = await body(req, returnSchema);
@@ -51,6 +52,18 @@ export const POST = handler<{ id: string }>({ permission: "inventory.display" },
       return { item, quantity: r.quantity };
     });
 
+    const returnNo = await nextDocNumber(tx, "displayReturn", date);
+    const ret = await tx.displayReturn.create({
+      data: {
+        returnNo,
+        displayIssueId: issue.id,
+        date,
+        remarks: input.remarks,
+        createdById: user.id,
+        items: { create: lines.map((l) => ({ displayIssueItemId: l.item.id, quantity: l.quantity })) },
+      },
+    });
+
     for (const { item, quantity } of lines) {
       await postStock(tx, {
         productId: item.productId,
@@ -59,7 +72,7 @@ export const POST = handler<{ id: string }>({ permission: "inventory.display" },
         date,
         refType: "DisplayIssue",
         refId: issue.id,
-        refNo: issue.displayNo,
+        refNo: returnNo,
         remarks: input.remarks ? `Returned from ${issue.locationName}: ${input.remarks}` : `Returned from ${issue.locationName}`,
         userId: user.id,
       });
@@ -72,13 +85,13 @@ export const POST = handler<{ id: string }>({ permission: "inventory.display" },
       action: "RETURN",
       entity: "DisplayIssue",
       entityId: issue.id,
-      summary: `Display ${issue.displayNo}: returned ${lines
+      summary: `Display ${issue.displayNo}: inward challan ${returnNo}, returned ${lines
         .map((l) => `${l.item.product.sku} × ${l.quantity}`)
         .join(", ")} from ${issue.locationName}`,
       before: { status: issue.status },
       after: { status, items: input.items, remarks: input.remarks },
       ip,
     });
-    return { ok: true, status };
+    return { ok: true, status, id: ret.id, returnNo };
   });
 });

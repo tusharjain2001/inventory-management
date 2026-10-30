@@ -34,7 +34,7 @@ function StockOverview() {
   const { can } = useSession();
   const { data: meta } = useMeta();
   const showCost = can("products.viewCost");
-  const list = useListState({ categoryId: "", status: "", active: "true" }, { field: "name", dir: "asc" });
+  const list = useListState({ categoryId: "", status: "", sourceType: "", active: "true" }, { field: "name", dir: "asc" });
 
   const { data: summary, isLoading: summaryLoading } = useQuery({
     queryKey: ["inventory-summary"],
@@ -56,7 +56,12 @@ function StockOverview() {
       sortable: true,
       cell: (p) => (
         <div className="min-w-40">
-          <div className="font-medium">{p.name}</div>
+          <div className="font-medium">
+            {p.name}
+            {p.sourceType === "CONSIGNMENT" && (
+              <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 align-middle text-[10px] font-medium text-amber-800">Consignment</span>
+            )}
+          </div>
           <div className="font-mono text-xs text-muted-foreground">{p.sku}</div>
         </div>
       ),
@@ -234,6 +239,17 @@ function StockOverview() {
             { value: "LOW_STOCK", label: "Low Stock" },
             { value: "OUT_OF_STOCK", label: "Out of Stock" },
             { value: "NEGATIVE", label: "Negative Stock" },
+          ]}
+        />
+        <SimpleSelect
+          className="h-9 w-40"
+          value={list.filters.sourceType}
+          onChange={(v) => list.setFilter("sourceType", v)}
+          clearLabel="Any Stock Type"
+          placeholder="Any Stock Type"
+          options={[
+            { value: "PURCHASED", label: "Purchased" },
+            { value: "CONSIGNMENT", label: "Consignment" },
           ]}
         />
         <div className="ml-auto">

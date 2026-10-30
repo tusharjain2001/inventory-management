@@ -4,7 +4,7 @@ import { use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Trash2 } from "lucide-react";
+import { HandCoins, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -94,6 +94,13 @@ function SupplierView({ id }: { id: number }) {
         }
         back={{ href: "/suppliers", label: "Suppliers" }}
       >
+        <Can permission="reports.purchase">
+          <Button variant="outline" asChild>
+            <Link href={`/reports/consignment?supplierId=${s.id}`}>
+              <HandCoins /> Consignment Sales
+            </Link>
+          </Button>
+        </Can>
         <Can permission="suppliers.manage">
           <Button variant="destructive" onClick={remove}>
             <Trash2 /> Delete

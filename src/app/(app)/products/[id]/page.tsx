@@ -1,9 +1,9 @@
 "use client";
 
-import { use, useRef, useState } from "react";
+import { use, useState } from "react";
 import { useRouter } from "next/navigation";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ImagePlus, Star, Trash2 } from "lucide-react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,7 +15,6 @@ import { ErrorBlock, LoadingBlock, Money, Qty, RequirePermission, StatCard } fro
 import { useConfirm } from "@/components/common/confirm";
 import { Can, useSession } from "@/components/session-provider";
 import { api, errorMessage, type Paged } from "@/lib/api-client";
-import { compressImage } from "@/lib/image";
 import { formatDate, formatDateTime, formatQty } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { ProductForm } from "../product-form";
@@ -73,6 +72,11 @@ function ProductView({ id }: { id: number }) {
               {p.subCategory ? ` › ${p.subCategory.name}` : ""}
             </span>
             {p.isActive ? <StatusBadge status={p.stockStatus} /> : <StatusBadge status="INACTIVE" text="Inactive" />}
+            {p.sourceType === "CONSIGNMENT" && (
+              <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800">
+                Consignment{p.preferredSupplier ? ` · ${p.preferredSupplier.name}` : ""}
+              </span>
+            )}
           </span>
         }
         back={{ href: "/products", label: "Products" }}
@@ -101,14 +105,10 @@ function ProductView({ id }: { id: number }) {
       <Tabs defaultValue="details">
         <TabsList>
           <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="photos">Photos ({p.images.length})</TabsTrigger>
           {can("inventory.view") && <TabsTrigger value="ledger">Stock Movements</TabsTrigger>}
         </TabsList>
         <TabsContent value="details" className="mt-4">
           <ProductForm product={p} />
-        </TabsContent>
-        <TabsContent value="photos" className="mt-4">
-          <Photos product={p} />
         </TabsContent>
         {can("inventory.view") && (
           <TabsContent value="ledger" className="mt-4">
@@ -117,97 +117,6 @@ function ProductView({ id }: { id: number }) {
         )}
       </Tabs>
     </>
-  );
-}
-
-function Photos({ product }: { product: ProductDetail }) {
-  const qc = useQueryClient();
-  const confirm = useConfirm();
-  const { can } = useSession();
-  const input = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  const editable = can("products.edit");
-  const refresh = () => {
-    qc.invalidateQueries({ queryKey: ["product", product.id] });
-    qc.invalidateQueries({ queryKey: ["products"] });
-  };
-
-  async function upload(files: FileList | null) {
-    if (!files?.length) return;
-    setUploading(true);
-    try {
-      const form = new FormData();
-      for (const f of Array.from(files)) form.append("files", await compressImage(f));
-      const res = await fetch(`/api/products/${product.id}/images`, { method: "POST", body: form });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Upload failed");
-      toast.success("Photos uploaded");
-      refresh();
-    } catch (err) {
-      toast.error(errorMessage(err));
-    } finally {
-      setUploading(false);
-      if (input.current) input.current.value = "";
-    }
-  }
-
-  async function makePrimary(imageId: number) {
-    try {
-      await api.patch(`/api/product-images/${imageId}`, { isPrimary: true });
-      refresh();
-    } catch (err) {
-      toast.error(errorMessage(err));
-    }
-  }
-
-  async function remove(imageId: number) {
-    if (!(await confirm({ title: "Remove this photo?", confirmText: "Remove", destructive: true }))) return;
-    try {
-      await api.delete(`/api/product-images/${imageId}`);
-      refresh();
-    } catch (err) {
-      toast.error(errorMessage(err));
-    }
-  }
-
-  return (
-    <div className="space-y-4">
-      {editable && (
-        <div>
-          <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" multiple hidden onChange={(e) => upload(e.target.files)} />
-          <Button variant="outline" onClick={() => input.current?.click()} disabled={uploading}>
-            <ImagePlus /> {uploading ? "Uploading…" : "Add Photos"}
-          </Button>
-          <p className="mt-1 text-xs text-muted-foreground">JPG, PNG or WEBP. Large photos are resized automatically.</p>
-        </div>
-      )}
-      {product.images.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-10 text-center text-sm text-muted-foreground">No photos yet</div>
-      ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {product.images.map((img) => (
-            <div key={img.id} className={cn("group relative overflow-hidden rounded-lg border", img.isPrimary && "ring-2 ring-primary")}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.url} alt="" className="aspect-square w-full object-cover" />
-              {img.isPrimary && (
-                <span className="absolute top-1.5 left-1.5 rounded bg-primary px-1.5 py-0.5 text-[10px] text-primary-foreground">Primary</span>
-              )}
-              {editable && (
-                <div className="absolute inset-x-0 bottom-0 flex justify-end gap-1 bg-gradient-to-t from-black/60 p-1.5 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
-                  {!img.isPrimary && (
-                    <Button size="icon-sm" variant="secondary" onClick={() => makePrimary(img.id)} title="Make primary">
-                      <Star />
-                    </Button>
-                  )}
-                  <Button size="icon-sm" variant="secondary" onClick={() => remove(img.id)} title="Remove">
-                    <Trash2 />
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }
 

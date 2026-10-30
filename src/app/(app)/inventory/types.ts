@@ -143,6 +143,8 @@ export type DisplayDetail = {
     outstandingQty: number;
   }[];
   orders: { id: number; orderNo: string; status: string; orderDate: string; grandTotal: number }[];
+  /** Inward challans, one per return. */
+  returns: { id: number; returnNo: string; date: string; remarks: string | null; createdBy: Ref | null; quantity: number }[];
   movements: { id: number; txnDate: string; type: StockTxnTypeName; quantity: number; remarks: string | null; product: ProductRef; createdBy: Ref | null }[];
 };
 

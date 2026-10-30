@@ -9,6 +9,12 @@ datasource db {
 
 // ───────────────────────────── Enums ─────────────────────────────
 
+/// Whether the shop owns the stock or holds it for a supplier until it sells.
+enum ProductSource {
+  PURCHASED
+  CONSIGNMENT
+}
+
 enum TaxType {
   GST
   EXEMPT
@@ -154,26 +160,28 @@ model User {
   loginActivities LoginActivity[]
   auditLogs       AuditLog[]
 
-  createdCategories   Category[]             @relation("CategoryCreatedBy")
-  createdProducts     Product[]              @relation("ProductCreatedBy")
-  inventoryTxns       InventoryTransaction[] @relation("TxnCreatedBy")
-  stockIns            StockIn[]              @relation("StockInCreatedBy")
-  adjustmentsCreated  StockAdjustment[]      @relation("AdjCreatedBy")
-  adjustmentsApproved StockAdjustment[]      @relation("AdjApprovedBy")
-  lossesCreated       StockLoss[]            @relation("LossCreatedBy")
-  lossesApproved      StockLoss[]            @relation("LossApprovedBy")
-  displaysCreated     DisplayIssue[]         @relation("DisplayCreatedBy")
-  customersCreated    Customer[]             @relation("CustomerCreatedBy")
-  ordersAsSalesperson SalesOrder[]           @relation("OrderSalesperson")
-  ordersCreated       SalesOrder[]           @relation("OrderCreatedBy")
-  ordersConfirmed     SalesOrder[]           @relation("OrderConfirmedBy")
-  ordersCancelled     SalesOrder[]           @relation("OrderCancelledBy")
-  orderItemOverrides  SalesOrderItem[]       @relation("ItemOverrideBy")
-  invoicesCreated     Invoice[]              @relation("InvoiceCreatedBy")
-  invoicesCancelled   Invoice[]              @relation("InvoiceCancelledBy")
-  paymentsReceived    Payment[]              @relation("PaymentReceivedBy")
-  paymentsCreated     Payment[]              @relation("PaymentCreatedBy")
-  creditNotesCreated  CreditNote[]           @relation("CreditNoteCreatedBy")
+  createdCategories   Category[]              @relation("CategoryCreatedBy")
+  createdProducts     Product[]               @relation("ProductCreatedBy")
+  inventoryTxns       InventoryTransaction[]  @relation("TxnCreatedBy")
+  stockIns            StockIn[]               @relation("StockInCreatedBy")
+  adjustmentsCreated  StockAdjustment[]       @relation("AdjCreatedBy")
+  adjustmentsApproved StockAdjustment[]       @relation("AdjApprovedBy")
+  lossesCreated       StockLoss[]             @relation("LossCreatedBy")
+  lossesApproved      StockLoss[]             @relation("LossApprovedBy")
+  displaysCreated     DisplayIssue[]          @relation("DisplayCreatedBy")
+  displayReturns      DisplayReturn[]         @relation("DisplayReturnCreatedBy")
+  consignmentPayments ConsignmentSettlement[] @relation("ConsignmentSettlementCreatedBy")
+  customersCreated    Customer[]              @relation("CustomerCreatedBy")
+  ordersAsSalesperson SalesOrder[]            @relation("OrderSalesperson")
+  ordersCreated       SalesOrder[]            @relation("OrderCreatedBy")
+  ordersConfirmed     SalesOrder[]            @relation("OrderConfirmedBy")
+  ordersCancelled     SalesOrder[]            @relation("OrderCancelledBy")
+  orderItemOverrides  SalesOrderItem[]        @relation("ItemOverrideBy")
+  invoicesCreated     Invoice[]               @relation("InvoiceCreatedBy")
+  invoicesCancelled   Invoice[]               @relation("InvoiceCancelledBy")
+  paymentsReceived    Payment[]               @relation("PaymentReceivedBy")
+  paymentsCreated     Payment[]               @relation("PaymentCreatedBy")
+  creditNotesCreated  CreditNote[]            @relation("CreditNoteCreatedBy")
 }
 
 model Session {
@@ -281,24 +289,26 @@ model SubCategory {
 }
 
 model Supplier {
-  id            Int       @id @default(autoincrement())
-  name          String
-  contactPerson String?
-  phone         String?
-  email         String?
-  gstin         String?
-  pan           String?
-  address       String?
-  city          String?
-  state         String?
-  stateCode     String?
-  pincode       String?
-  notes         String?
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  stockIns      StockIn[]
-  products      Product[]
+  id                  Int                     @id @default(autoincrement())
+  name                String
+  contactPerson       String?
+  phone               String?
+  email               String?
+  gstin               String?
+  pan                 String?
+  address             String?
+  city                String?
+  state               String?
+  stateCode           String?
+  pincode             String?
+  notes               String?
+  isActive            Boolean                 @default(true)
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  stockIns            StockIn[]
+  products            Product[]
+  consignmentLines    SalesOrderItem[]        @relation("ConsignmentSupplier")
+  consignmentPayments ConsignmentSettlement[]
 }
 
 // ───────────────────────── Products ─────────────────────────
@@ -329,10 +339,12 @@ model Product {
   cessRate     Decimal @default(0) @db.Decimal(6, 3)
   taxInclusive Boolean @default(false)
 
-  reorderLevel        Decimal   @default(0) @db.Decimal(14, 3)
-  reorderQuantity     Decimal   @default(0) @db.Decimal(14, 3)
+  reorderLevel        Decimal       @default(0) @db.Decimal(14, 3)
+  reorderQuantity     Decimal       @default(0) @db.Decimal(14, 3)
   preferredSupplierId Int?
-  preferredSupplier   Supplier? @relation(fields: [preferredSupplierId], references: [id], onDelete: SetNull)
+  preferredSupplier   Supplier?     @relation(fields: [preferredSupplierId], references: [id], onDelete: SetNull)
+  /// CONSIGNMENT: the preferred supplier owns the stock and is paid once it sells.
+  sourceType          ProductSource @default(PURCHASED)
 
   // Cached balances, maintained only by the inventory ledger service.
   currentStock   Decimal   @default(0) @db.Decimal(14, 3)
@@ -511,20 +523,47 @@ model DisplayIssue {
   updatedAt          DateTime           @updatedAt
   items              DisplayIssueItem[]
   orders             SalesOrder[]
+  returns            DisplayReturn[]
 }
 
 model DisplayIssueItem {
-  id             Int              @id @default(autoincrement())
+  id             Int                 @id @default(autoincrement())
   displayIssueId Int
-  displayIssue   DisplayIssue     @relation(fields: [displayIssueId], references: [id], onDelete: Cascade)
+  displayIssue   DisplayIssue        @relation(fields: [displayIssueId], references: [id], onDelete: Cascade)
   productId      Int
-  product        Product          @relation(fields: [productId], references: [id])
-  quantity       Decimal          @db.Decimal(14, 3)
+  product        Product             @relation(fields: [productId], references: [id])
+  quantity       Decimal             @db.Decimal(14, 3)
   /// Selling price when the goods went out; printed on the delivery challan.
-  unitPrice      Decimal?         @db.Decimal(14, 2)
-  returnedQty    Decimal          @default(0) @db.Decimal(14, 3)
-  soldQty        Decimal          @default(0) @db.Decimal(14, 3)
+  unitPrice      Decimal?            @db.Decimal(14, 2)
+  returnedQty    Decimal             @default(0) @db.Decimal(14, 3)
+  soldQty        Decimal             @default(0) @db.Decimal(14, 3)
   orderItems     SalesOrderItem[]
+  returnItems    DisplayReturnItem[]
+}
+
+/// Goods coming back from a display location; printed as an inward challan.
+model DisplayReturn {
+  id             Int                 @id @default(autoincrement())
+  returnNo       String              @unique
+  displayIssueId Int
+  displayIssue   DisplayIssue        @relation(fields: [displayIssueId], references: [id])
+  date           DateTime
+  remarks        String?
+  createdById    Int?
+  createdBy      User?               @relation("DisplayReturnCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt      DateTime            @default(now())
+  items          DisplayReturnItem[]
+
+  @@index([displayIssueId])
+}
+
+model DisplayReturnItem {
+  id                 Int              @id @default(autoincrement())
+  displayReturnId    Int
+  displayReturn      DisplayReturn    @relation(fields: [displayReturnId], references: [id], onDelete: Cascade)
+  displayIssueItemId Int
+  displayIssueItem   DisplayIssueItem @relation(fields: [displayIssueItemId], references: [id])
+  quantity           Decimal          @db.Decimal(14, 3)
 }
 
 // ───────────────────────── Customers ─────────────────────────
@@ -630,42 +669,66 @@ model SalesOrder {
 }
 
 model SalesOrderItem {
-  id                   Int               @id @default(autoincrement())
-  orderId              Int
-  order                SalesOrder        @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId            Int
-  product              Product           @relation(fields: [productId], references: [id])
-  sortOrder            Int               @default(0)
-  sku                  String
-  name                 String
-  description          String?
-  hsnCode              String?
-  quantity             Decimal           @db.Decimal(14, 3)
-  listPrice            Decimal           @db.Decimal(14, 2)
-  unitPrice            Decimal           @db.Decimal(14, 2)
-  taxInclusive         Boolean           @default(false)
-  discountPercent      Decimal           @default(0) @db.Decimal(6, 3)
-  discountAmount       Decimal           @default(0) @db.Decimal(14, 2)
-  grossAmount          Decimal           @default(0) @db.Decimal(14, 2)
-  invoiceDiscountShare Decimal           @default(0) @db.Decimal(14, 2)
-  taxableValue         Decimal           @default(0) @db.Decimal(14, 2)
-  taxType              TaxType           @default(GST)
-  gstRate              Decimal           @default(0) @db.Decimal(6, 3)
-  cessRate             Decimal           @default(0) @db.Decimal(6, 3)
-  cgstAmount           Decimal           @default(0) @db.Decimal(14, 2)
-  sgstAmount           Decimal           @default(0) @db.Decimal(14, 2)
-  igstAmount           Decimal           @default(0) @db.Decimal(14, 2)
-  cessAmount           Decimal           @default(0) @db.Decimal(14, 2)
-  lineTotal            Decimal           @default(0) @db.Decimal(14, 2)
-  unitCost             Decimal           @default(0) @db.Decimal(14, 4)
-  priceOverride        Boolean           @default(false)
-  overrideById         Int?
-  overrideBy           User?             @relation("ItemOverrideBy", fields: [overrideById], references: [id], onDelete: SetNull)
-  displayIssueItemId   Int?
-  displayIssueItem     DisplayIssueItem? @relation(fields: [displayIssueItemId], references: [id])
-  creditNoteItems      CreditNoteItem[]
+  id                      Int                    @id @default(autoincrement())
+  orderId                 Int
+  order                   SalesOrder             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId               Int
+  product                 Product                @relation(fields: [productId], references: [id])
+  sortOrder               Int                    @default(0)
+  sku                     String
+  name                    String
+  description             String?
+  hsnCode                 String?
+  quantity                Decimal                @db.Decimal(14, 3)
+  listPrice               Decimal                @db.Decimal(14, 2)
+  unitPrice               Decimal                @db.Decimal(14, 2)
+  taxInclusive            Boolean                @default(false)
+  discountPercent         Decimal                @default(0) @db.Decimal(6, 3)
+  discountAmount          Decimal                @default(0) @db.Decimal(14, 2)
+  grossAmount             Decimal                @default(0) @db.Decimal(14, 2)
+  invoiceDiscountShare    Decimal                @default(0) @db.Decimal(14, 2)
+  taxableValue            Decimal                @default(0) @db.Decimal(14, 2)
+  taxType                 TaxType                @default(GST)
+  gstRate                 Decimal                @default(0) @db.Decimal(6, 3)
+  cessRate                Decimal                @default(0) @db.Decimal(6, 3)
+  cgstAmount              Decimal                @default(0) @db.Decimal(14, 2)
+  sgstAmount              Decimal                @default(0) @db.Decimal(14, 2)
+  igstAmount              Decimal                @default(0) @db.Decimal(14, 2)
+  cessAmount              Decimal                @default(0) @db.Decimal(14, 2)
+  lineTotal               Decimal                @default(0) @db.Decimal(14, 2)
+  unitCost                Decimal                @default(0) @db.Decimal(14, 4)
+  priceOverride           Boolean                @default(false)
+  overrideById            Int?
+  overrideBy              User?                  @relation("ItemOverrideBy", fields: [overrideById], references: [id], onDelete: SetNull)
+  displayIssueItemId      Int?
+  displayIssueItem        DisplayIssueItem?      @relation(fields: [displayIssueItemId], references: [id])
+  creditNoteItems         CreditNoteItem[]
+  /// Set when a consignment product is sold: the supplier to be paid unitCost × quantity.
+  consignmentSupplierId   Int?
+  consignmentSupplier     Supplier?              @relation("ConsignmentSupplier", fields: [consignmentSupplierId], references: [id])
+  consignmentSettlementId Int?
+  consignmentSettlement   ConsignmentSettlement? @relation(fields: [consignmentSettlementId], references: [id])
 
   @@index([productId])
+  @@index([consignmentSupplierId])
+}
+
+/// A payment to a consignment supplier for sold items.
+model ConsignmentSettlement {
+  id          Int              @id @default(autoincrement())
+  supplierId  Int
+  supplier    Supplier         @relation(fields: [supplierId], references: [id])
+  date        DateTime
+  amount      Decimal          @db.Decimal(14, 2)
+  mode        PaymentMode
+  reference   String?
+  remarks     String?
+  createdById Int?
+  createdBy   User?            @relation("ConsignmentSettlementCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime         @default(now())
+  items       SalesOrderItem[]
+
+  @@index([supplierId])
 }
 
 model Invoice {
