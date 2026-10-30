@@ -34,6 +34,17 @@ export const GET = handler<{ id: string }>({ permission: ["inventory.view", "sal
         },
       },
       orders: { orderBy: { id: "asc" }, select: { id: true, orderNo: true, status: true, orderDate: true, grandTotal: true } },
+      returns: {
+        orderBy: { id: "asc" },
+        select: {
+          id: true,
+          returnNo: true,
+          date: true,
+          remarks: true,
+          createdBy: { select: { id: true, name: true } },
+          items: { select: { quantity: true } },
+        },
+      },
     },
   });
   if (!issue) throw notFound("Display record");
@@ -63,6 +74,7 @@ export const GET = handler<{ id: string }>({ permission: ["inventory.view", "sal
       soldQty: i.soldQty,
       outstandingQty: i.quantity.sub(i.returnedQty).sub(i.soldQty),
     })),
+    returns: issue.returns.map(({ items, ...r }) => ({ ...r, quantity: items.reduce((s, i) => s + i.quantity.toNumber(), 0) })),
     movements,
   };
 });

@@ -8,6 +8,8 @@ export type ProductRow = {
   subCategory: { id: number; name: string } | null;
   preferredSupplier: { id: number; name: string } | null;
   preferredSupplierId: number | null;
+  /** CONSIGNMENT: the preferred supplier owns the stock and is paid once it sells. */
+  sourceType: "PURCHASED" | "CONSIGNMENT";
   material: string | null;
   size: string | null;
   weight: number | null;

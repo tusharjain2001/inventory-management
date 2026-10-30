@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -63,32 +64,35 @@ export function GlobalSearch() {
         title="Search"
         description="Search products, customers, invoices, orders and suppliers"
       >
-        <CommandInput placeholder="Type at least 2 characters…" value={q} onValueChange={setQ} />
-        <CommandList>
-          {debounced.trim().length >= 2 && !isFetching && <CommandEmpty>No results found.</CommandEmpty>}
-          {data?.groups
-            .filter((g) => g.hits.length)
-            .map((g) => (
-              <CommandGroup key={g.label} heading={g.label}>
-                {g.hits.map((h) => (
-                  <CommandItem
-                    key={`${g.label}-${h.id}`}
-                    value={`${g.label}-${h.id}-${h.title}`}
-                    onSelect={() => {
-                      setOpen(false);
-                      setQ("");
-                      router.push(h.href);
-                    }}
-                  >
-                    <div className="flex min-w-0 flex-col">
-                      <span className="truncate">{h.title}</span>
-                      {h.subtitle && <span className="truncate text-xs text-muted-foreground">{h.subtitle}</span>}
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            ))}
-        </CommandList>
+        {/* Results come from the server, so cmdk's own filtering is off. */}
+        <Command shouldFilter={false}>
+          <CommandInput placeholder="Type at least 2 characters…" value={q} onValueChange={setQ} />
+          <CommandList>
+            {debounced.trim().length >= 2 && !isFetching && <CommandEmpty>No results found.</CommandEmpty>}
+            {data?.groups
+              .filter((g) => g.hits.length)
+              .map((g) => (
+                <CommandGroup key={g.label} heading={g.label}>
+                  {g.hits.map((h) => (
+                    <CommandItem
+                      key={`${g.label}-${h.id}`}
+                      value={`${g.label}-${h.id}-${h.title}`}
+                      onSelect={() => {
+                        setOpen(false);
+                        setQ("");
+                        router.push(h.href);
+                      }}
+                    >
+                      <div className="flex min-w-0 flex-col">
+                        <span className="truncate">{h.title}</span>
+                        {h.subtitle && <span className="truncate text-xs text-muted-foreground">{h.subtitle}</span>}
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              ))}
+          </CommandList>
+        </Command>
       </CommandDialog>
     </>
   );

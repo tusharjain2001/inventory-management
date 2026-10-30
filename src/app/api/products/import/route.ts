@@ -28,6 +28,7 @@ export const POST = handler({ permission: "products.create" }, async ({ req, use
   const categories = await db.category.findMany({ include: { subCategories: true } });
   const catByName = new Map(categories.map((c) => [c.name.toLowerCase(), c]));
   const existingSkus = new Set((await db.product.findMany({ select: { sku: true } })).map((p) => p.sku.toUpperCase()));
+  const supplierByName = new Map((await db.supplier.findMany({ select: { id: true, name: true } })).map((s) => [s.name.trim().toLowerCase(), s.id]));
   const seen = new Set<string>();
 
   const errors: { row: number; sku: string; message: string }[] = [];
@@ -53,6 +54,18 @@ export const POST = handler({ permission: "products.create" }, async ({ req, use
       continue;
     }
 
+    const supplierName = str(r.supplier);
+    const supplierId = supplierName ? supplierByName.get(supplierName.toLowerCase()) : undefined;
+    if (supplierName && !supplierId) {
+      errors.push({ row: rowNo, sku, message: `Supplier "${supplierName}" not found. Add it under Suppliers first.` });
+      continue;
+    }
+    const sourceText = str(r.sourceType).toLowerCase();
+    if (sourceText && !["purchased", "consignment"].includes(sourceText)) {
+      errors.push({ row: rowNo, sku, message: "Stock Type must be Purchased or Consignment" });
+      continue;
+    }
+
     const draft = {
       name: str(r.name),
       sku,
@@ -75,7 +88,8 @@ export const POST = handler({ permission: "products.create" }, async ({ req, use
       taxInclusive: yes(r.taxInclusive, tax.pricesTaxInclusive),
       reorderLevel: numOrUndef(r.reorderLevel) ?? inventory.defaultReorderLevel,
       reorderQuantity: numOrUndef(r.reorderQuantity) ?? 0,
-      preferredSupplierId: null,
+      preferredSupplierId: supplierId ?? null,
+      sourceType: sourceText === "consignment" ? ("CONSIGNMENT" as const) : ("PURCHASED" as const),
       isActive: true,
       openingStock: numOrUndef(r.openingStock) ?? inventory.defaultOpeningStock,
       openingUnitCost: null,

@@ -6,7 +6,7 @@ import { financialYear } from "@/lib/dates";
 import { getSettingsGroup } from "@/lib/settings";
 import { formatDocNumber, peekNextNumber, setNextNumber, type SeriesKey } from "@/lib/numbering";
 
-const SERIES: SeriesKey[] = ["invoice", "order", "creditNote", "payment", "stockIn", "adjustment", "loss", "display", "customer"];
+const SERIES: SeriesKey[] = ["invoice", "order", "creditNote", "payment", "stockIn", "adjustment", "loss", "display", "displayReturn", "customer"];
 
 /** Series that run across financial years (mirrors numbering.ts). */
 const yearOf = (key: SeriesKey, date: Date) => (key === "customer" ? "ALL" : financialYear(date));
@@ -31,6 +31,8 @@ async function existingNumbers(client: DbOrTx, key: SeriesKey, nos: string[]): P
       return (await client.stockLoss.findMany({ where: { lossNo: where }, select: { lossNo: true } })).map((r) => r.lossNo);
     case "display":
       return (await client.displayIssue.findMany({ where: { displayNo: where }, select: { displayNo: true } })).map((r) => r.displayNo);
+    case "displayReturn":
+      return (await client.displayReturn.findMany({ where: { returnNo: where }, select: { returnNo: true } })).map((r) => r.returnNo);
     case "customer":
       return (await client.customer.findMany({ where: { code: where }, select: { code: true } })).map((r) => r.code);
   }

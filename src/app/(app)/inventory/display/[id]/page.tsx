@@ -3,7 +3,7 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Printer, ShoppingCart, Undo2 } from "lucide-react";
+import { Info, Printer, ShoppingCart, Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,8 @@ export default function DisplayPage({ params }: { params: Promise<{ id: string }
 }
 
 type Item = DisplayDetail["items"][number];
+
+const printInward = (returnId: number) => window.open(`/print/display-return/${returnId}`, "_blank", "noopener");
 
 function DisplayView({ id }: { id: number }) {
   const { can } = useSession();
@@ -83,24 +85,8 @@ function DisplayView({ id }: { id: number }) {
         back={{ href: "/inventory/display", label: "Potential Sales" }}
       >
         <Button variant="outline" onClick={() => window.open(`/print/display/${d.id}`, "_blank", "noopener")}>
-          <Printer /> Print Challan
+          <Printer /> Print Delivery Challan
         </Button>
-        {outstanding > 0 && (
-          <>
-            <Can permission="sales.create">
-              <Button variant="outline" asChild>
-                <Link href={`/sales/orders/new?displayId=${d.id}`}>
-                  <ShoppingCart /> Convert to Sale
-                </Link>
-              </Button>
-            </Can>
-            <Can permission="inventory.display">
-              <Button onClick={() => setReturnOpen(true)}>
-                <Undo2 /> Record Return
-              </Button>
-            </Can>
-          </>
-        )}
       </PageHeader>
 
       <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -133,8 +119,51 @@ function DisplayView({ id }: { id: number }) {
         />
       </div>
 
+      {outstanding > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-900">
+          <Info className="size-4 shrink-0" />
+          <span className="min-w-60 flex-1">
+            {formatQty(outstanding)} piece{outstanding === 1 ? " is" : "s are"} still at the client&apos;s place. Use <b>Record Return</b> for pieces
+            that come back (an inward challan is made), and <b>Convert to Sale</b> to invoice the pieces the client keeps.
+          </span>
+          <Can permission="inventory.display">
+            <Button size="sm" variant="outline" onClick={() => setReturnOpen(true)}>
+              <Undo2 /> Record Return
+            </Button>
+          </Can>
+          <Can permission="sales.create">
+            <Button size="sm" asChild>
+              <Link href={`/sales/orders/new?displayId=${d.id}`}>
+                <ShoppingCart /> Convert to Sale
+              </Link>
+            </Button>
+          </Can>
+        </div>
+      )}
+
       <h2 className="mb-2 text-sm font-semibold">Items</h2>
       <DataTable columns={columns} rows={d.items} rowKey={(i) => i.id} />
+
+      {d.returns.length > 0 && (
+        <>
+          <h2 className="mt-6 mb-2 text-sm font-semibold">Inward Challans (Returns)</h2>
+          <div className="divide-y rounded-lg border bg-card text-sm">
+            {d.returns.map((r) => (
+              <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5">
+                <span className="flex flex-wrap items-center gap-x-3">
+                  <span className="font-medium">{r.returnNo}</span>
+                  <span className="text-muted-foreground">{formatDate(r.date)}</span>
+                  <span>{formatQty(r.quantity)} pcs returned</span>
+                  {r.createdBy && <span className="text-muted-foreground">by {r.createdBy.name}</span>}
+                </span>
+                <Button size="sm" variant="outline" onClick={() => printInward(r.id)}>
+                  <Printer /> Print Inward Challan
+                </Button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {d.orders.length > 0 && (
         <>
@@ -190,12 +219,15 @@ function ReturnDialog({ display, onClose }: { display: DisplayDetail; onClose: (
   async function submit() {
     setBusy(true);
     try {
-      const res = await api.post<{ status: string }>(`/api/inventory/display/${display.id}/return`, {
+      const res = await api.post<{ status: string; id: number; returnNo: string }>(`/api/inventory/display/${display.id}/return`, {
         date,
         remarks,
         items: entered.map((r) => ({ itemId: r.item.id, quantity: r.quantity })),
       });
-      toast.success(res.status === "CLOSED" ? "Return recorded. Display closed." : "Return recorded");
+      toast.success(`Inward challan ${res.returnNo} saved${res.status === "CLOSED" ? ". Display closed." : ""}`, {
+        action: { label: "Print", onClick: () => printInward(res.id) },
+        duration: 15000,
+      });
       for (const k of ["display", "displays", "products", "product", "inventory-summary", "inventory-ledger"]) qc.invalidateQueries({ queryKey: [k] });
       onClose();
     } catch (err) {
@@ -210,7 +242,9 @@ function ReturnDialog({ display, onClose }: { display: DisplayDetail; onClose: (
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Record Return</DialogTitle>
-          <DialogDescription>Enter the quantity that came back to the showroom from {display.locationName}.</DialogDescription>
+          <DialogDescription>
+            Enter the quantity that came back to the showroom from {display.locationName}. An inward challan is made for this return.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2">

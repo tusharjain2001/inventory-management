@@ -14,6 +14,7 @@ import { useSession } from "@/components/session-provider";
 import { useMeta } from "@/hooks/use-meta";
 import { ApiError, api, errorMessage } from "@/lib/api-client";
 import { formatINR } from "@/lib/format";
+import { PendingPhotos, ProductPhotos, uploadProductPhotos } from "./product-photos";
 import type { ProductDetail } from "./types";
 
 type FormState = {
@@ -39,6 +40,7 @@ type FormState = {
   reorderLevel: string;
   reorderQuantity: string;
   preferredSupplierId: string;
+  sourceType: "PURCHASED" | "CONSIGNMENT";
   isActive: boolean;
   openingStock: string;
   openingUnitCost: string;
@@ -79,12 +81,15 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
     reorderLevel: s(product?.reorderLevel ?? ""),
     reorderQuantity: s(product?.reorderQuantity ?? 0),
     preferredSupplierId: s(product?.preferredSupplierId),
+    sourceType: product?.sourceType ?? "PURCHASED",
     isActive: product?.isActive ?? true,
     openingStock: "",
     openingUnitCost: "",
   }));
   const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
   const [busy, setBusy] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const consignment = form.sourceType === "CONSIGNMENT";
 
   // Fill defaults from settings once they load (new products only).
   const [defaultsApplied, setDefaultsApplied] = useState(isEdit);
@@ -134,6 +139,13 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
         qc.invalidateQueries({ queryKey: ["products"] });
       } else {
         const created = await api.post<{ id: number }>("/api/products", payload);
+        if (photos.length) {
+          try {
+            await uploadProductPhotos(created.id, photos);
+          } catch (err) {
+            toast.error(`Product saved, but the photos did not upload: ${errorMessage(err)}. Add them again on the product page.`);
+          }
+        }
         toast.success("Product created");
         qc.invalidateQueries({ queryKey: ["products"] });
         router.push(`/products/${created.id}`);
@@ -205,10 +217,17 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
           </FormGrid>
         </FormSection>
 
+        <FormSection title="Photos">{isEdit ? <ProductPhotos product={product} /> : <PendingPhotos files={photos} onChange={setPhotos} />}</FormSection>
+
         <FormSection title="Pricing" description="Selling below the minimum price (or below cost) needs a user with price-override permission.">
           <FormGrid cols={4}>
             {canViewCost && (
-              <Field label="Purchase Price (₹)" required error={errors.purchasePrice} hint={!canEditCost ? "You cannot change this" : undefined}>
+              <Field
+                label={consignment ? "Supplier Price (₹)" : "Purchase Price (₹)"}
+                required
+                error={errors.purchasePrice}
+                hint={!canEditCost ? "You cannot change this" : consignment ? "Paid to the supplier per piece sold" : undefined}
+              >
                 <Input
                   type="number"
                   step="0.01"
@@ -298,13 +317,24 @@ export function ProductForm({ product }: { product?: ProductDetail }) {
             <Field label="Reorder Quantity" error={errors.reorderQuantity} hint="Suggested quantity to buy">
               <Input type="number" step="1" min="0" value={form.reorderQuantity} onChange={(e) => set("reorderQuantity", e.target.value)} />
             </Field>
-            <Field label="Preferred Supplier">
+            <Field label="Stock Type" hint={consignment ? "Supplier is paid after it sells" : "Bought and owned by the showroom"}>
+              <SimpleSelect
+                value={form.sourceType}
+                onChange={(v) => set("sourceType", v as FormState["sourceType"])}
+                options={[
+                  { value: "PURCHASED", label: "Purchased" },
+                  { value: "CONSIGNMENT", label: "Consignment" },
+                ]}
+              />
+            </Field>
+            <Field label={consignment ? "Consignment Supplier" : "Preferred Supplier"} required={consignment} error={errors.preferredSupplierId}>
               <SimpleSelect
                 value={form.preferredSupplierId}
                 onChange={(v) => set("preferredSupplierId", v)}
                 options={(meta?.suppliers ?? []).map((sp) => ({ value: String(sp.id), label: sp.name }))}
-                clearLabel="None"
-                placeholder="None"
+                clearLabel={consignment ? undefined : "None"}
+                placeholder={consignment ? "Choose Supplier" : "None"}
+                invalid={!!errors.preferredSupplierId}
               />
             </Field>
             {isEdit && (

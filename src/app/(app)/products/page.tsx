@@ -35,7 +35,7 @@ function ProductList() {
   const { can } = useSession();
   const { data: meta } = useMeta();
   const [importOpen, setImportOpen] = useState(false);
-  const list = useListState({ categoryId: "", subCategoryId: "", status: "", active: "true" }, { field: "name", dir: "asc" });
+  const list = useListState({ categoryId: "", subCategoryId: "", status: "", sourceType: "", active: "true" }, { field: "name", dir: "asc" });
   const showCost = can("products.viewCost");
 
   const { data, isLoading, isFetching } = useQuery({
@@ -68,10 +68,16 @@ function ProductList() {
       sortable: true,
       cell: (p) => (
         <div className="min-w-40">
-          <div className="font-medium">{p.name}</div>
+          <div className="font-medium">
+            {p.name}
+            {p.sourceType === "CONSIGNMENT" && (
+              <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 align-middle text-[10px] font-medium text-amber-800">Consignment</span>
+            )}
+          </div>
           <div className="text-xs text-muted-foreground">{[p.material, p.size, p.colour].filter(Boolean).join(" · ")}</div>
         </div>
       ),
+      exportValue: (p) => p.name,
     },
     { key: "sku", header: "SKU", sortable: true, className: "font-mono text-xs" },
     {
@@ -198,6 +204,17 @@ function ProductList() {
             { value: "LOW_STOCK", label: "Low Stock" },
             { value: "OUT_OF_STOCK", label: "Out of Stock" },
             { value: "NEGATIVE", label: "Negative Stock" },
+          ]}
+        />
+        <SimpleSelect
+          className="h-9 w-40"
+          value={list.filters.sourceType}
+          onChange={(v) => list.setFilter("sourceType", v)}
+          clearLabel="Any Stock Type"
+          placeholder="Any Stock Type"
+          options={[
+            { value: "PURCHASED", label: "Purchased" },
+            { value: "CONSIGNMENT", label: "Consignment" },
           ]}
         />
         <SimpleSelect

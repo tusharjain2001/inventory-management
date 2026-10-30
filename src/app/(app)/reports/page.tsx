@@ -1,20 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  AlertTriangle,
-  Boxes,
-  ClipboardList,
-  Coins,
-  Gauge,
-  Landmark,
-  PackageX,
-  Receipt,
-  ShoppingCart,
-  TrendingUp,
-  Truck,
-  type LucideIcon,
-} from "lucide-react";
+import { AlertTriangle, Boxes, ClipboardList, Coins, Gauge, HandCoins, Landmark, PackageX, Receipt, ShoppingCart, TrendingUp, Truck, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/common/page-header";
 import { RequirePermission } from "@/components/common/misc";
 import { useSession } from "@/components/session-provider";
@@ -43,6 +30,7 @@ const GROUPS: { title: string; cards: Card[] }[] = [
     title: "Purchase",
     cards: [
       { href: "/reports/purchase", title: "Purchase Report", description: "Stock-in and purchase lines by supplier and product", permission: "reports.purchase", icon: Truck },
+      { href: "/reports/consignment", title: "Consignment Report", description: "Consignment goods sold and what you owe each supplier; record payments to them", permission: "reports.purchase", icon: HandCoins },
     ],
   },
   {
