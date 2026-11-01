@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { badRequest, handler } from "@/lib/http";
 import { effectivePaymentStatus, round2, round3 } from "@/lib/calc";
 import { istDateString } from "@/lib/dates";
+import { EWAY_FILTERS, eWayBillWhere } from "@/lib/eway-bill";
+import { getSettingsGroup } from "@/lib/settings";
 import {
   creditNoteWhere,
   describePeriod,
@@ -22,6 +24,7 @@ type Amounts = { quantity: number; gross: number; discount: number; taxable: num
 /**
  * Line-level sales on ACTIVE invoices. ?from&to (default this month) &customerId &salespersonId
  * &categoryId &subCategoryId &productId &paymentStatus=PAID|PARTIALLY_PAID|UNPAID|OVERDUE|REFUNDED
+ * &eWayBill=REQUIRED|PENDING|GENERATED
  * &groupBy=line|invoice|product|customer|salesperson|day
  */
 export const GET = handler({ permission: "reports.sales" }, async ({ req, user }) => {
@@ -31,9 +34,13 @@ export const GET = handler({ permission: "reports.sales" }, async ({ req, user }
   const groupBy = (sp.get("groupBy") ?? "line") as GroupBy;
   if (!GROUPS.includes(groupBy)) throw badRequest("Invalid groupBy");
   const payWhere = paymentStatusWhere(sp.get("paymentStatus"));
+  const ew = sp.get("eWayBill");
+  if (ew && !EWAY_FILTERS.includes(ew as (typeof EWAY_FILTERS)[number])) throw badRequest("Invalid e-way bill filter");
+  const ewWhere = ew ? eWayBillWhere(ew, await getSettingsGroup("invoice")) : undefined;
+  const invoiceExtra = payWhere && ewWhere ? { AND: [payWhere, ewWhere] } : (payWhere ?? ewWhere);
 
   const lines = await db.salesOrderItem.findMany({
-    where: salesLineWhere(period, f, payWhere),
+    where: salesLineWhere(period, f, invoiceExtra),
     take: REPORT_ROW_CAP,
     orderBy: [{ order: { invoice: { invoiceDate: "asc" } } }, { orderId: "asc" }, { sortOrder: "asc" }],
     select: {
@@ -68,6 +75,7 @@ export const GET = handler({ permission: "reports.sales" }, async ({ req, user }
               paymentStatus: true,
               balanceDue: true,
               grandTotal: true,
+              eWayBillNo: true,
             },
           },
         },
@@ -104,6 +112,7 @@ export const GET = handler({ permission: "reports.sales" }, async ({ req, user }
         status: inv.status,
       }),
       invoiceTotal: num(inv.grandTotal),
+      eWayBillNo: inv.eWayBillNo ?? "",
     };
   });
 
@@ -123,7 +132,7 @@ export const GET = handler({ permission: "reports.sales" }, async ({ req, user }
 
   // Credit notes in the period with the same filters (item-linked lines when filtering by product).
   const pw = productWhere(f);
-  const cnWhere = creditNoteWhere(period, f);
+  const cnWhere = ewWhere ? { AND: [creditNoteWhere(period, f), { invoice: ewWhere }] } : creditNoteWhere(period, f);
   const credit = pw
     ? await db.creditNoteItem.aggregate({
         where: { creditNote: cnWhere, orderItem: { product: pw } },
@@ -167,6 +176,7 @@ export const GET = handler({ permission: "reports.sales" }, async ({ req, user }
                 customer: r.customer,
                 salesperson: r.salesperson,
                 paymentStatus: r.paymentStatus,
+                eWayBillNo: r.eWayBillNo,
               }
             : groupBy === "product"
               ? { label: r.product, sku: r.sku, category: r.category, productId: r.productId }

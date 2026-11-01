@@ -18,6 +18,7 @@ import { ItemsTable, TotalsList } from "../../_components/order-summary";
 import { PaymentDialog } from "../../_components/payment-dialog";
 import { CreditNoteDialog } from "../../_components/credit-note-dialog";
 import { DESPATCH_FIELDS, DespatchDialog, despatchPayload } from "../../_components/despatch-dialog";
+import { EWayBillPanel } from "../../_components/eway-bill-panel";
 import type { InvoiceDetail, PaymentRow } from "../../types";
 
 export default function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
@@ -168,6 +169,8 @@ function InvoiceView({ id }: { id: number }) {
           {inv.cancelledBy ? ` by ${inv.cancelledBy.name}` : ""}. Reason: {inv.cancelReason}
         </div>
       )}
+
+      <EWayBillPanel inv={inv} canManage={can("invoices.manage")} onEditNumber={() => setDespatchOpen(true)} onChanged={refresh} />
 
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard label="Invoice Total" value={<Money value={inv.grandTotal} />} />

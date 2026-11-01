@@ -12,6 +12,7 @@ export type DespatchForm = { [K in keyof DespatchFields]: string } & { invoiceDa
 
 export const DESPATCH_FIELDS: { key: keyof DespatchFields; label: string; type?: "date" }[] = [
   { key: "eWayBillNo", label: "e-Way Bill No." },
+  { key: "eWayBillDate", label: "e-Way Bill Date", type: "date" },
   { key: "deliveryNote", label: "Delivery Note" },
   { key: "supplierRef", label: "Supplier's Ref." },
   { key: "otherReferences", label: "Other Reference(s)" },
@@ -19,6 +20,7 @@ export const DESPATCH_FIELDS: { key: keyof DespatchFields; label: string; type?:
   { key: "buyersOrderDate", label: "Buyer's Order Date", type: "date" },
   { key: "despatchDocNo", label: "Despatch Document No." },
   { key: "despatchedThrough", label: "Despatched Through" },
+  { key: "vehicleNo", label: "Vehicle No." },
   { key: "destination", label: "Destination" },
   { key: "termsOfDelivery", label: "Terms of Delivery" },
 ];

@@ -270,6 +270,8 @@ export function InvoiceSettings({ initial }: { initial: Settings["invoice"] }) {
           <NumF name="defaultPaymentTermsDays" label="Default Payment Terms" suffix="days" hint="0 = due on the invoice date" />
           <SwitchF name="roundOff" label="Round Off the Total" hint="To the nearest rupee" />
           <SwitchF name="showBankDetails" label="Show Bank Details on Invoices" />
+          <NumF name="eWayBillThreshold" label="E-Way Bill Needed Above" suffix="₹" hint="Invoice value including GST" min={0} step="1" required />
+          <SwitchF name="eWayBillWithinState" label="E-Way Bill Within State Too" hint="When off, only sales to other states are flagged" />
           <SelectF name="template" label="Invoice Layout" options={[{ value: "TALLY_CLASSIC", label: "Tally Classic" }]} disabled />
         </FormGrid>
       </FormSection>

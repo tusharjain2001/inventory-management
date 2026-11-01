@@ -4,7 +4,8 @@ import { AppError, badRequest, notFound } from "@/lib/http";
 import { postStock, refreshDisplayStatus } from "@/lib/inventory";
 import { nextDocNumber } from "@/lib/numbering";
 import { audit } from "@/lib/audit";
-import { getSettings } from "@/lib/settings";
+import { getSettings, getSettingsGroup } from "@/lib/settings";
+import { eWayBillStatus } from "@/lib/eway-bill";
 import {
   calculateOrder,
   derivePaymentStatus,
@@ -72,6 +73,8 @@ export const orderItemSchema = z.object({
 
 export const despatchSchema = z.object({
   eWayBillNo: optText(50),
+  eWayBillDate: optDate,
+  vehicleNo: optText(30),
   deliveryNote: optText(100),
   supplierRef: optText(100),
   otherReferences: optText(200),
@@ -596,6 +599,8 @@ export async function invoiceOrder(tx: Tx, id: number, input: InvoiceActionInput
       balanceDue: D(status.balanceDue),
       companySnapshot,
       eWayBillNo: input?.eWayBillNo ?? null,
+      eWayBillDate: input?.eWayBillDate ? dateFromInput(input.eWayBillDate) : null,
+      vehicleNo: input?.vehicleNo ?? null,
       deliveryNote: input?.deliveryNote ?? null,
       supplierRef: input?.supplierRef ?? null,
       otherReferences: input?.otherReferences ?? null,
@@ -1049,10 +1054,12 @@ export async function getInvoiceDetail(id: number, user: SessionUser) {
     user,
   );
 
+  const invoiceSettings = await getSettingsGroup("invoice");
   return {
     ...inv,
     order: { ...o, items },
     displayStatus: displayStatusOf(inv),
+    eWayBill: { status: eWayBillStatus(inv, invoiceSettings), threshold: invoiceSettings.eWayBillThreshold },
     hsnRows,
     taxLines: taxLines(plainItems, { gstRate: ocRate, ...oc }),
     otherChargesTax: oc,

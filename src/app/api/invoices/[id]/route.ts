@@ -16,7 +16,11 @@ export const PATCH = handler<{ id: string }>({ permission: "invoices.manage" }, 
   const input = await body(req, despatchSchema);
   const before = await db.invoice.findFirst({ where: { id, ...invoiceScope(user) } });
   if (!before) throw notFound("Invoice");
-  const data = { ...input, buyersOrderDate: input.buyersOrderDate ? dateFromInput(input.buyersOrderDate) : null };
+  const data = {
+    ...input,
+    buyersOrderDate: input.buyersOrderDate ? dateFromInput(input.buyersOrderDate) : null,
+    eWayBillDate: input.eWayBillDate ? dateFromInput(input.eWayBillDate) : null,
+  };
   return transaction(async (tx) => {
     const updated = await tx.invoice.update({ where: { id }, data });
     const d = diff(before, data);

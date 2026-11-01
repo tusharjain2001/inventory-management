@@ -54,6 +54,10 @@ export const settingsSchemas = {
     roundOff: z.boolean(),
     showBankDetails: z.boolean(),
     template: z.enum(["TALLY_CLASSIC"]),
+    /** Invoices above this value (incl. GST) need an e-way bill. */
+    eWayBillThreshold: z.coerce.number().min(0),
+    /** Also require e-way bills for sales within the state (otherwise only inter-state). */
+    eWayBillWithinState: z.boolean(),
   }),
   numbering: z
     .object({
@@ -153,6 +157,8 @@ export const DEFAULT_SETTINGS: Settings = {
     roundOff: true,
     showBankDetails: true,
     template: "TALLY_CLASSIC",
+    eWayBillThreshold: 50000,
+    eWayBillWithinState: false,
   },
   numbering: {
     invoice: doc("INV"),

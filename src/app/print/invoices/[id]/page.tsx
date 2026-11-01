@@ -103,7 +103,7 @@ function InvoiceSheet({ inv }: { inv: InvoiceDetail }) {
                   </tr>
                   <tr>
                     <Cell span={3} label="Despatch Document No." value={inv.despatchDocNo} />
-                    <Cell span={3} label="Delivery Note Date" value={undefined} />
+                    <Cell span={3} label="Motor Vehicle No." value={inv.vehicleNo} />
                   </tr>
                   <tr>
                     <Cell span={3} label="Despatched through" value={inv.despatchedThrough} />

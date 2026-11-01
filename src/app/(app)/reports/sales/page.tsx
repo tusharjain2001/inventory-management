@@ -49,6 +49,7 @@ type Row = Amounts & {
   sku?: string;
   category?: string;
   paymentStatus?: string;
+  eWayBillNo?: string;
   // grouped
   label?: string;
   productId?: number;
@@ -71,6 +72,11 @@ const PAYMENT_OPTIONS = ["PAID", "PARTIALLY_PAID", "UNPAID", "OVERDUE", "REFUNDE
   value: s,
   label: s === "UNPAID" ? "Pending (Not Due)" : label(s),
 }));
+const EWAY_OPTIONS = [
+  { value: "REQUIRED", label: "E-Way Bill Needed" },
+  { value: "PENDING", label: "E-Way Bill Pending" },
+  { value: "GENERATED", label: "E-Way Bill Generated" },
+];
 
 export default function SalesReportPage() {
   return (
@@ -96,6 +102,7 @@ function SalesReport() {
     productId: "",
     productLabel: "",
     paymentStatus: "",
+    eWayBill: "",
   });
   const [sort, setSort] = useState<SortState>(undefined);
   const groupBy = f.groupBy as GroupBy;
@@ -162,6 +169,7 @@ function SalesReport() {
             dateCol("invoiceDate", "Date"),
             { key: "customer", header: "Customer", sortable: true },
             { key: "salesperson", header: "Salesperson", sortable: true },
+            { key: "eWayBillNo", header: "E-Way Bill No.", sortable: true, className: "font-mono text-xs whitespace-nowrap", cell: (r) => r.eWayBillNo || "—" },
             ...amountCols,
             statusCol,
           ]
@@ -215,6 +223,7 @@ function SalesReport() {
     f.categoryId && `Category: ${categoryName(meta, f.categoryId) ?? f.categoryId}`,
     f.productId && `Product: ${f.productLabel || f.productId}`,
     f.paymentStatus && `Payment status: ${PAYMENT_OPTIONS.find((o) => o.value === f.paymentStatus)?.label}`,
+    f.eWayBill && EWAY_OPTIONS.find((o) => o.value === f.eWayBill)?.label,
   ];
 
   return (
@@ -245,6 +254,14 @@ function SalesReport() {
           clearLabel="Any Payment Status"
           placeholder="Any Payment Status"
           options={PAYMENT_OPTIONS}
+        />
+        <SimpleSelect
+          className="h-9 w-full sm:w-48"
+          value={f.eWayBill}
+          onChange={(eWayBill) => setF({ eWayBill })}
+          clearLabel="Any E-Way Bill"
+          placeholder="Any E-Way Bill"
+          options={EWAY_OPTIONS}
         />
       </FilterBar>
 
