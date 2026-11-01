@@ -1,10 +1,13 @@
 import { db, type Prisma } from "@/lib/db";
 import { handler, listQuery, paged, spBool, spDateRange, spInt } from "@/lib/http";
 import { displayStatusOf, invoiceScope, overdueWhere } from "@/lib/sales";
+import { eWayBillStatus, eWayBillWhere } from "@/lib/eway-bill";
+import { getSettingsGroup } from "@/lib/settings";
 
 /**
  * ?q= (invoice no / customer) &customerId &salespersonId &status=ACTIVE|CANCELLED
  * &paymentStatus=UNPAID|PARTIALLY_PAID|PAID|CANCELLED|REFUNDED|OVERDUE &unpaid=true (active with a balance)
+ * &eWayBill=REQUIRED|PENDING|GENERATED
  * &from &to (invoice date) &sort=invoiceDate|dueDate|grandTotal|balanceDue|invoiceNo:dir
  */
 export const GET = handler(
@@ -15,6 +18,7 @@ export const GET = handler(
     const ps = sp.get("paymentStatus");
     const status = sp.get("status");
     const range = spDateRange(sp);
+    const invoiceSettings = await getSettingsGroup("invoice");
     const where: Prisma.InvoiceWhereInput = {
       AND: [
         invoiceScope(user),
@@ -24,6 +28,7 @@ export const GET = handler(
         spInt(sp, "customerId") ? { customerId: spInt(sp, "customerId") } : {},
         spInt(sp, "salespersonId") ? { order: { salespersonId: spInt(sp, "salespersonId") } } : {},
         range ? { invoiceDate: range } : {},
+        eWayBillWhere(sp.get("eWayBill"), invoiceSettings),
         lq.q
           ? {
               OR: [
@@ -51,6 +56,7 @@ export const GET = handler(
               customerPhone: true,
               taxableTotal: true,
               taxTotal: true,
+              isInterState: true,
               salesperson: { select: { id: true, name: true } },
             },
           },
@@ -64,7 +70,7 @@ export const GET = handler(
     ]);
     return {
       ...paged(
-        rows.map((r) => ({ ...r, displayStatus: displayStatusOf(r) })),
+        rows.map((r) => ({ ...r, displayStatus: displayStatusOf(r), eWayBillStatus: eWayBillStatus(r, invoiceSettings) })),
         total,
         lq,
       ),

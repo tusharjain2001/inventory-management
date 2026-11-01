@@ -749,6 +749,11 @@ model Invoice {
   companySnapshot Json
 
   eWayBillNo        String?
+  eWayBillDate      DateTime?
+  /// The e-way bill PDF downloaded from ewaybillgst.gov.in and uploaded for records.
+  eWayBillFileUrl   String?
+  eWayBillFilePath  String?
+  vehicleNo         String?
   deliveryNote      String?
   supplierRef       String?
   buyersOrderNo     String?

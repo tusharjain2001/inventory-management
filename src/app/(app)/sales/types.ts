@@ -168,6 +168,9 @@ export type OrderDetail = OrderTotalsFields & {
   } | null;
 };
 
+/** NOT_REQUIRED, or the invoice needs an e-way bill and has (GENERATED) or lacks (PENDING) its number. */
+export type EWayBillStatus = "NOT_REQUIRED" | "PENDING" | "GENERATED";
+
 export type InvoiceRow = {
   id: number;
   invoiceNo: string;
@@ -176,6 +179,8 @@ export type InvoiceRow = {
   status: "ACTIVE" | "CANCELLED";
   paymentStatus: PaymentStatusName;
   displayStatus: EffectivePaymentStatus;
+  eWayBillStatus: EWayBillStatus;
+  eWayBillNo: string | null;
   grandTotal: number;
   amountPaid: number;
   creditNoteTotal: number;
@@ -270,6 +275,8 @@ export type TaxLine = { label: string; head: "CGST" | "SGST" | "IGST" | "CESS"; 
 
 export type DespatchFields = {
   eWayBillNo: string | null;
+  eWayBillDate: string | null;
+  vehicleNo: string | null;
   deliveryNote: string | null;
   supplierRef: string | null;
   otherReferences: string | null;
@@ -310,6 +317,8 @@ export type InvoiceDetail = DespatchFields & {
   otherChargesTax: { cgst: number; sgst: number; igst: number; cess: number };
   totalInWords: string;
   taxInWords: string;
+  eWayBill: { status: EWayBillStatus; threshold: number };
+  eWayBillFileUrl: string | null;
 };
 
 export type CreditNoteDetail = CreditNoteRow & {

@@ -37,7 +37,7 @@ function InvoiceList() {
   const router = useRouter();
   const { can } = useSession();
   const { data: meta } = useMeta();
-  const list = useListState({ paymentStatus: "", status: "", salespersonId: "", from: "", to: "" }, { field: "invoiceDate", dir: "desc" });
+  const list = useListState({ paymentStatus: "", status: "", salespersonId: "", eWayBill: "", from: "", to: "" }, { field: "invoiceDate", dir: "desc" });
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["invoices", list.params],
@@ -46,7 +46,20 @@ function InvoiceList() {
   });
 
   const columns: Column<InvoiceRow>[] = [
-    { key: "invoiceNo", header: "Invoice No.", sortable: true, className: "font-medium whitespace-nowrap" },
+    {
+      key: "invoiceNo",
+      header: "Invoice No.",
+      sortable: true,
+      className: "font-medium whitespace-nowrap",
+      cell: (i) => (
+        <>
+          {i.invoiceNo}
+          {i.eWayBillStatus === "PENDING" && <div className="text-[11px] font-normal text-amber-700">E-way bill pending</div>}
+          {i.eWayBillStatus === "GENERATED" && <div className="font-mono text-[11px] font-normal text-muted-foreground">EWB {i.eWayBillNo}</div>}
+        </>
+      ),
+      exportValue: (i) => i.invoiceNo,
+    },
     { key: "invoiceDate", header: "Date", sortable: true, cell: (i) => formatDate(i.invoiceDate), exportValue: (i) => formatDate(i.invoiceDate) },
     {
       key: "customer",
@@ -105,7 +118,16 @@ function InvoiceList() {
         list.filters.paymentStatus ? `Payment status: ${label(list.filters.paymentStatus)}` : "All Payment Statuses",
         `${all.total} invoices (totals exclude cancelled)`,
       ],
-      columns,
+      // Exports get the e-way bill number as its own column.
+      columns: [
+        columns[0],
+        {
+          key: "eWayBillNo",
+          header: "E-Way Bill No.",
+          exportValue: (i: InvoiceRow) => i.eWayBillNo ?? (i.eWayBillStatus === "PENDING" ? "Pending" : ""),
+        } as Column<InvoiceRow>,
+        ...columns.slice(1),
+      ],
       rows: all.data,
       totals: {
         taxable: sum((i) => i.order.taxableTotal),
@@ -174,6 +196,18 @@ function InvoiceList() {
             options={(meta?.users ?? []).map((u) => ({ value: String(u.id), label: u.name }))}
           />
         )}
+        <SimpleSelect
+          className="h-9 w-48"
+          value={list.filters.eWayBill}
+          onChange={(v) => list.setFilter("eWayBill", v)}
+          clearLabel="Any E-Way Bill"
+          placeholder="Any E-Way Bill"
+          options={[
+            { value: "REQUIRED", label: "E-Way Bill Needed" },
+            { value: "PENDING", label: "E-Way Bill Pending" },
+            { value: "GENERATED", label: "E-Way Bill Generated" },
+          ]}
+        />
         <DateRangeFilter value={{ from: list.filters.from, to: list.filters.to }} onChange={(r) => list.setFilters(r)} />
       </FilterBar>
 
